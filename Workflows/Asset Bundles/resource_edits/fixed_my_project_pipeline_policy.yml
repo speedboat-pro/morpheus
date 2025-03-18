@@ -1,0 +1,19 @@
+# The main pipeline for my_project
+resources:
+  pipelines:
+    my_project_pipeline:
+      name: my_project_pipeline
+      target: my_project_${bundle.environment}
+      clusters:
+        - label: default
+          policy_id: 001EFD5A4FA0573F
+          autoscale:
+            min_workers: 0
+            max_workers: 0
+        - label: maintenance
+      configuration:
+        bundle.sourcePath: /Workspace/${workspace.file_path}/src
+      libraries:
+        - notebook:
+            path: ../src/dlt_pipeline.ipynb
+#

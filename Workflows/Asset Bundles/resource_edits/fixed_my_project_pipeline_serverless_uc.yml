@@ -1,0 +1,16 @@
+# The main pipeline for my_project
+resources:
+  pipelines:
+    my_project_pipeline:
+      name: my_project_pipeline
+      target: my_project_${bundle.environment}
+      photon: true
+      serverless: true
+      catalog: dbacademy
+      schema: labuser9200150_1741280927
+      configuration:
+        bundle.sourcePath: /Workspace/${workspace.file_path}/src
+      libraries:
+        - notebook:
+            path: ../src/dlt_pipeline.ipynb
+#
