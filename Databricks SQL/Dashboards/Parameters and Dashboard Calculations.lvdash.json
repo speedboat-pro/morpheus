@@ -6,7 +6,23 @@
   }, {
     "name" : "58f3a8ef",
     "displayName" : "NYC Taxi Data",
-    "query" : "SELECT \n* \n, \ndate_part(dow, tpep_pickup_datetime) `Day of week``\nFROM samples.nyctaxi.trips where trip_distance >0",
+    "query" : "SELECT \ndate_add(YEAR, 9, tpep_pickup_datetime) AS `Pickup Time`,\ndate_add(YEAR, 9, tpep_dropoff_datetime) AS `Dropoff Time`,\ntrip_distance,\nfare_amount,\npickup_zip,\ndropoff_zip,\ndate_format(date_add(YEAR, 9, tpep_pickup_datetime), 'EEEE') AS `Day of week`\nFROM samples.nyctaxi.trips \nWHERE trip_distance > 0\nAND array_contains(:DayOfWeek, date_format(date_add(YEAR, 9, tpep_pickup_datetime), 'EEEE'))",
+    "parameters" : [ {
+      "displayName" : "DayOfWeek",
+      "keyword" : "DayOfWeek",
+      "dataType" : "STRING",
+      "complexType" : "MULTI",
+      "defaultSelection" : {
+        "values" : {
+          "dataType" : "STRING",
+          "values" : [ {
+            "value" : "Wednesday"
+          }, {
+            "value" : "Tuesday"
+          } ]
+        }
+      }
+    } ],
     "columns" : [ {
       "displayName" : "Route Direction",
       "description" : "",
@@ -16,120 +32,15 @@
       "description" : "",
       "expression" : "try_divide(SUM(fare_amount), SUM(trip_distance))"
     } ]
+  }, {
+    "name" : "00192782",
+    "displayName" : "Days",
+    "query" : "With \nbase AS \n(SELECT DISTINCT \n  date_format(date_add(YEAR, 9, tpep_pickup_datetime), 'EEEE') AS `Day of week`\n,  dayofweek(date_add(YEAR, 9, tpep_pickup_datetime)) AS daynumber\nFROM samples.nyctaxi.trips \nORDER by 2)\nSELECT * EXCEPT(daynumber)  from BASE "
   } ],
   "pages" : [ {
     "name" : "56041d3a",
     "displayName" : "Untitled Page",
     "layout" : [ {
-      "widget" : {
-        "name" : "9d9b000c",
-        "queries" : [ {
-          "name" : "main_query",
-          "query" : {
-            "datasetName" : "31d2c50f",
-            "fields" : [ {
-              "name" : "state",
-              "expression" : "`state`"
-            }, {
-              "name" : "count(customer_id)",
-              "expression" : "COUNT(`customer_id`)"
-            } ],
-            "disaggregated" : false
-          }
-        } ],
-        "spec" : {
-          "version" : 3,
-          "widgetType" : "bar",
-          "encodings" : {
-            "x" : {
-              "fieldName" : "state",
-              "scale" : {
-                "type" : "categorical",
-                "sort" : {
-                  "by" : "y-reversed"
-                }
-              },
-              "displayName" : "state"
-            },
-            "y" : {
-              "fieldName" : "count(customer_id)",
-              "scale" : {
-                "type" : "quantitative"
-              },
-              "axis" : {
-                "hideTitle" : true,
-                "hideLabels" : false
-              },
-              "displayName" : "Count of customer_id"
-            },
-            "label" : {
-              "show" : false
-            }
-          },
-          "frame" : {
-            "title" : "Customer Count by State",
-            "showTitle" : true
-          }
-        }
-      },
-      "position" : {
-        "x" : 0,
-        "y" : 6,
-        "width" : 3,
-        "height" : 6
-      }
-    }, {
-      "widget" : {
-        "name" : "acea9512",
-        "queries" : [ {
-          "name" : "main_query",
-          "query" : {
-            "datasetName" : "31d2c50f",
-            "fields" : [ {
-              "name" : "state",
-              "expression" : "`state`"
-            }, {
-              "name" : "count(customer_id)",
-              "expression" : "COUNT(`customer_id`)"
-            } ],
-            "disaggregated" : false
-          }
-        } ],
-        "spec" : {
-          "version" : 3,
-          "widgetType" : "bar",
-          "encodings" : {
-            "x" : {
-              "fieldName" : "state",
-              "scale" : {
-                "type" : "categorical",
-                "sort" : {
-                  "by" : "y-reversed"
-                }
-              },
-              "displayName" : "state"
-            },
-            "y" : {
-              "fieldName" : "count(customer_id)",
-              "scale" : {
-                "type" : "quantitative"
-              },
-              "displayName" : "Count of customer_id"
-            }
-          },
-          "frame" : {
-            "title" : "Customer Count by State",
-            "showTitle" : true
-          }
-        }
-      },
-      "position" : {
-        "x" : 3,
-        "y" : 6,
-        "width" : 3,
-        "height" : 6
-      }
-    }, {
       "widget" : {
         "name" : "497277c3",
         "queries" : [ {
@@ -140,8 +51,8 @@
               "name" : "Route Direction",
               "expression" : "`Route Direction`"
             }, {
-              "name" : "tpep_dropoff_datetime",
-              "expression" : "`tpep_dropoff_datetime`"
+              "name" : "daily(Dropoff Time)",
+              "expression" : "DATE_TRUNC(\"DAY\", `Dropoff Time`)"
             }, {
               "name" : "measure(Cost per Mile)",
               "expression" : "MEASURE(`Cost per Mile`)"
@@ -154,11 +65,11 @@
           "widgetType" : "bar",
           "encodings" : {
             "x" : {
-              "fieldName" : "tpep_dropoff_datetime",
+              "fieldName" : "daily(Dropoff Time)",
               "scale" : {
                 "type" : "temporal"
               },
-              "displayName" : "tpep_dropoff_datetime"
+              "displayName" : "Dropoff Time"
             },
             "y" : {
               "fieldName" : "measure(Cost per Mile)",
@@ -179,7 +90,7 @@
       },
       "position" : {
         "x" : 0,
-        "y" : 0,
+        "y" : 1,
         "width" : 6,
         "height" : 6
       }
@@ -187,14 +98,14 @@
       "widget" : {
         "name" : "0e5678e5",
         "queries" : [ {
-          "name" : "dashboards/01f01f95869e1b67b746889df811a493/datasets/01f01fa103b919bea31f6752f9a5c9a2_tpep_dropoff_datetime",
+          "name" : "dashboards/01f01f95869e1b67b746889df811a493/datasets/01f01fa103b919bea31f6752f9a5c9a2_Dropoff Time",
           "query" : {
             "datasetName" : "58f3a8ef",
             "fields" : [ {
-              "name" : "tpep_dropoff_datetime",
-              "expression" : "`tpep_dropoff_datetime`"
+              "name" : "Dropoff Time",
+              "expression" : "`Dropoff Time`"
             }, {
-              "name" : "tpep_dropoff_datetime_associativity",
+              "name" : "Dropoff Time_associativity",
               "expression" : "COUNT_IF(`associative_filter_predicate_group`)"
             } ],
             "disaggregated" : false
@@ -205,9 +116,9 @@
           "widgetType" : "filter-date-range-picker",
           "encodings" : {
             "fields" : [ {
-              "fieldName" : "tpep_dropoff_datetime",
-              "displayName" : "tpep_dropoff_datetime",
-              "queryName" : "dashboards/01f01f95869e1b67b746889df811a493/datasets/01f01fa103b919bea31f6752f9a5c9a2_tpep_dropoff_datetime"
+              "fieldName" : "Dropoff Time",
+              "displayName" : "Dropoff Time",
+              "queryName" : "dashboards/01f01f95869e1b67b746889df811a493/datasets/01f01fa103b919bea31f6752f9a5c9a2_Dropoff Time"
             } ]
           },
           "frame" : {
@@ -217,7 +128,59 @@
       },
       "position" : {
         "x" : 0,
-        "y" : 5,
+        "y" : 0,
+        "width" : 2,
+        "height" : 1
+      }
+    }, {
+      "widget" : {
+        "name" : "f6117408",
+        "queries" : [ {
+          "name" : "dashboards/01f01f95869e1b67b746889df811a493/datasets/01f0205e937718c995053d82079b2297_Day of week",
+          "query" : {
+            "datasetName" : "00192782",
+            "fields" : [ {
+              "name" : "Day of week",
+              "expression" : "`Day of week`"
+            }, {
+              "name" : "Day of week_associativity",
+              "expression" : "COUNT_IF(`associative_filter_predicate_group`)"
+            } ],
+            "disaggregated" : false
+          }
+        }, {
+          "name" : "parameter_dashboards/01f01f95869e1b67b746889df811a493/datasets/01f01fa103b919bea31f6752f9a5c9a2_DayOfWeek",
+          "query" : {
+            "datasetName" : "58f3a8ef",
+            "parameters" : [ {
+              "name" : "DayOfWeek",
+              "keyword" : "DayOfWeek"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 2,
+          "widgetType" : "filter-multi-select",
+          "encodings" : {
+            "fields" : [ {
+              "parameterName" : "DayOfWeek",
+              "queryName" : "parameter_dashboards/01f01f95869e1b67b746889df811a493/datasets/01f01fa103b919bea31f6752f9a5c9a2_DayOfWeek"
+            }, {
+              "fieldName" : "Day of week",
+              "displayName" : "Day of week",
+              "queryName" : "dashboards/01f01f95869e1b67b746889df811a493/datasets/01f0205e937718c995053d82079b2297_Day of week"
+            } ]
+          },
+          "frame" : {
+            "showTitle" : true,
+            "title" : ""
+          }
+        }
+      },
+      "position" : {
+        "x" : 2,
+        "y" : 0,
         "width" : 2,
         "height" : 1
       }
