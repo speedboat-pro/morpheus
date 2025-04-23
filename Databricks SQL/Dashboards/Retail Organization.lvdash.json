@@ -1,0 +1,245 @@
+{
+  "datasets" : [ {
+    "name" : "6599662e",
+    "displayName" : "Customers Table",
+    "query" : "USE CATALOG `labuser8664401_1745330262`;\nUSE SCHEMA `dawd_v2`;\n\n SELECT * FROM customers;"
+  }, {
+    "name" : "d864b5b5",
+    "displayName" : "Total Sales",
+    "query" : "USE CATALOG `labuser8664401_1745330262`;\nUSE SCHEMA `dawd_v2`;\n\n SELECT\n   sum(total_price) AS Total_Sales,\n   3000000 AS Sales_Goal\n FROM\n   sales;"
+  }, {
+    "name" : "1075650f",
+    "displayName" : "Sales Over Three Months",
+    "query" : "USE CATALOG `labuser8664401_1745330262`;\nUSE SCHEMA `dawd_v2`;\n\n SELECT\n   customer_name,\n   total_price AS Total_Sales,\n   date_format(order_date, \"MM\") AS Month,\n   product_category\n FROM\n   sales\n WHERE\n   order_date >= to_date('2019-08-01')\n AND order_date <= to_date('2019-10-31');"
+  }, {
+    "name" : "cb7183ba",
+    "displayName" : "Sales Table",
+    "query" : "SELECT * FROM labuser8664401_1745330262.dawd_v2.sales"
+  } ],
+  "pages" : [ {
+    "name" : "19521811",
+    "displayName" : "Import Samples",
+    "layout" : [ {
+      "widget" : {
+        "name" : "a37fbf85",
+        "queries" : [ {
+          "name" : "3c4cd902be40419987a7c116fd274776",
+          "query" : {
+            "datasetName" : "6599662e",
+            "fields" : [ {
+              "name" : "state",
+              "expression" : "`state`"
+            }, {
+              "name" : "column_c64daad0324",
+              "expression" : "COUNT(`*`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 0,
+          "viz_spec" : {
+            "display_name" : "Customer Count by State",
+            "viz_type" : "CHART",
+            "serialized_options" : "{\"isAggregationOn\":true,\"series\":{\"error_y\":{\"type\":\"data\",\"visible\":true},\"stacking\":null},\"coefficient\":1,\"yAxis\":[{\"type\":\"-\"},{\"opposite\":true,\"type\":\"-\"}],\"columnConfigurationMap\":{\"x\":{\"column\":\"state\",\"id\":\"column_c64daad0182\"},\"y\":[{\"column\":\"*\",\"id\":\"column_c64daad0324\",\"transform\":\"COUNT\"}]},\"alignYAxesAtZero\":true,\"direction\":{\"type\":\"counterclockwise\"},\"swappedAxes\":false,\"percentFormat\":\"0[.]00%\",\"textFormat\":\"\",\"legend\":{\"traceorder\":\"normal\"},\"globalSeriesType\":\"column\",\"version\":2,\"sizemode\":\"diameter\",\"seriesOptions\":{\"column_c64daad0184\":{\"type\":\"column\",\"yAxis\":0},\"column_c64daad0324\":{\"type\":\"column\",\"yAxis\":0}},\"error_y\":{\"type\":\"data\",\"visible\":true},\"sortX\":true,\"showDataLabels\":false,\"missingValuesAsZero\":true,\"useAggregationsUi\":true,\"numberFormat\":\"0,0.[00000]\",\"dateTimeFormat\":\"DD/MM/YYYY HH:mm\",\"sortY\":true,\"valuesOptions\":{},\"xAxis\":{\"labels\":{\"enabled\":true},\"type\":\"-\"}}",
+            "query_name" : "3c4cd902be40419987a7c116fd274776"
+          }
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 0,
+        "width" : 3,
+        "height" : 6
+      }
+    }, {
+      "widget" : {
+        "name" : "e578fd7b",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "d864b5b5",
+            "fields" : [ {
+              "name" : "Sales_Goal",
+              "expression" : "`Sales_Goal`"
+            }, {
+              "name" : "Total_Sales",
+              "expression" : "`Total_Sales`"
+            } ],
+            "disaggregated" : true
+          }
+        } ],
+        "spec" : {
+          "version" : 2,
+          "widgetType" : "counter",
+          "encodings" : {
+            "value" : {
+              "fieldName" : "Total_Sales",
+              "rowNumber" : 1,
+              "format" : {
+                "type" : "number-currency",
+                "currencyCode" : "USD",
+                "abbreviation" : "none",
+                "decimalPlaces" : {
+                  "type" : "exact",
+                  "places" : 0
+                }
+              },
+              "displayName" : "Total_Sales"
+            },
+            "target" : {
+              "fieldName" : "Sales_Goal",
+              "rowNumber" : 1,
+              "format" : {
+                "type" : "number-currency",
+                "currencyCode" : "USD",
+                "abbreviation" : "none",
+                "decimalPlaces" : {
+                  "type" : "exact",
+                  "places" : 0
+                }
+              },
+              "style" : {
+                "color" : "#FF3621"
+              },
+              "displayName" : "Sales_Goal"
+            }
+          },
+          "frame" : {
+            "title" : "Total Sales",
+            "showTitle" : true
+          }
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 6,
+        "width" : 3,
+        "height" : 6
+      }
+    }, {
+      "widget" : {
+        "name" : "56fbeabd",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "1075650f",
+            "fields" : [ {
+              "name" : "Month",
+              "expression" : "`Month`"
+            }, {
+              "name" : "sum(Total_Sales)",
+              "expression" : "SUM(`Total_Sales`)"
+            }, {
+              "name" : "count(Total_Sales)",
+              "expression" : "COUNT(`Total_Sales`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 1,
+          "widgetType" : "combo",
+          "encodings" : {
+            "x" : {
+              "fieldName" : "Month",
+              "scale" : {
+                "type" : "categorical"
+              },
+              "displayName" : "Month"
+            },
+            "color" : { },
+            "y" : {
+              "primary" : {
+                "fields" : [ {
+                  "fieldName" : "sum(Total_Sales)",
+                  "displayName" : "Sales Amount"
+                } ],
+                "scale" : {
+                  "type" : "quantitative"
+                }
+              },
+              "secondary" : {
+                "fields" : [ {
+                  "fieldName" : "count(Total_Sales)",
+                  "displayName" : "Sales Count"
+                } ],
+                "scale" : {
+                  "type" : "quantitative"
+                }
+              }
+            }
+          },
+          "mark" : {
+            "layout" : "group"
+          },
+          "frame" : {
+            "title" : "Sales over Three Months",
+            "showTitle" : true
+          }
+        }
+      },
+      "position" : {
+        "x" : 3,
+        "y" : 0,
+        "width" : 3,
+        "height" : 6
+      }
+    } ]
+  }, {
+    "name" : "f52a9652",
+    "displayName" : "Untitled page",
+    "layout" : [ {
+      "widget" : {
+        "name" : "47325b0c",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "6599662e",
+            "fields" : [ {
+              "name" : "product_category",
+              "expression" : "`product_category`"
+            }, {
+              "name" : "avg(total_sales)",
+              "expression" : "AVG(`total_sales`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 3,
+          "widgetType" : "bar",
+          "encodings" : {
+            "x" : {
+              "fieldName" : "product_category",
+              "scale" : {
+                "type" : "categorical",
+                "sort" : {
+                  "by" : "y-reversed"
+                }
+              },
+              "displayName" : "product_category"
+            },
+            "y" : {
+              "fieldName" : "avg(total_sales)",
+              "scale" : {
+                "type" : "quantitative"
+              },
+              "displayName" : "Average total_sales"
+            }
+          },
+          "frame" : {
+            "title" : "Average total sales per product category",
+            "showTitle" : true
+          }
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 0,
+        "width" : 3,
+        "height" : 6
+      }
+    } ]
+  } ]
+}

@@ -1,0 +1,226 @@
+{
+  "datasets" : [ {
+    "name" : "31d2c50f",
+    "displayName" : "Untitled dataset",
+    "query" : "USE CATALOG `labuser8664401_1745330262`;\nUSE SCHEMA `dawd_v2`;\n\n SELECT * FROM customers;"
+  }, {
+    "name" : "58f3a8ef",
+    "displayName" : "NYC Taxi Data",
+    "query" : "SELECT \n* \n, \ndate_part(dow, tpep_pickup_datetime) `Day of week``\nFROM samples.nyctaxi.trips where trip_distance >0",
+    "columns" : [ {
+      "displayName" : "Route Direction",
+      "description" : "",
+      "expression" : "CASE \nWHEN pickup_zip = dropoff_zip THEN 'Same ZIP'\nWHEN pickup_zip > Dropoff_zip THEN 'Leaving NY'\nELSE 'Entering NY'\nEND\n"
+    }, {
+      "displayName" : "Cost per Mile",
+      "description" : "",
+      "expression" : "try_divide(SUM(fare_amount), SUM(trip_distance))"
+    } ]
+  } ],
+  "pages" : [ {
+    "name" : "56041d3a",
+    "displayName" : "Untitled Page",
+    "layout" : [ {
+      "widget" : {
+        "name" : "9d9b000c",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "31d2c50f",
+            "fields" : [ {
+              "name" : "state",
+              "expression" : "`state`"
+            }, {
+              "name" : "count(customer_id)",
+              "expression" : "COUNT(`customer_id`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 3,
+          "widgetType" : "bar",
+          "encodings" : {
+            "x" : {
+              "fieldName" : "state",
+              "scale" : {
+                "type" : "categorical",
+                "sort" : {
+                  "by" : "y-reversed"
+                }
+              },
+              "displayName" : "state"
+            },
+            "y" : {
+              "fieldName" : "count(customer_id)",
+              "scale" : {
+                "type" : "quantitative"
+              },
+              "axis" : {
+                "hideTitle" : true,
+                "hideLabels" : false
+              },
+              "displayName" : "Count of customer_id"
+            },
+            "label" : {
+              "show" : false
+            }
+          },
+          "frame" : {
+            "title" : "Customer Count by State",
+            "showTitle" : true
+          }
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 6,
+        "width" : 3,
+        "height" : 6
+      }
+    }, {
+      "widget" : {
+        "name" : "acea9512",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "31d2c50f",
+            "fields" : [ {
+              "name" : "state",
+              "expression" : "`state`"
+            }, {
+              "name" : "count(customer_id)",
+              "expression" : "COUNT(`customer_id`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 3,
+          "widgetType" : "bar",
+          "encodings" : {
+            "x" : {
+              "fieldName" : "state",
+              "scale" : {
+                "type" : "categorical",
+                "sort" : {
+                  "by" : "y-reversed"
+                }
+              },
+              "displayName" : "state"
+            },
+            "y" : {
+              "fieldName" : "count(customer_id)",
+              "scale" : {
+                "type" : "quantitative"
+              },
+              "displayName" : "Count of customer_id"
+            }
+          },
+          "frame" : {
+            "title" : "Customer Count by State",
+            "showTitle" : true
+          }
+        }
+      },
+      "position" : {
+        "x" : 3,
+        "y" : 6,
+        "width" : 3,
+        "height" : 6
+      }
+    }, {
+      "widget" : {
+        "name" : "497277c3",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "58f3a8ef",
+            "fields" : [ {
+              "name" : "Route Direction",
+              "expression" : "`Route Direction`"
+            }, {
+              "name" : "tpep_dropoff_datetime",
+              "expression" : "`tpep_dropoff_datetime`"
+            }, {
+              "name" : "measure(Cost per Mile)",
+              "expression" : "MEASURE(`Cost per Mile`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 3,
+          "widgetType" : "bar",
+          "encodings" : {
+            "x" : {
+              "fieldName" : "tpep_dropoff_datetime",
+              "scale" : {
+                "type" : "temporal"
+              },
+              "displayName" : "tpep_dropoff_datetime"
+            },
+            "y" : {
+              "fieldName" : "measure(Cost per Mile)",
+              "scale" : {
+                "type" : "quantitative"
+              },
+              "displayName" : "Cost per Mile"
+            },
+            "color" : {
+              "fieldName" : "Route Direction",
+              "scale" : {
+                "type" : "categorical"
+              },
+              "displayName" : "Route Direction"
+            }
+          }
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 0,
+        "width" : 6,
+        "height" : 6
+      }
+    }, {
+      "widget" : {
+        "name" : "0e5678e5",
+        "queries" : [ {
+          "name" : "dashboards/01f01f95869e1b67b746889df811a493/datasets/01f01fa103b919bea31f6752f9a5c9a2_tpep_dropoff_datetime",
+          "query" : {
+            "datasetName" : "58f3a8ef",
+            "fields" : [ {
+              "name" : "tpep_dropoff_datetime",
+              "expression" : "`tpep_dropoff_datetime`"
+            }, {
+              "name" : "tpep_dropoff_datetime_associativity",
+              "expression" : "COUNT_IF(`associative_filter_predicate_group`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 2,
+          "widgetType" : "filter-date-range-picker",
+          "encodings" : {
+            "fields" : [ {
+              "fieldName" : "tpep_dropoff_datetime",
+              "displayName" : "tpep_dropoff_datetime",
+              "queryName" : "dashboards/01f01f95869e1b67b746889df811a493/datasets/01f01fa103b919bea31f6752f9a5c9a2_tpep_dropoff_datetime"
+            } ]
+          },
+          "frame" : {
+            "showTitle" : true
+          }
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 5,
+        "width" : 2,
+        "height" : 1
+      }
+    } ]
+  } ]
+}
