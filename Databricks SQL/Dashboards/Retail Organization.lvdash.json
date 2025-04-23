@@ -48,7 +48,7 @@
       },
       "position" : {
         "x" : 0,
-        "y" : 0,
+        "y" : 1,
         "width" : 3,
         "height" : 6
       }
@@ -113,7 +113,7 @@
       },
       "position" : {
         "x" : 0,
-        "y" : 6,
+        "y" : 7,
         "width" : 3,
         "height" : 6
       }
@@ -184,6 +184,105 @@
         "y" : 0,
         "width" : 3,
         "height" : 6
+      }
+    }, {
+      "widget" : {
+        "name" : "4ec70437",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "cb7183ba",
+            "fields" : [ {
+              "name" : "product_category",
+              "expression" : "`product_category`"
+            }, {
+              "name" : "sum(total_price)",
+              "expression" : "SUM(`total_price`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 3,
+          "widgetType" : "bar",
+          "encodings" : {
+            "x" : {
+              "fieldName" : "product_category",
+              "scale" : {
+                "type" : "categorical"
+              },
+              "displayName" : "product_category"
+            },
+            "y" : {
+              "fieldName" : "sum(total_price)",
+              "scale" : {
+                "type" : "quantitative"
+              },
+              "displayName" : "Sum of total_price"
+            }
+          }
+        }
+      },
+      "position" : {
+        "x" : 3,
+        "y" : 6,
+        "width" : 3,
+        "height" : 6
+      }
+    }, {
+      "widget" : {
+        "name" : "48ac94dd",
+        "queries" : [ {
+          "name" : "dashboards/01f01f8950031a42833875521c8e20e7/datasets/01f01f8a9ea41402ab6fcb6e244ea5e9_product_category",
+          "query" : {
+            "datasetName" : "1075650f",
+            "fields" : [ {
+              "name" : "product_category",
+              "expression" : "`product_category`"
+            }, {
+              "name" : "product_category_associativity",
+              "expression" : "COUNT_IF(`associative_filter_predicate_group`)"
+            } ],
+            "disaggregated" : false
+          }
+        }, {
+          "name" : "dashboards/01f01f8950031a42833875521c8e20e7/datasets/01f01f8c5265160bb594e3632d70695e_product_category",
+          "query" : {
+            "datasetName" : "cb7183ba",
+            "fields" : [ {
+              "name" : "product_category",
+              "expression" : "`product_category`"
+            }, {
+              "name" : "product_category_associativity",
+              "expression" : "COUNT_IF(`associative_filter_predicate_group`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 2,
+          "widgetType" : "filter-multi-select",
+          "encodings" : {
+            "fields" : [ {
+              "fieldName" : "product_category",
+              "displayName" : "product_category",
+              "queryName" : "dashboards/01f01f8950031a42833875521c8e20e7/datasets/01f01f8a9ea41402ab6fcb6e244ea5e9_product_category"
+            }, {
+              "fieldName" : "product_category",
+              "displayName" : "product_category",
+              "queryName" : "dashboards/01f01f8950031a42833875521c8e20e7/datasets/01f01f8c5265160bb594e3632d70695e_product_category"
+            } ]
+          },
+          "frame" : {
+            "showTitle" : true
+          }
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 0,
+        "width" : 2,
+        "height" : 1
       }
     } ]
   }, {

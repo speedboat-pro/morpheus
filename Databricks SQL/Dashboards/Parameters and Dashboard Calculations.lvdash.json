@@ -122,7 +122,8 @@
             } ]
           },
           "frame" : {
-            "showTitle" : true
+            "showTitle" : true,
+            "title" : ""
           }
         }
       },
