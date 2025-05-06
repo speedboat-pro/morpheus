@@ -1,0 +1,1060 @@
+{
+  "datasets" : [ {
+    "name" : "f9be8cee",
+    "displayName" : "orders22",
+    "query" : "SELECT \np.productname\n,c.customername\n,c.province\n,o.customerid\n,o.orderdate\n,o.orderamt\n,o.salesrep\nFROM\ndbacademy.labuser10208313_1746536193.ca_orders as o\nJOIN\ndbacademy.labuser10208313_1746536193.ca_customers as c\n--ON c.customerid = o.customerid\nUSING (customerid)\nJOIN dbacademy.labuser10208313_1746536193.ca_products p\nON o.productid = p.productid\n-- WHERE orderdate >= '2022-01-01' AND orderdate <= '2022-01-31'\nWHERE orderdate BETWEEN '2022-01-01' AND '2022-12-31'\n\n;"
+  }, {
+    "name" : "dbda54bb",
+    "displayName" : "SumTotalSales",
+    "query" : "SELECT \n      sum(orderamt) AS Total_Sales, 390000000 AS Sales_Goal \n  FROM \n      dbacademy.labuser10208313_1746536193.ca_orders\n  WHERE \n      orderdate >= '2024-01-01' AND orderdate <= '2024-12-31' ;"
+  }, {
+    "name" : "fd632692",
+    "displayName" : "orders23",
+    "query" : "SELECT orders.orderid, orders.orderdate, orders.quantity, orders.orderamt, orders.salesrep,\n       customers.customername, customers.city, customers.province\nFROM dbacademy.labuser10208313_1746536193.ca_orders AS orders\nJOIN dbacademy.labuser10208313_1746536193.ca_customers AS customers\nON orders.customerid = customers.customerid\nWHERE YEAR(orders.orderdate) = 2023"
+  }, {
+    "name" : "b566b06d",
+    "displayName" : "Untitled dataset",
+    "query" : "USE CATALOG `dbacademy`;\nUSE SCHEMA `labuser10208313_1746536193`;\n\nSELECT * FROM ca_customers\nwhere city = :city",
+    "parameters" : [ {
+      "displayName" : "city",
+      "keyword" : "city",
+      "dataType" : "STRING",
+      "defaultSelection" : {
+        "values" : {
+          "dataType" : "STRING",
+          "values" : [ {
+            "value" : "Toronto"
+          } ]
+        }
+      }
+    } ]
+  }, {
+    "name" : "b1e8d5ed",
+    "displayName" : "Fancy Query",
+    "query" : "WITH base AS (\n  SELECT \n  CASE WHEN :type = 'Year' THEN CAST(YEAR (orderdate) AS STRING)\n  WHEN :type = 'Month' THEN (CAST(MONTH (orderdate) AS STRING))\n  ELSE CAST(orderdate AS STRING) END as `Order Time`\n  , orderamt Revenue\n  FROM dbacademy.labuser10208313_1746536193.ca_orders\n)\nSELECT `Order Time`, SUM(Revenue) Revenue\nFROM base\nGROUP BY `Order Time`",
+    "parameters" : [ {
+      "displayName" : "type",
+      "keyword" : "type",
+      "dataType" : "STRING",
+      "defaultSelection" : {
+        "values" : {
+          "dataType" : "STRING",
+          "values" : [ {
+            "value" : "X"
+          } ]
+        }
+      }
+    } ]
+  }, {
+    "name" : "d389cee9",
+    "displayName" : "Fancy Parameter",
+    "query" : "SELECT explode(array('Year','Month','Date')) as type"
+  } ],
+  "pages" : [ {
+    "name" : "04910f3c",
+    "displayName" : "Source Data",
+    "layout" : [ {
+      "widget" : {
+        "name" : "7ca1b0d3",
+        "textbox_spec" : "# Canada Sales\nThis dashboard helps you support and evaluate our Canada sales operation"
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 1,
+        "width" : 6,
+        "height" : 2
+      }
+    }, {
+      "widget" : {
+        "name" : "4d430e0b",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "dbda54bb",
+            "fields" : [ {
+              "name" : "Sales_Goal",
+              "expression" : "`Sales_Goal`"
+            }, {
+              "name" : "Total_Sales",
+              "expression" : "`Total_Sales`"
+            } ],
+            "disaggregated" : true
+          }
+        } ],
+        "spec" : {
+          "version" : 2,
+          "widgetType" : "counter",
+          "encodings" : {
+            "value" : {
+              "fieldName" : "Total_Sales",
+              "format" : {
+                "type" : "number-currency",
+                "currencyCode" : "CAD",
+                "abbreviation" : "compact",
+                "decimalPlaces" : {
+                  "type" : "max",
+                  "places" : 2
+                }
+              },
+              "style" : {
+                "rules" : [ {
+                  "condition" : {
+                    "operator" : "<="
+                  },
+                  "color" : "#00A972"
+                } ]
+              },
+              "displayName" : "Total_Sales"
+            },
+            "target" : {
+              "fieldName" : "Sales_Goal",
+              "format" : {
+                "type" : "number-currency",
+                "currencyCode" : "CAD",
+                "abbreviation" : "compact",
+                "decimalPlaces" : {
+                  "type" : "max",
+                  "places" : 2
+                }
+              },
+              "displayName" : "Sales_Goal"
+            }
+          },
+          "frame" : {
+            "showTitle" : true,
+            "headerAlignment" : "center",
+            "title" : "Sales Goal"
+          }
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 3,
+        "width" : 2,
+        "height" : 2
+      }
+    }, {
+      "widget" : {
+        "name" : "513200c9",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "f9be8cee",
+            "fields" : [ {
+              "name" : "salesrep",
+              "expression" : "`salesrep`"
+            }, {
+              "name" : "monthly(orderdate)",
+              "expression" : "DATE_TRUNC(\"MONTH\", `orderdate`)"
+            }, {
+              "name" : "sum(orderamt)",
+              "expression" : "SUM(`orderamt`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 3,
+          "widgetType" : "bar",
+          "encodings" : {
+            "x" : {
+              "fieldName" : "monthly(orderdate)",
+              "scale" : {
+                "type" : "temporal"
+              },
+              "displayName" : "Order Date"
+            },
+            "y" : {
+              "fieldName" : "sum(orderamt)",
+              "scale" : {
+                "type" : "quantitative"
+              },
+              "displayName" : "Total Sales"
+            },
+            "color" : {
+              "fieldName" : "salesrep",
+              "scale" : {
+                "type" : "categorical"
+              },
+              "displayName" : "Sales Rep"
+            }
+          },
+          "frame" : {
+            "showTitle" : true,
+            "title" : "Order History"
+          }
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 5,
+        "width" : 4,
+        "height" : 6
+      }
+    }, {
+      "widget" : {
+        "name" : "7693a393",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "f9be8cee",
+            "fields" : [ {
+              "name" : "province",
+              "expression" : "`province`"
+            }, {
+              "name" : "monthly(orderdate)",
+              "expression" : "DATE_TRUNC(\"MONTH\", `orderdate`)"
+            }, {
+              "name" : "sum(orderamt)",
+              "expression" : "SUM(`orderamt`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 3,
+          "widgetType" : "bar",
+          "encodings" : {
+            "x" : {
+              "fieldName" : "monthly(orderdate)",
+              "scale" : {
+                "type" : "temporal"
+              },
+              "displayName" : "Order Date"
+            },
+            "y" : {
+              "fieldName" : "sum(orderamt)",
+              "scale" : {
+                "type" : "quantitative"
+              },
+              "displayName" : "Total Sales"
+            },
+            "color" : {
+              "fieldName" : "province",
+              "scale" : {
+                "type" : "categorical"
+              },
+              "displayName" : "Province"
+            }
+          },
+          "frame" : {
+            "showTitle" : true,
+            "title" : "Order History"
+          }
+        }
+      },
+      "position" : {
+        "x" : 2,
+        "y" : 11,
+        "width" : 4,
+        "height" : 6
+      }
+    }, {
+      "widget" : {
+        "name" : "24ac15de",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "f9be8cee",
+            "fields" : [ {
+              "name" : "salesrep",
+              "expression" : "`salesrep`"
+            }, {
+              "name" : "sum(orderamt)",
+              "expression" : "SUM(`orderamt`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 3,
+          "widgetType" : "bar",
+          "encodings" : {
+            "x" : {
+              "fieldName" : "salesrep",
+              "scale" : {
+                "type" : "categorical",
+                "sort" : {
+                  "by" : "y-reversed"
+                }
+              },
+              "displayName" : "Order Date"
+            },
+            "y" : {
+              "fieldName" : "sum(orderamt)",
+              "scale" : {
+                "type" : "quantitative"
+              },
+              "displayName" : "Total Sales"
+            }
+          },
+          "frame" : {
+            "showTitle" : true,
+            "title" : "Order History"
+          }
+        }
+      },
+      "position" : {
+        "x" : 2,
+        "y" : 17,
+        "width" : 4,
+        "height" : 6
+      }
+    }, {
+      "widget" : {
+        "name" : "785e0cf9",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "f9be8cee",
+            "fields" : [ {
+              "name" : "sum(orderamt)",
+              "expression" : "SUM(`orderamt`)"
+            }, {
+              "name" : "province",
+              "expression" : "`province`"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 3,
+          "widgetType" : "pie",
+          "encodings" : {
+            "angle" : {
+              "fieldName" : "sum(orderamt)",
+              "scale" : {
+                "type" : "quantitative"
+              },
+              "displayName" : "Revenue"
+            },
+            "color" : {
+              "fieldName" : "province",
+              "scale" : {
+                "type" : "categorical"
+              },
+              "displayName" : "province"
+            }
+          },
+          "frame" : {
+            "showTitle" : true,
+            "title" : "Revenue Share by Province"
+          }
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 11,
+        "width" : 2,
+        "height" : 4
+      }
+    }, {
+      "widget" : {
+        "name" : "b157a1a3",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "f9be8cee",
+            "fields" : [ {
+              "name" : "productname",
+              "expression" : "`productname`"
+            }, {
+              "name" : "stddev(orderamt)",
+              "expression" : "STDDEV(`orderamt`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 3,
+          "widgetType" : "bar",
+          "encodings" : {
+            "x" : {
+              "fieldName" : "productname",
+              "scale" : {
+                "type" : "categorical"
+              },
+              "displayName" : "productname"
+            },
+            "y" : {
+              "fieldName" : "stddev(orderamt)",
+              "scale" : {
+                "type" : "quantitative"
+              },
+              "displayName" : "Standard Deviation of orderamt"
+            }
+          },
+          "frame" : {
+            "showTitle" : true,
+            "title" : "Revenue Share by Product"
+          }
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 23,
+        "width" : 6,
+        "height" : 6
+      }
+    }, {
+      "widget" : {
+        "name" : "bafb009c",
+        "textbox_spec" : "![newlogo4_sm](files/images/ai-bi-for-data-analysts-1.1.0/newlogo4_sm.png)"
+      },
+      "position" : {
+        "x" : 2,
+        "y" : 3,
+        "width" : 2,
+        "height" : 2
+      }
+    }, {
+      "widget" : {
+        "name" : "6f33eb79",
+        "queries" : [ {
+          "name" : "dashboards/01f02a849eba19fcab8fc83e24ee8f8a/datasets/01f02a84afb71f58ac72f9f2fb8b40c0_orderdate",
+          "query" : {
+            "datasetName" : "f9be8cee",
+            "fields" : [ {
+              "name" : "orderdate",
+              "expression" : "`orderdate`"
+            }, {
+              "name" : "orderdate_associativity",
+              "expression" : "COUNT_IF(`associative_filter_predicate_group`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 2,
+          "widgetType" : "filter-date-range-picker",
+          "encodings" : {
+            "fields" : [ {
+              "fieldName" : "orderdate",
+              "displayName" : "orderdate",
+              "queryName" : "dashboards/01f02a849eba19fcab8fc83e24ee8f8a/datasets/01f02a84afb71f58ac72f9f2fb8b40c0_orderdate"
+            } ]
+          },
+          "frame" : {
+            "showTitle" : true,
+            "title" : "Order Date"
+          }
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 0,
+        "width" : 4,
+        "height" : 1
+      }
+    }, {
+      "widget" : {
+        "name" : "e6de0816",
+        "queries" : [ {
+          "name" : "c229ea7ac10448a8836203a182bbb98a",
+          "query" : {
+            "datasetName" : "b566b06d",
+            "fields" : [ {
+              "name" : "city",
+              "expression" : "`city`"
+            }, {
+              "name" : "column_2b7c2b39215",
+              "expression" : "COUNT(`customerid`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 0,
+          "viz_spec" : {
+            "display_name" : "Visualization 1",
+            "viz_type" : "CHART",
+            "serialized_options" : "{\"isAggregationOn\":true,\"series\":{\"error_y\":{\"type\":\"data\",\"visible\":true},\"stacking\":null},\"coefficient\":1,\"yAxis\":[{\"type\":\"-\"},{\"opposite\":true,\"type\":\"-\"}],\"columnConfigurationMap\":{\"x\":{\"column\":\"city\",\"id\":\"column_2b7c2b39214\"},\"y\":[{\"column\":\"customerid\",\"id\":\"column_2b7c2b39215\",\"transform\":\"COUNT\"}]},\"alignYAxesAtZero\":true,\"direction\":{\"type\":\"counterclockwise\"},\"swappedAxes\":false,\"percentFormat\":\"0[.]00%\",\"textFormat\":\"\",\"legend\":{\"traceorder\":\"normal\"},\"globalSeriesType\":\"column\",\"version\":2,\"sizemode\":\"diameter\",\"seriesOptions\":{\"column_2b7c2b39215\":{\"type\":\"column\",\"yAxis\":0}},\"error_y\":{\"type\":\"data\",\"visible\":true},\"sortX\":true,\"showDataLabels\":false,\"missingValuesAsZero\":true,\"useAggregationsUi\":true,\"numberFormat\":\"0,0.[00000]\",\"dateTimeFormat\":\"DD/MM/YYYY HH:mm\",\"sortY\":true,\"valuesOptions\":{},\"xAxis\":{\"labels\":{\"enabled\":true},\"type\":\"-\"}}",
+            "query_name" : "c229ea7ac10448a8836203a182bbb98a"
+          }
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 29,
+        "width" : 3,
+        "height" : 6
+      }
+    } ]
+  }, {
+    "name" : "b3e8b2d6",
+    "displayName" : "Untitled page",
+    "layout" : [ {
+      "widget" : {
+        "name" : "86cca5ab",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "f9be8cee",
+            "fields" : [ {
+              "name" : "productname",
+              "expression" : "`productname`"
+            }, {
+              "name" : "customername",
+              "expression" : "`customername`"
+            }, {
+              "name" : "province",
+              "expression" : "`province`"
+            }, {
+              "name" : "customerid",
+              "expression" : "`customerid`"
+            }, {
+              "name" : "orderdate",
+              "expression" : "`orderdate`"
+            }, {
+              "name" : "orderamt",
+              "expression" : "`orderamt`"
+            }, {
+              "name" : "salesrep",
+              "expression" : "`salesrep`"
+            } ],
+            "disaggregated" : true
+          }
+        } ],
+        "spec" : {
+          "version" : 1,
+          "widgetType" : "table",
+          "encodings" : {
+            "columns" : [ {
+              "fieldName" : "productname",
+              "booleanValues" : [ "false", "true" ],
+              "imageUrlTemplate" : "{{ @ }}",
+              "imageTitleTemplate" : "{{ @ }}",
+              "imageWidth" : "",
+              "imageHeight" : "",
+              "linkUrlTemplate" : "{{ @ }}",
+              "linkTextTemplate" : "{{ @ }}",
+              "linkTitleTemplate" : "{{ @ }}",
+              "linkOpenInNewTab" : true,
+              "type" : "string",
+              "displayAs" : "string",
+              "visible" : true,
+              "order" : 100000,
+              "title" : "productname",
+              "allowSearch" : false,
+              "alignContent" : "left",
+              "allowHTML" : false,
+              "highlightLinks" : false,
+              "useMonospaceFont" : false,
+              "preserveWhitespace" : false,
+              "displayName" : "productname"
+            }, {
+              "fieldName" : "customername",
+              "booleanValues" : [ "false", "true" ],
+              "imageUrlTemplate" : "{{ @ }}",
+              "imageTitleTemplate" : "{{ @ }}",
+              "imageWidth" : "",
+              "imageHeight" : "",
+              "linkUrlTemplate" : "{{ @ }}",
+              "linkTextTemplate" : "{{ @ }}",
+              "linkTitleTemplate" : "{{ @ }}",
+              "linkOpenInNewTab" : true,
+              "type" : "string",
+              "displayAs" : "string",
+              "visible" : true,
+              "order" : 100001,
+              "title" : "customername",
+              "allowSearch" : false,
+              "alignContent" : "left",
+              "allowHTML" : false,
+              "highlightLinks" : false,
+              "useMonospaceFont" : false,
+              "preserveWhitespace" : false,
+              "displayName" : "customername"
+            }, {
+              "fieldName" : "province",
+              "booleanValues" : [ "false", "true" ],
+              "imageUrlTemplate" : "{{ @ }}",
+              "imageTitleTemplate" : "{{ @ }}",
+              "imageWidth" : "",
+              "imageHeight" : "",
+              "linkUrlTemplate" : "{{ @ }}",
+              "linkTextTemplate" : "{{ @ }}",
+              "linkTitleTemplate" : "{{ @ }}",
+              "linkOpenInNewTab" : true,
+              "type" : "string",
+              "displayAs" : "string",
+              "visible" : true,
+              "order" : 100002,
+              "title" : "province",
+              "allowSearch" : false,
+              "alignContent" : "left",
+              "allowHTML" : false,
+              "highlightLinks" : false,
+              "useMonospaceFont" : false,
+              "preserveWhitespace" : false,
+              "displayName" : "province"
+            }, {
+              "fieldName" : "customerid",
+              "booleanValues" : [ "false", "true" ],
+              "imageUrlTemplate" : "{{ @ }}",
+              "imageTitleTemplate" : "{{ @ }}",
+              "imageWidth" : "",
+              "imageHeight" : "",
+              "linkUrlTemplate" : "{{ @ }}",
+              "linkTextTemplate" : "{{ @ }}",
+              "linkTitleTemplate" : "{{ @ }}",
+              "linkOpenInNewTab" : true,
+              "type" : "string",
+              "displayAs" : "string",
+              "visible" : true,
+              "order" : 100003,
+              "title" : "customerid",
+              "allowSearch" : false,
+              "alignContent" : "left",
+              "allowHTML" : false,
+              "highlightLinks" : false,
+              "useMonospaceFont" : false,
+              "preserveWhitespace" : false,
+              "displayName" : "customerid"
+            }, {
+              "fieldName" : "orderdate",
+              "dateTimeFormat" : "YYYY-MM-DD",
+              "booleanValues" : [ "false", "true" ],
+              "imageUrlTemplate" : "{{ @ }}",
+              "imageTitleTemplate" : "{{ @ }}",
+              "imageWidth" : "",
+              "imageHeight" : "",
+              "linkUrlTemplate" : "{{ @ }}",
+              "linkTextTemplate" : "{{ @ }}",
+              "linkTitleTemplate" : "{{ @ }}",
+              "linkOpenInNewTab" : true,
+              "type" : "date",
+              "displayAs" : "datetime",
+              "visible" : true,
+              "order" : 100004,
+              "title" : "orderdate",
+              "allowSearch" : false,
+              "alignContent" : "right",
+              "allowHTML" : false,
+              "highlightLinks" : false,
+              "useMonospaceFont" : false,
+              "preserveWhitespace" : false,
+              "displayName" : "orderdate"
+            }, {
+              "fieldName" : "orderamt",
+              "numberFormat" : "0.00",
+              "booleanValues" : [ "false", "true" ],
+              "imageUrlTemplate" : "{{ @ }}",
+              "imageTitleTemplate" : "{{ @ }}",
+              "imageWidth" : "",
+              "imageHeight" : "",
+              "linkUrlTemplate" : "{{ @ }}",
+              "linkTextTemplate" : "{{ @ }}",
+              "linkTitleTemplate" : "{{ @ }}",
+              "linkOpenInNewTab" : true,
+              "type" : "float",
+              "displayAs" : "number",
+              "visible" : true,
+              "order" : 100005,
+              "title" : "orderamt",
+              "allowSearch" : false,
+              "alignContent" : "right",
+              "allowHTML" : false,
+              "highlightLinks" : false,
+              "useMonospaceFont" : false,
+              "preserveWhitespace" : false,
+              "displayName" : "orderamt"
+            }, {
+              "fieldName" : "salesrep",
+              "booleanValues" : [ "false", "true" ],
+              "imageUrlTemplate" : "{{ @ }}",
+              "imageTitleTemplate" : "{{ @ }}",
+              "imageWidth" : "",
+              "imageHeight" : "",
+              "linkUrlTemplate" : "{{ @ }}",
+              "linkTextTemplate" : "{{ @ }}",
+              "linkTitleTemplate" : "{{ @ }}",
+              "linkOpenInNewTab" : true,
+              "type" : "string",
+              "displayAs" : "string",
+              "visible" : true,
+              "order" : 100006,
+              "title" : "salesrep",
+              "allowSearch" : false,
+              "alignContent" : "left",
+              "allowHTML" : false,
+              "highlightLinks" : false,
+              "useMonospaceFont" : false,
+              "preserveWhitespace" : false,
+              "displayName" : "salesrep"
+            } ]
+          },
+          "invisibleColumns" : [ ],
+          "allowHTMLByDefault" : false,
+          "itemsPerPage" : 25,
+          "paginationSize" : "default",
+          "condensed" : true,
+          "withRowNumber" : false
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 0,
+        "width" : 6,
+        "height" : 6
+      }
+    }, {
+      "widget" : {
+        "name" : "51a74ae6",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "f9be8cee",
+            "fields" : [ {
+              "name" : "monthly(orderdate)",
+              "expression" : "DATE_TRUNC(\"MONTH\", `orderdate`)"
+            }, {
+              "name" : "salesrep",
+              "expression" : "`salesrep`"
+            }, {
+              "name" : "province",
+              "expression" : "`province`"
+            }, {
+              "name" : "sum(orderamt)",
+              "expression" : "SUM(`orderamt`)"
+            } ],
+            "cubeGroupingSets" : {
+              "sets" : [ {
+                "fieldNames" : [ "monthly(orderdate)", "salesrep" ]
+              }, {
+                "fieldNames" : [ "province" ]
+              } ]
+            },
+            "disaggregated" : false,
+            "orders" : [ {
+              "direction" : "ASC",
+              "expression" : "DATE_TRUNC(\"MONTH\", `orderdate`)"
+            }, {
+              "direction" : "ASC",
+              "expression" : "`salesrep`"
+            }, {
+              "direction" : "ASC",
+              "expression" : "`province`"
+            } ]
+          }
+        } ],
+        "spec" : {
+          "version" : 3,
+          "widgetType" : "pivot",
+          "encodings" : {
+            "rows" : [ {
+              "fieldName" : "monthly(orderdate)",
+              "displayName" : "orderdate"
+            }, {
+              "fieldName" : "salesrep",
+              "displayName" : "salesrep"
+            } ],
+            "columns" : [ {
+              "fieldName" : "province",
+              "displayName" : "province"
+            } ],
+            "cell" : {
+              "type" : "multi-cell",
+              "fields" : [ {
+                "fieldName" : "sum(orderamt)",
+                "cellType" : "text",
+                "format" : {
+                  "type" : "number-currency",
+                  "currencyCode" : "CAD",
+                  "abbreviation" : "none",
+                  "decimalPlaces" : {
+                    "type" : "exact",
+                    "places" : 0
+                  },
+                  "hideGroupSeparator" : false
+                },
+                "displayName" : "Sum of orderamt"
+              } ]
+            }
+          }
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 6,
+        "width" : 6,
+        "height" : 6
+      }
+    } ]
+  }, {
+    "name" : "b6f0bf2f",
+    "displayName" : "Untitled page 1",
+    "layout" : [ {
+      "widget" : {
+        "name" : "87d856db",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "f9be8cee",
+            "fields" : [ {
+              "name" : "salesrep",
+              "expression" : "`salesrep`"
+            }, {
+              "name" : "monthly(orderdate)",
+              "expression" : "DATE_TRUNC(\"MONTH\", `orderdate`)"
+            }, {
+              "name" : "sum(orderamt)",
+              "expression" : "SUM(`orderamt`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 3,
+          "widgetType" : "bar",
+          "encodings" : {
+            "x" : {
+              "fieldName" : "monthly(orderdate)",
+              "scale" : {
+                "type" : "temporal"
+              },
+              "displayName" : "orderdate"
+            },
+            "y" : {
+              "fieldName" : "sum(orderamt)",
+              "scale" : {
+                "type" : "quantitative"
+              },
+              "displayName" : "Sum of orderamt"
+            },
+            "color" : {
+              "fieldName" : "salesrep",
+              "scale" : {
+                "type" : "categorical"
+              },
+              "displayName" : "salesrep"
+            }
+          },
+          "frame" : {
+            "title" : "Total Sales by Order Month",
+            "showTitle" : true
+          }
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 1,
+        "width" : 3,
+        "height" : 6
+      }
+    }, {
+      "widget" : {
+        "name" : "79a27fa3",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "fd632692",
+            "fields" : [ {
+              "name" : "salesrep",
+              "expression" : "`salesrep`"
+            }, {
+              "name" : "monthly(orderdate)",
+              "expression" : "DATE_TRUNC(\"MONTH\", `orderdate`)"
+            }, {
+              "name" : "sum(orderamt)",
+              "expression" : "SUM(`orderamt`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 3,
+          "widgetType" : "bar",
+          "encodings" : {
+            "x" : {
+              "fieldName" : "monthly(orderdate)",
+              "scale" : {
+                "type" : "temporal"
+              },
+              "displayName" : "orderdate"
+            },
+            "y" : {
+              "fieldName" : "sum(orderamt)",
+              "scale" : {
+                "type" : "quantitative"
+              },
+              "displayName" : "Sum of orderamt"
+            },
+            "color" : {
+              "fieldName" : "salesrep",
+              "scale" : {
+                "type" : "categorical"
+              },
+              "displayName" : "salesrep"
+            }
+          },
+          "frame" : {
+            "title" : "Total Sales by Order Month",
+            "showTitle" : true
+          }
+        }
+      },
+      "position" : {
+        "x" : 3,
+        "y" : 1,
+        "width" : 3,
+        "height" : 6
+      }
+    }, {
+      "widget" : {
+        "name" : "83bced4a",
+        "queries" : [ {
+          "name" : "dashboards/01f02a849eba19fcab8fc83e24ee8f8a/datasets/01f02a8ad9cc1e1880e5cee7a5badce7_province",
+          "query" : {
+            "datasetName" : "fd632692",
+            "fields" : [ {
+              "name" : "province",
+              "expression" : "`province`"
+            }, {
+              "name" : "province_associativity",
+              "expression" : "COUNT_IF(`associative_filter_predicate_group`)"
+            } ],
+            "disaggregated" : false
+          }
+        }, {
+          "name" : "dashboards/01f02a849eba19fcab8fc83e24ee8f8a/datasets/01f02a84afb71f58ac72f9f2fb8b40c0_province",
+          "query" : {
+            "datasetName" : "f9be8cee",
+            "fields" : [ {
+              "name" : "province",
+              "expression" : "`province`"
+            }, {
+              "name" : "province_associativity",
+              "expression" : "COUNT_IF(`associative_filter_predicate_group`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 2,
+          "widgetType" : "filter-multi-select",
+          "encodings" : {
+            "fields" : [ {
+              "fieldName" : "province",
+              "displayName" : "province",
+              "queryName" : "dashboards/01f02a849eba19fcab8fc83e24ee8f8a/datasets/01f02a8ad9cc1e1880e5cee7a5badce7_province"
+            }, {
+              "fieldName" : "province",
+              "displayName" : "province",
+              "queryName" : "dashboards/01f02a849eba19fcab8fc83e24ee8f8a/datasets/01f02a84afb71f58ac72f9f2fb8b40c0_province"
+            } ]
+          },
+          "frame" : {
+            "showTitle" : true
+          }
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 0,
+        "width" : 2,
+        "height" : 1
+      }
+    } ]
+  }, {
+    "name" : "c1d26fda",
+    "displayName" : "Fancy Filter",
+    "layout" : [ {
+      "widget" : {
+        "name" : "62f4733c",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "b1e8d5ed",
+            "fields" : [ {
+              "name" : "Order Time",
+              "expression" : "`Order Time`"
+            }, {
+              "name" : "sum(Revenue)",
+              "expression" : "SUM(`Revenue`)"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 3,
+          "widgetType" : "bar",
+          "encodings" : {
+            "x" : {
+              "fieldName" : "Order Time",
+              "scale" : {
+                "type" : "categorical"
+              },
+              "displayName" : "Order Time"
+            },
+            "y" : {
+              "fieldName" : "sum(Revenue)",
+              "scale" : {
+                "type" : "quantitative"
+              },
+              "displayName" : "Sum of Revenue"
+            }
+          }
+        }
+      },
+      "position" : {
+        "x" : 2,
+        "y" : 1,
+        "width" : 3,
+        "height" : 6
+      }
+    }, {
+      "widget" : {
+        "name" : "9f23ee0a",
+        "queries" : [ {
+          "name" : "dashboards/01f02a849eba19fcab8fc83e24ee8f8a/datasets/01f02a9249841d0e807e50951b83a9e0_type",
+          "query" : {
+            "datasetName" : "d389cee9",
+            "fields" : [ {
+              "name" : "type",
+              "expression" : "`type`"
+            }, {
+              "name" : "type_associativity",
+              "expression" : "COUNT_IF(`associative_filter_predicate_group`)"
+            } ],
+            "disaggregated" : false
+          }
+        }, {
+          "name" : "parameter_dashboards/01f02a849eba19fcab8fc83e24ee8f8a/datasets/01f02a91317f1c158c24564e0d43b527_type",
+          "query" : {
+            "datasetName" : "b1e8d5ed",
+            "parameters" : [ {
+              "name" : "type",
+              "keyword" : "type"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 2,
+          "widgetType" : "filter-single-select",
+          "encodings" : {
+            "fields" : [ {
+              "fieldName" : "type",
+              "displayName" : "type",
+              "queryName" : "dashboards/01f02a849eba19fcab8fc83e24ee8f8a/datasets/01f02a9249841d0e807e50951b83a9e0_type"
+            }, {
+              "parameterName" : "type",
+              "queryName" : "parameter_dashboards/01f02a849eba19fcab8fc83e24ee8f8a/datasets/01f02a91317f1c158c24564e0d43b527_type"
+            } ]
+          },
+          "frame" : {
+            "showTitle" : true,
+            "title" : ""
+          }
+        }
+      },
+      "position" : {
+        "x" : 0,
+        "y" : 0,
+        "width" : 2,
+        "height" : 1
+      }
+    } ]
+  } ]
+}
