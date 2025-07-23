@@ -164,6 +164,10 @@ CREATE TABLE users_bronze USING DELTA;
 
 -- COMMAND ----------
 
+describe users_bronze
+
+-- COMMAND ----------
+
 -- MAGIC %md
 -- MAGIC **COPY INTO** loads data from data files into a Delta table. This is a retriable and idempotent operation, meaning that files in the source location that have already been loaded are skipped.
 -- MAGIC
@@ -195,6 +199,7 @@ COPY INTO users_bronze
   FILEFORMAT = parquet
   COPY_OPTIONS ('mergeSchema' = 'true');
 
+-- COMMAND ----------
 
 SELECT count(*) FROM users_bronze;
 
@@ -224,12 +229,25 @@ COPY INTO users_bronze FROM
   (SELECT *, 
     cast(cast(user_first_touch_timestamp/1e6 AS TIMESTAMP) AS DATE) first_touch_date, 
     current_timestamp() updated,
+    _metadata.fil
     _metadata.file_name source_file
   FROM '${DA.paths.datasets.ecommerce}/raw/users-historical/')
   FILEFORMAT = PARQUET
   COPY_OPTIONS ('mergeSchema' = 'true');
 
 SELECT * FROM users_bronze LIMIT 10;
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC The _metadata column is a hidden column available for all input file formats in Databricks. It contains metadata information about the input files. The _metadata column is a STRUCT containing the following fields:
+-- MAGIC
+-- MAGIC file_path: STRING - File path of the input file.
+-- MAGIC file_name: STRING - Name of the input file along with its extension.
+-- MAGIC file_size: LONG - Length of the input file, in bytes.
+-- MAGIC file_modification_time: TIMESTAMP - Last modification timestamp of the input file.
+-- MAGIC file_block_start: LONG - Start offset of the block being read, in bytes.
+-- MAGIC file_block_length: LONG - Length of the block being read, in bytes.
 
 -- COMMAND ----------
 
