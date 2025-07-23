@@ -106,10 +106,20 @@ USE SCHEMA ${DA.schema_name};
 
 -- COMMAND ----------
 
+-- MAGIC %python
+-- MAGIC print(f"{DA.paths.datasets.retail}/source_files/sales.csv")
+
+-- COMMAND ----------
+
+SELECT * FROM 
+csv.`/Volumes/dbacademy_retail/v01/source_files/sales.csv`
+
+-- COMMAND ----------
+
 -- Create a Delta table from the CSV file
 DROP TABLE IF EXISTS retail_sales;
 CREATE TABLE IF NOT EXISTS retail_sales
-USING DELTA
+--USING DELTA
 AS
 SELECT *
 FROM read_files(
@@ -133,6 +143,14 @@ SELECT * FROM retail_sales;
 -- MAGIC %md
 -- MAGIC ### Step 1: View Extended Metadata
 -- MAGIC Use the following command to view detailed metadata about the `retail_sales` table:
+
+-- COMMAND ----------
+
+DESCRIBE retail_sales
+
+-- COMMAND ----------
+
+DESCRIBE DETAIL retail_sales
 
 -- COMMAND ----------
 
@@ -193,6 +211,10 @@ UPDATE retail_sales
 
 -- COMMAND ----------
 
+SELECT now()
+
+-- COMMAND ----------
+
 SELECT current_timestamp();
 
 -- COMMAND ----------
@@ -242,9 +264,14 @@ DESCRIBE HISTORY retail_sales;
 
 -- COMMAND ----------
 
+--2025-07-23T19:02:53.426+00:00
+
+-- COMMAND ----------
+
 SELECT * 
-  FROM retail_sales
-  VERSION AS OF 0;
+  FROM retail_sales --v@3
+  TIMESTAMP  AS OF  '2025-07-23T19:02:53.426+00:00'
+--  VERSION AS OF 0;
 
 -- COMMAND ----------
 
@@ -321,6 +348,30 @@ DESCRIBE HISTORY retail_sales;
 
 -- MAGIC %md
 -- MAGIC Use this feature to safeguard data integrity and recover from unintended modifications.
+
+-- COMMAND ----------
+
+ALTER TABLE retail_sales SET TBLPROPERTIES ('delta.enableChangeDataFeed' = True)
+
+-- COMMAND ----------
+
+DELETE FROM retail_sales
+WHERE customer_name like 'V%';
+
+-- COMMAND ----------
+
+SELECT _change_type, count(*)  FROM table_changes('retail_sales',7)
+group by _change_type
+
+-- COMMAND ----------
+
+select distinct product_category from retail_sales
+
+-- COMMAND ----------
+
+UPDATE retail_sales
+   SET product_name = 'Apple'
+   WHERE product_category = 'Opple';
 
 -- COMMAND ----------
 
