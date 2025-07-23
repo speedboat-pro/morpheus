@@ -1,0 +1,65 @@
+{
+  "datasets": [
+    {
+      "name": "dfa32222",
+      "displayName": "New Dashboard",
+      "queryLines": [
+        "USE CATALOG `dbacademy`;\n",
+        "USE SCHEMA `labuser10998675_1753286190`;\n",
+        "\n",
+        "SELECT * FROM sample_zones_jul_23_929"
+      ],
+      "catalog": "dbacademy",
+      "schema": "labuser10998675_1753286190"
+    }
+  ],
+  "pages": [
+    {
+      "name": "a51d93e3",
+      "displayName": "Untitled Page",
+      "layout": [
+        {
+          "widget": {
+            "name": "a25a4a0a",
+            "queries": [
+              {
+                "name": "2504e0ae2ed9452ebc1a4aae2f235a5e",
+                "query": {
+                  "datasetName": "dfa32222",
+                  "fields": [
+                    {
+                      "name": "pickup_zip",
+                      "expression": "`pickup_zip`"
+                    },
+                    {
+                      "name": "column_17515cfb455",
+                      "expression": "SUM(`total_fare`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 0,
+              "viz_spec": {
+                "display_name": "Line 1",
+                "description": "",
+                "viz_type": "CHART",
+                "serialized_options": "{\"version\":2,\"globalSeriesType\":\"line\",\"sortX\":true,\"sortY\":true,\"legend\":{\"traceorder\":\"normal\"},\"xAxis\":{\"type\":\"-\",\"labels\":{\"enabled\":true}},\"yAxis\":[{\"type\":\"-\"},{\"type\":\"-\",\"opposite\":true}],\"alignYAxesAtZero\":true,\"error_y\":{\"type\":\"data\",\"visible\":true},\"series\":{\"stacking\":null,\"error_y\":{\"type\":\"data\",\"visible\":true}},\"seriesOptions\":{\"column_17515cfb455\":{\"name\":\"total_fare\",\"yAxis\":0,\"type\":\"line\"}},\"valuesOptions\":{},\"direction\":{\"type\":\"counterclockwise\"},\"sizemode\":\"diameter\",\"coefficient\":1,\"numberFormat\":\"0,0.[00000]\",\"percentFormat\":\"0[.]00%\",\"textFormat\":\"\",\"missingValuesAsZero\":true,\"useAggregationsUi\":true,\"swappedAxes\":false,\"dateTimeFormat\":\"YYYY-MM-DD HH:mm\",\"showDataLabels\":false,\"columnConfigurationMap\":{\"x\":{\"column\":\"pickup_zip\",\"id\":\"column_17515cfb454\"},\"y\":[{\"column\":\"total_fare\",\"id\":\"column_17515cfb455\",\"transform\":\"SUM\"}]},\"isAggregationOn\":true}",
+                "query_name": "2504e0ae2ed9452ebc1a4aae2f235a5e"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ]
+}

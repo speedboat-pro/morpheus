@@ -1,0 +1,113 @@
+-- Databricks notebook source
+-- MAGIC %md
+-- MAGIC
+-- MAGIC <div style="text-align: center; line-height: 0; padding-top: 9px;">
+-- MAGIC   <img src="https://databricks.com/wp-content/uploads/2018/03/db-academy-rgb-1200px.png" alt="Databricks Learning">
+-- MAGIC </div>
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC # Demo - Creating AI/BI Genie Spaces
+-- MAGIC
+-- MAGIC In this Demonstration, you'll be looking into Databricks AI/BI Genie and the data exploration spaces you can create based on both existing dashboards and data sets as well as new combinations of data sets connected to the workspace. 
+-- MAGIC
+-- MAGIC This Demonstration uses the following resources from  `dbacademy_retail.v01`:
+-- MAGIC * **sales** table
+-- MAGIC * **customers** table
+-- MAGIC
+-- MAGIC You will also need to have created the following:
+-- MAGIC   * _Your dashboard from previous Demo ([05.1 - Creating AI-BI Dashboard in Databricks]($./05.1 - Creating AI-BI Dashboard in Databricks)) (Retail Dashboard)_
+-- MAGIC
+-- MAGIC **Learning Objectives**
+-- MAGIC
+-- MAGIC By the end of this demonstration, you will be able to:
+-- MAGIC 1. **Understand Databricks AI/BI Genie Spaces**:
+-- MAGIC    - Explore the concept of Genie Spaces for data exploration and querying.
+-- MAGIC    - Identify the resources and datasets used to create Genie Spaces.
+-- MAGIC
+-- MAGIC 2. **Create Genie Spaces**:
+-- MAGIC    - Set up a Genie Space from the platform UI using existing datasets.
+-- MAGIC    - Configure Genie Space settings, including table associations, default warehouse, and sample questions.
+-- MAGIC
+-- MAGIC 3. **Leverage Genie Space Features**:
+-- MAGIC    - Utilize Genie Space functionalities, such as multiple chat threads, data exploration, and monitoring user interactions.
+-- MAGIC    - Edit Genie Space settings, review associated data tables, and monitor user queries.
+-- MAGIC
+-- MAGIC 4. **Create Genie Spaces from Dashboards**:
+-- MAGIC    - Generate a Genie Space directly from a pre-existing dashboard.
+-- MAGIC    - Interact with the Draft Genie Space and explore how Genie answers questions about the dashboard’s data.
+-- MAGIC
+-- MAGIC 5. **Understand Genie’s Monitoring and Preview Features**:
+-- MAGIC    - Explore how Genie tracks user questions, ratings, and interactions.
+-- MAGIC    - Recognize the limitations and evolving nature of Genie Spaces in the Public Preview phase.
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ### Part 1: Creating a Genie Space
+-- MAGIC In this part of the demo, we'll start with creating a Genie Space directly from the given UI area. Follow the steps below to create a Genie Space. 
+-- MAGIC 1. Navigate to **Genie** in the left side navigation of the platform. 
+-- MAGIC 2. Click **+ New** in the upper right corner.
+-- MAGIC 3. A new pop-up will appear prompting you to Connect your data. Within this pop-up, select **All** to locate the table:
+-- MAGIC       - Catalog: dbacademy_retail
+-- MAGIC       - Schema: v01
+-- MAGIC       - Table: customers
+-- MAGIC 4. When finished selecting data, click **Create** at the bottom.
+-- MAGIC
+-- MAGIC You will now be presented with the Genie Space UI with the chat environment on the left and the settings and details on the left. With the **Configure** button at the top selected, click on **Settings**. (By default, the Configuration opens to **Context.**) Here you can edit the following information:
+-- MAGIC 1. **Title:** Basic Retail Details
+-- MAGIC 2. **Description:** "This Space is designed to provide a space to query the details of the customers dataset."
+-- MAGIC 3. **Default warehouse:** shared_warehouse
+-- MAGIC 4. **Sample Questions:** "How many customers do we have in CA?" (Click the **+ Add** button to add the question.)
+-- MAGIC 5. Click **Save** at the bottom to confirm the edits.
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC The Genie space's screen area is split into two sides with the chat window on the left and the configuration and settings on the right. The buttons at the top right allow you to choose among these areas:
+-- MAGIC
+-- MAGIC * **+ New chat**: Allows you to create a new threaded dialogues with Genie. After you publish a Genie space to end users (who will probably have only "Can View" or "Can Run" access), this is one of the only Genie areas they will have access to.
+-- MAGIC * **History** (the icon that looks like a clock): Allows you to review the separate chat threads that you've had with Genie. After you publish a Genie space to end users (who will probably have only "Can View" or "Can Run" access), this is the other Genie area they will have access to.
+-- MAGIC * **Configure** (the icon that looks like a gear): Returns you to the edit screen for the settings of the Genie space, much like the screen you saw during the space's creation.
+-- MAGIC   Within Configure you'll have:
+-- MAGIC   * **Data** (the icon that looks like a stacked blocks): Allows you to review and edit the data tables associated with the Space.
+-- MAGIC   * **Instructions** (the icon that looks like a book): Allows you to provide general instructions, in natural language, on how Genie will behave when asked a question by a user.
+-- MAGIC   * **SQL Queries** (the icon will look like a command prompt): Allows you to add example SQL queries for Genie to learn from specific to the associated dataset(s).
+-- MAGIC * **Monitoring** (the icon that looks like a eye): Allows you to review what questions were asked, who asked them, and how they were rated by the user. 
+-- MAGIC * **Share** (the icon that looks like a lock): Allows you to set the share permissions and share the Genie space with end users. 
+-- MAGIC
+-- MAGIC Under the kebab menu, you'll find:
+-- MAGIC * **Benchmarks** (the icon that looks like a graduate's mortarboard): Allows you to define a suite of questions that you run on a recurring basis to ensure the space continues to give good answers to the most important user questions.
+-- MAGIC
+-- MAGIC Additionally, you'll have the options to Clone and delete the Genie space by moving it to trash from this menu.
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ### Part 2: Creating a Genie Space from a Dashboard
+-- MAGIC Alternatively, you can create a Genie Space directly from a dashboard. 
+-- MAGIC
+-- MAGIC 1. Navigate to **Dashboards** and select the dashboard you created during **Lesson 04 - AI/BI Dashboards** (Retail Dashboard). </p>
+-- MAGIC 2. Switch to the **Draft** view for the dashboard. </p>
+-- MAGIC 3. Click on **Publish** to open up the publishing dialog box. </p>
+-- MAGIC 4. From this window, select the toggle for **Genie**. (Note this feature is in Beta currently.)
+-- MAGIC     - You will be given the option to select "Auto-generate Genie space" or "Link existing Genie space."
+-- MAGIC     - For this exercise, select "Auto-generate Genie space" and click **Publish**.
+-- MAGIC 6. Navigate to the published version of your Dashboard. 
+-- MAGIC 7. Select the **Ask Genie** option in the upper left corner. This opens a pop-up chat box on top of the dashboard. You can use the kebab menu to access the settings to dock the Genie chat to the side of the screen.
+-- MAGIC 8. Ask the following question in the chatbox.
+-- MAGIC
+-- MAGIC     _What tables are there and how are they connected? Give me a short summary._
+-- MAGIC 9. Review the response provided by Genie. 
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC
+-- MAGIC &copy; 2025 Databricks, Inc. All rights reserved. Apache, Apache Spark, Spark, the Spark Logo, Apache Iceberg, Iceberg, and the Apache Iceberg logo are trademarks of the <a href="https://www.apache.org/" target="blank">Apache Software Foundation</a>.<br/>
+-- MAGIC <br/><a href="https://databricks.com/privacy-policy" target="blank">Privacy Policy</a> | 
+-- MAGIC <a href="https://databricks.com/terms-of-use" target="blank">Terms of Use</a> | 
+-- MAGIC <a href="https://help.databricks.com/" target="blank">Support</a>

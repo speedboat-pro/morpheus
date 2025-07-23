@@ -1,0 +1,27 @@
+{
+  "evaluation": {
+    "source": {
+      "name": "total_fare",
+      "display": "total_fare",
+      "aggregation": "AVG"
+    },
+    "comparison_operator": "GREATER_THAN",
+    "threshold": {
+      "value": {
+        "double_value": 500.0
+      }
+    },
+    "notification": {
+      "retrigger_seconds": 0,
+      "notify_on_ok": false
+    }
+  },
+  "schedule": {
+    "quartz_cron_schedule": "31 38 */1 * * ?",
+    "timezone_id": "America/Los_Angeles"
+  },
+  "query_lines": [
+    "",
+    "SELECT * FROM dbacademy.labuser10998675_1753286190.sample_zones_jul_23_929"
+  ]
+}
