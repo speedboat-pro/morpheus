@@ -1,0 +1,99 @@
+###########################################################################################
+# THIS IS THE MAIN DATABRICKS ASSET BUNDLE CONFIGURATION FOR THE PROJECT                  
+###########################################################################################
+# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.         #
+###########################################################################################
+
+################
+# Bundle name  
+################
+bundle:                   # Required
+  name: demo03_bundle     # Required
+
+
+#################################################################
+## Additional YAML configurations to include for the deployment #
+## - The include array specifies a list of paths that contain configuration files to include within the bundle.
+#################################################################
+include:
+  - "./resources/demo_03_job.job.yml"       # Full Job Configuration within the resources folder
+
+
+
+###################################
+# Variables name  
+# - Custom variables for the bundle
+###################################
+variables:
+  my_lab_user_name:
+    description: Add your lab user name
+    default: ${workspace.current_user.short_name}      #<----- Dynamically gets your lab user name
+
+  run_as_identity:
+    description: service principal or user
+    default: 9556a37f-7dc0-4b5f-849c-babbde9b34af
+
+# Do not modify the variables below. They will use the default value from the my_lab_user_name variable and create the necessary variables. Please explore the variables below.
+  catalog_dev:
+    description: Development catalog for the project. Append _1_dev to the user name.
+    default: ${var.my_lab_user_name}_1_dev
+    
+  catalog_prod:
+    description: Production catalog for the project. Append _3_prod to the user name.
+    default: ${var.my_lab_user_name}_3_prod
+
+# The target_catalog and raw_data_path variables will be used when deploying to our development and production environments. These will populate the job parameters' values based on the environment.
+  target_catalog:
+    description: Target catalog to use for deployment - default is 'dev'.
+    default: ${var.catalog_dev}
+    
+  raw_data_path:
+    description: Path to source CSV files to ingest (dev/stage/prod) - default is 'dev'.
+    default: /Volumes/${var.target_catalog}/default/health
+
+## Lookup variable 
+## - Obtain the user's cluster id for the lab using the cluster name
+  my_cluster_id:
+    description: Get the lab cluster ID using a lookup variable.
+    lookup:
+      cluster: labuser11039091_1753707386     #<----- Use your lab user name here. In the labs, your user name is your cluster name. You can also have harded coded a cluster name here.
+
+
+
+
+##############################################################################################
+# TARGET DEPLOYMENT ENVIRONMENTS
+# - These are the targets to use for deployments and workflow runs. 
+# - One and only one of these targets can be set to "default: true".
+##############################################################################################
+targets:
+
+  development:
+    mode: development
+    default: true
+    workspace:
+      # host: https://dbc-d9be2316-40bd.cloud.databricks.com/
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+
+    # Use your small lab cluster on the tasks during development mode. This will add the cluster to each task in the resource mapping of job demo03_job.
+    resources:
+      jobs:
+        demo03_job:
+          tasks:
+            - task_key: create_bronze_table
+              existing_cluster_id: ${var.my_cluster_id}
+            - task_key: create_silver_table
+              existing_cluster_id: ${var.my_cluster_id}
+    variables:
+        target_catalog: ${var.catalog_dev}
+        run_as_identity: ${workspace.current_user.userName}
+
+  production:
+    mode: production
+    workspace:
+      # host: https://dbc-d9be2316-40bd.cloud.databricks.com/
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+
+    ## Change variable values when in the production environment to use the production catalog username_3_prod
+    variables:
+        target_catalog: ${var.catalog_prod}

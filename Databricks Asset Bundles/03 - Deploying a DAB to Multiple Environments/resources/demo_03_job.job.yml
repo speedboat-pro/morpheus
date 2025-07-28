@@ -1,0 +1,28 @@
+############################################################################
+# RESOURCES
+# - These are the default job and pipeline settings (currently only a job)
+# TO DO: Replace the resources example below and paste YOUR job YAML configuration
+############################################################################
+resources:
+  jobs:
+    demo03_job:
+      run_as:
+        service_principal_name: ${var.run_as_identity}
+      name: ${bundle.target}_demo3_dab_${workspace.current_user.userName}
+      tasks:
+        - task_key: create_bronze_table
+          notebook_task:
+            notebook_path: ../src/create_bronze_table.py
+            source: WORKSPACE
+        - task_key: create_silver_table
+          depends_on:
+            - task_key: create_bronze_table
+          notebook_task:
+            notebook_path: ../src/create_silver_table.py
+            source: WORKSPACE
+      parameters:
+      - name: display_target
+        default: ${bundle.target}
+      - name: catalog_name
+        default: ${var.target_catalog}
+
