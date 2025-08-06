@@ -4,7 +4,7 @@
       "name": "ad62188e",
       "displayName": "Untitled dataset",
       "queryLines": [
-        "SELECT * FROM dbacademy.labuser11134888_1754506266.telco_missing_bronze"
+        "SELECT * FROM labuser11134888_1754506266.default.telco_pdf"
       ]
     }
   ],
