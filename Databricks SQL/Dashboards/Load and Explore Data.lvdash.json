@@ -1,0 +1,67 @@
+{
+  "datasets": [
+    {
+      "name": "ad62188e",
+      "displayName": "Untitled dataset",
+      "queryLines": [
+        "SELECT * FROM dbacademy.labuser11134888_1754506266.telco_missing_bronze"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "4b896593",
+      "displayName": "Untitled Page",
+      "layout": [
+        {
+          "widget": {
+            "name": "4c392d2f",
+            "queries": [
+              {
+                "name": "476e5c5b98124ffbaa7f29704a041ecd",
+                "query": {
+                  "datasetName": "ad62188e",
+                  "fields": [
+                    {
+                      "name": "tenure",
+                      "expression": "`tenure`"
+                    },
+                    {
+                      "name": "column_94690d6c426",
+                      "expression": "SUM(`MonthlyCharges`)"
+                    },
+                    {
+                      "name": "column_94690d6c429",
+                      "expression": "COUNT(`*`)"
+                    },
+                    {
+                      "name": "gender",
+                      "expression": "`gender`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 0,
+              "viz_spec": {
+                "display_name": "Basic View",
+                "viz_type": "CHART",
+                "serialized_options": "{\"isAggregationOn\":true,\"series\":{\"error_y\":{\"type\":\"data\",\"visible\":true},\"stacking\":null},\"coefficient\":1,\"yAxis\":[{\"type\":\"logarithmic\"},{\"opposite\":true,\"type\":\"-\"}],\"columnConfigurationMap\":{\"series\":{\"column\":\"gender\",\"id\":\"column_94690d6c433\"},\"x\":{\"column\":\"tenure\",\"id\":\"column_94690d6c424\"},\"y\":[{\"column\":\"MonthlyCharges\",\"id\":\"column_94690d6c426\",\"transform\":\"SUM\"},{\"column\":\"*\",\"id\":\"column_94690d6c429\",\"transform\":\"COUNT\"}]},\"alignYAxesAtZero\":true,\"direction\":{\"type\":\"counterclockwise\"},\"swappedAxes\":false,\"percentFormat\":\"0[.]00%\",\"textFormat\":\"\",\"legend\":{\"traceorder\":\"normal\"},\"globalSeriesType\":\"column\",\"version\":2,\"sizemode\":\"diameter\",\"seriesOptions\":{\"Male, COUNT(*)\":{\"color\":\"#8BCAE7\"},\"column_94690d6c429\":{\"name\":\"Number of Rows\",\"type\":\"column\",\"yAxis\":1},\"column_94690d6c426\":{\"name\":\"Total Monthly Charges\",\"type\":\"column\",\"yAxis\":0},\"Female, COUNT(*)\":{\"color\":\"#FF3621\"},\"Female, SUM(MonthlyCharges)\":{\"color\":\"#FCA4A1\"},\"null, COUNT(*)\":{\"color\":\"#919191\"},\"Male, SUM(MonthlyCharges)\":{\"color\":\"#077A9D\"}},\"error_y\":{\"type\":\"data\",\"visible\":true},\"sortX\":true,\"showDataLabels\":false,\"missingValuesAsZero\":true,\"useAggregationsUi\":true,\"numberFormat\":\"0,0.[00000]\",\"dateTimeFormat\":\"DD/MM/YYYY HH:mm\",\"sortY\":true,\"valuesOptions\":{},\"xAxis\":{\"labels\":{\"enabled\":true},\"type\":\"-\"}}",
+                "query_name": "476e5c5b98124ffbaa7f29704a041ecd"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ]
+}
