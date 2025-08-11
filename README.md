@@ -9,11 +9,11 @@ A compendium of custom notebooks written in doing tailored training and architec
 - Data Engineering
 - Databricks SQL
 - LakeFlow Jobs
+- LakeFlow Pipelines & Structure Streaming
 - Machine Learning & Generative AI
 - Python
 - Spark SQL
-- Structured Streaming/adewd-streaming-main
-- Unity Catalog and Governance
+- Unity Catalog & Governance
 
 > [!NOTE]
 > Notebooks are give in an as-is state and may not run independent of official workspaces for [Databricks Academy](https://customer-academy.databricks.com/learn)
