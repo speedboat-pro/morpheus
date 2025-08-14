@@ -1,6 +1,6 @@
 version: 0.1
-
 source: samples.tpch.orders
+
 filter: o_orderdate > DATE'1997-01-01'
 
 dimensions:
@@ -11,19 +11,29 @@ dimensions:
   - name: Order Month
     expr: DATE_TRUNC('MONTH', o_orderdate)
 
-  - name: Order Status
-    expr: CASE
-      WHEN o_orderstatus = 'O' then 'Open'
-      WHEN o_orderstatus = 'P' then 'Processing'
-      WHEN o_orderstatus = 'F' then 'Fulfilled'
-      END
-
   - name: Order Priority
     expr: SPLIT(o_orderpriority, '-')[1]
 
+  - name: Order Date
+    expr: o_orderdate
+
+  - name: Market Segment
+    expr: customer.c_mktsegment
+
+  - name: Order Status Readable
+    expr: >
+      case 
+        when o_orderstatus = 'O' then 'Open' 
+        when o_orderstatus = 'P' then 'Processing' 
+        when o_orderstatus = 'F' then 'Fulfilled' 
+      end
+
+  - name: Order Month
+    expr: date_trunc('month',source.o_orderdate)
+
 measures:
 
-  - name: ytd_sales
+  - name: YTD Sales
     expr: SUM(o_totalprice)
     window:
       - order: date
@@ -33,31 +43,31 @@ measures:
         range: current
         semiadditive: last
 
-  - name: running_total_sales
+  - name: Running Total Sales
     expr: SUM(o_totalprice)
     window:
       - order: date
         range: cumulative
         semiadditive: last        
 
-  - name: previous_day_sales
+  - name: Previous Day Sales
     expr: SUM(o_totalprice)
     window:
       - order: date
         range: trailing 1 day
         semiadditive: last
 
-  - name: current_day_sales
+  - name: Current Day Sales
     expr: SUM(o_totalprice)
     window:
       - order: date
         range: current
         semiadditive: last
 
-  - name: day_over_day_growth
-    expr: (MEASURE(current_day_sales) - MEASURE(previous_day_sales)) / MEASURE(previous_day_sales) * 100   
+  - name: Day Over Day Growth
+    expr: (MEASURE(`Current Day Sales` - MEASURE(`Previous Day Sales`)) / MEASURE(`Previous Day Sales`) * 100   
 
-  - name: t7d_customers
+  - name: Number of Customers - Last 7 Days
     expr: COUNT(DISTINCT o_custkey)
     window:
       - order: date
@@ -75,3 +85,28 @@ measures:
 
   - name: Total Revenue for Open Orders
     expr: SUM(o_totalprice) FILTER (WHERE o_orderstatus='O')
+
+  - name: Number of Fulfilled Orders
+    expr: count(*)filter(where `Order Status Readable` = 'Fulfilled')
+
+  - name: Total Amount for Previous Month
+    expr: sum(o_totalprice)
+    window:
+     - order: Order Month
+       range: trailing 1 month
+       semiadditive: last
+
+  - name: Total Amount for Current Month
+    expr: sum(o_totalprice)
+    window:
+     - order: Order Month
+       range: current
+       semiadditive: last
+  
+  - name : Change in Amount
+    expr: MEASURE(`Total Amount for Current Month`) -  MEASURE(`Total Amount for Previous Month`)    
+
+joins:
+ - name: customer
+   source: samples.tpch.customer
+   on: source.o_custkey = customer.c_custkey
