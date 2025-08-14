@@ -1,0 +1,130 @@
+{
+  "datasets": [
+    {
+      "name": "58e25ba8",
+      "displayName": "sample_metric_view",
+      "asset_name": "labuser9215760_1755183870.default.sample_metric_view"
+    },
+    {
+      "name": "370ebad7",
+      "displayName": "silver_ts",
+      "queryLines": [
+        "SELECT * FROM labuser9215760_1755183870.example.silver_ts"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "4575d2c5",
+      "displayName": "Untitled page",
+      "layout": [
+        {
+          "widget": {
+            "name": "281f0f7b",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "58e25ba8",
+                  "fields": [
+                    {
+                      "name": "monthly(Order Month)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `Order Month`)"
+                    },
+                    {
+                      "name": "measure(Change in Amount)",
+                      "expression": "MEASURE(`Change in Amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(Order Month)",
+                  "scale": {
+                    "type": "temporal"
+                  },
+                  "displayName": "Order Month"
+                },
+                "y": {
+                  "fieldName": "measure(Change in Amount)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Change in Amount"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "d41902ac",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "370ebad7",
+                  "fields": [
+                    {
+                      "name": "device_id",
+                      "expression": "`device_id`"
+                    },
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "device_id",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "device_id"
+                },
+                "y": {
+                  "fieldName": "count(*)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Count of Records"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 3,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    }
+  }
+}

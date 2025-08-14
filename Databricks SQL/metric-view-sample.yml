@@ -10,16 +10,12 @@ dimensions:
     expr: DATE_TRUNC('year', o_orderdate)
   - name: Order Month
     expr: DATE_TRUNC('MONTH', o_orderdate)
-
   - name: Order Priority
     expr: SPLIT(o_orderpriority, '-')[1]
-
   - name: Order Date
     expr: o_orderdate
-
   - name: Market Segment
     expr: customer.c_mktsegment
-
   - name: Order Status Readable
     expr: >
       case 
@@ -28,11 +24,7 @@ dimensions:
         when o_orderstatus = 'F' then 'Fulfilled' 
       end
 
-  - name: Order Month
-    expr: date_trunc('month',source.o_orderdate)
-
 measures:
-
   - name: YTD Sales
     expr: SUM(o_totalprice)
     window:
@@ -65,7 +57,7 @@ measures:
         semiadditive: last
 
   - name: Day Over Day Growth
-    expr: (MEASURE(`Current Day Sales` - MEASURE(`Previous Day Sales`)) / MEASURE(`Previous Day Sales`) * 100   
+    expr: (MEASURE(`Current Day Sales`) - MEASURE(`Previous Day Sales`)) / MEASURE(`Previous Day Sales`) * 100   
 
   - name: Number of Customers - Last 7 Days
     expr: COUNT(DISTINCT o_custkey)
@@ -87,24 +79,24 @@ measures:
     expr: SUM(o_totalprice) FILTER (WHERE o_orderstatus='O')
 
   - name: Number of Fulfilled Orders
-    expr: count(*)filter(where `Order Status Readable` = 'Fulfilled')
+    expr: COUNT(*) FILTER (WHERE `Order Status Readable` = 'Fulfilled')
 
   - name: Total Amount for Previous Month
-    expr: sum(o_totalprice)
+    expr: SUM(o_totalprice)
     window:
      - order: Order Month
        range: trailing 1 month
        semiadditive: last
 
   - name: Total Amount for Current Month
-    expr: sum(o_totalprice)
+    expr: SUM(o_totalprice)
     window:
      - order: Order Month
        range: current
        semiadditive: last
   
-  - name : Change in Amount
-    expr: MEASURE(`Total Amount for Current Month`) -  MEASURE(`Total Amount for Previous Month`)    
+  - name: Change in Amount
+    expr: MEASURE(`Total Amount for Current Month`) - MEASURE(`Total Amount for Previous Month`)    
 
 joins:
  - name: customer
