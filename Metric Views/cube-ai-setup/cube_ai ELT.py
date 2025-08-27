@@ -334,7 +334,7 @@ prod_df = ps.DataFrame(
       , ProductID
       , split_part(product, '|', 2) AS Segment
     FROM 
-      {cat}.{db}.product
+      {cat}.{db}.dimproduct
       ''')).ffill().to_spark().write.mode("overwrite").option("delta.columnMapping.mode", "name").option("mergeSchema", "true").saveAsTable("dimproduct")
 
 
