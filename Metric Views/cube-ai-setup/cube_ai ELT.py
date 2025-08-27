@@ -233,7 +233,7 @@ for w in wb: print (w.title)
 
 spark.sql(
   f'''
-    CREATE OR REPLACE TABLE {cat}.{db}.sales
+    CREATE OR REPLACE TABLE {cat}.{db}.factsales
     SELECT
     ProductID	
     ,Date	
@@ -241,7 +241,7 @@ spark.sql(
     ,Units	
     ,Revenue	
     ,'USA' as Country
-    , concat(Zip, '|USA') ZipCountry
+    , concat(Zip, '@USA') ZipCountry
     FROM
       read_files('/Volumes/{cat}/{db}/diad/USSales/Sales.csv')
     UNION ALL
@@ -252,7 +252,7 @@ spark.sql(
       ,Units	
       ,Revenue	
       ,Country
-      , concat(Zip, '|', Country) ZipCountry
+      , concat(Zip, '@', Country) ZipCountry
 
     FROM
       read_files('/Volumes/{cat}/{db}/diad/InternationalSales')'''
@@ -270,17 +270,17 @@ spark.sql(
 
 # COMMAND ----------
 
-spark.sql(f'''
-    CREATE OR REPLACE TABLE {cat}.{db}.date
-      SELECT
-        explode(
-          sequence(
-            to_date('2013-01-01'),
-            to_date('2021-12-31'),
-            INTERVAL 1 DAY
-          )
-        ) AS date
-  ''')
+# spark.sql(f'''
+#     CREATE OR REPLACE TABLE {cat}.{db}.dimdate
+#       SELECT
+#         explode(
+#           sequence(
+#             to_date('2013-01-01'),
+#             to_date('2021-12-31'),
+#             INTERVAL 1 DAY
+#           )
+#         ) AS date
+#   ''')
 
 # COMMAND ----------
 
@@ -294,8 +294,8 @@ columns = [[x for x in n] for n in rows[1:]]
 (
   spark.createDataFrame(
     columns[3:]).toDF(*columns[2])
-    .withColumn('ZipCountry', F.concat(F.col('Zip'), F.lit('|'),F.col('Country')))
-    .write.mode("overwrite").format("delta").option("delta.columnMapping.mode", "name").option("mergeSchema", "true").saveAsTable("geography")
+    .withColumn('ZipCountry', F.concat(F.col('Zip'), F.lit('@'),F.col('Country')))
+    .write.mode("overwrite").format("delta").option("delta.columnMapping.mode", "name").option("mergeSchema", "true").saveAsTable("dimgeography")
   )
 
 # COMMAND ----------
@@ -308,7 +308,7 @@ columns = [[x for x in n] for n in rows[1:]]
 rows = [r for r in wb['manufacturer'].values]
 columns = [[x for x in n] for n in rows[1:]]
 transposed = list(map(list, zip(*columns[0:3])))
-spark.createDataFrame(transposed[1:]).toDF(*transposed[0]).write.mode("overwrite").format("delta").option("delta.columnMapping.mode", "name").saveAsTable("manufacturer")
+spark.createDataFrame(transposed[1:]).toDF(*transposed[0]).write.mode("overwrite").format("delta").option("delta.columnMapping.mode", "name").saveAsTable("dimmanufacturer")
 
 # COMMAND ----------
 
@@ -319,7 +319,7 @@ spark.createDataFrame(transposed[1:]).toDF(*transposed[0]).write.mode("overwrite
 
 rows = [r for r in wb['product'].values]
 columns = [[x for x in n] for n in rows[1:]]
-prod_df = spark.createDataFrame(columns[1:]).toDF(*columns[0]).write.mode("overwrite").option("delta.columnMapping.mode", "name").option("mergeSchema", "true").saveAsTable("product")
+prod_df = spark.createDataFrame(columns[1:]).toDF(*columns[0]).write.mode("overwrite").option("delta.columnMapping.mode", "name").option("mergeSchema", "true").saveAsTable("dimproduct")
 
 # COMMAND ----------
 
@@ -335,17 +335,6 @@ prod_df = ps.DataFrame(
       , split_part(product, '|', 2) AS Segment
     FROM 
       {cat}.{db}.product
-      ''')).ffill().to_spark().write.mode("overwrite").option("delta.columnMapping.mode", "name").option("mergeSchema", "true").saveAsTable("product")
+      ''')).ffill().to_spark().write.mode("overwrite").option("delta.columnMapping.mode", "name").option("mergeSchema", "true").saveAsTable("dimproduct")
 
 
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC update speedboat.ai_cube.geography
-# MAGIC set ZipCountry = replace(ZipCountry,'|','@')
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC
