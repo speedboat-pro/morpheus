@@ -1,0 +1,166 @@
+version: 0.1
+
+source: SELECT S.*,M.logo,M.manufacturer, M.ManufacturerID from speedboat.ai_cube.dimproduct P join speedboat.ai_cube.dimmanufacturer M on P.ManufacturerID = M.ManufacturerID join speedboat.ai_cube.sales S on S.productID = P.ProductID 
+
+joins:
+  - name: product
+    source: speedboat.ai_cube.dimproduct
+    on: source.ProductID = product.ProductID
+
+  - name: geography
+    source: speedboat.ai_cube.geography
+    on: source.ZipCountry = geography.ZipCountry
+
+  # - name: manufacturer
+  #   source: speedboat.ai_cube.dimmanufacturer
+  #   on: manufacturer.ManufacturerID = product.ManufacturerID
+
+dimensions:
+  # Date
+  - name: date
+    expr: source.Date
+  - name: year
+    expr: date_trunc('year', date)
+  - name: month
+    expr: date_trunc('month', date)
+  - name: month_number
+    expr: month(date)
+
+  # Geography
+  - name: district
+    expr: geography.District
+  - name: city
+    expr: geography.city
+  - name: zip
+    expr: geography.Zip
+  - name: country
+    expr: geography.Country
+  - name: region
+    expr: geography.region
+  - name: state
+    expr: geography.state
+
+  # Manufacturer
+  - name: manufacturer_logo
+    expr: logo
+  - name: manufacturer_name
+    expr: manufacturer
+  - name: manufacturer_group
+    expr: |
+      CASE 
+        WHEN ManufacturerID = 7 THEN 'VanArsdel, Ltd.'
+        WHEN ManufacturerID IN (2,4,8,10) THEN 'Top Competitors'
+        ELSE 'Other'
+      END
+
+  # Product
+  - name: product_segment
+    expr: product.segment
+  - name: product_category
+    expr: product.Category
+  - name: product_name
+    expr: product.product
+  - name: product_unit_price
+    expr: product.price
+
+measures:
+  # Sales
+  - name: Sales
+    expr: SUM(source.Revenue)
+
+  # Previous Year Sales (rolling 1 year)
+  - name: PY Sales
+    expr: MEASURE(Sales)
+    window:
+      - order: date
+        range: trailing 1 year
+        semiadditive: last
+
+  # Percent Growth
+  - name: Percent Growth
+    expr: CASE WHEN MEASURE(`PY Sales`) = 0 THEN NULL ELSE (MEASURE(Sales) - MEASURE(`PY Sales`)) / MEASURE(`PY Sales`) END
+
+
+  # YTD Sales (cumulative)
+  - name: YTD Sales
+    expr: SUM(source.Revenue)
+    window:
+      - order: date
+        range: cumulative
+        semiadditive: last
+
+  # Running Total Sales (cumulative)
+  - name: Running Total Sales
+    expr: MEASURE(Sales)
+    window:
+      - order: date
+        range: cumulative
+        semiadditive: last
+
+  # Previous Day Sales
+  - name: Previous Day Sales
+    expr: MEASURE(Sales)
+    window:
+      - order: date
+        range: trailing 1 day
+        semiadditive: last
+
+  # Current Day Sales
+  - name: Current Day Sales
+    expr: MEASURE(Sales)
+    window:
+      - order: date
+        range: current
+        semiadditive: last
+
+  # Day Over Day Growth
+  - name: Day Over Day Growth
+    expr: CASE WHEN MEASURE(`Previous Day Sales`) = 0 THEN NULL ELSE (MEASURE(`Current Day Sales`) - MEASURE(`Previous Day Sales`)) / MEASURE(`Previous Day Sales`) * 100 END
+
+  # Number of Products - Last 7 Days
+  - name: Number of Products - Last 7 Days
+    expr: COUNT(DISTINCT `product_name`)
+    window:
+      - order: date
+        range: trailing 7 day
+        semiadditive: last
+
+  # Order Count
+  - name: Order Count
+    expr: COUNT(1)
+
+  # Average Sales per Product
+  - name: Average Sales per Product
+    expr: CASE WHEN COUNT(DISTINCT `product_name`) = 0 THEN NULL ELSE MEASURE(Sales) / COUNT(DISTINCT `product_name`) END
+
+  # Number of Units
+  - name: Number of Units
+    expr: SUM(source.Units)
+
+  # Total Sales for Previous Month
+  - name: Total Sales for Previous Month
+    expr: MEASURE(Sales)
+    window:
+      - order: month
+        range: trailing 1 month
+        semiadditive: last
+
+  # Total Sales for Current Month
+  - name: Total Sales for Current Month
+    expr: MEASURE(Sales)
+    window:
+      - order: month
+        range: current
+        semiadditive: last
+
+  # Change in Sales
+  - name: Change in Sales
+    expr: MEASURE(`Total Sales for Current Month`) - MEASURE(`Total Sales for Previous Month`)
+
+ # VanArsdel Sales
+  - name: VanArsdel Sales
+    expr: SUM(source.Revenue) filter(where ManufacturerID = 7)
+
+  # VanArsdel Market Share
+  - name: VanArsdel Market Share
+    expr: CASE WHEN MEASURE(Sales) = 0 THEN NULL ELSE MEASURE(`VanArsdel Sales`) / MEASURE(Sales) END    

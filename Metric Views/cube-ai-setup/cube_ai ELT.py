@@ -10,6 +10,13 @@
 
 # COMMAND ----------
 
+from openpyxl import load_workbook
+import pyspark.sql.functions as F
+spark.conf.set("spark.sql.ansi.enabled", False)
+import pyspark.pandas as ps
+
+# COMMAND ----------
+
 cat = dbutils.widgets.get('cat')
 spark.catalog.setCurrentCatalog(f'{cat}')
 db = dbutils.widgets.get('db')
@@ -17,13 +24,19 @@ spark.catalog.setCurrentDatabase(f'{db}')
 
 # COMMAND ----------
 
-# MAGIC %md
-# MAGIC #M / Power Query & DAX
+# Loading an Excel workbook
+wb = load_workbook(f'/Volumes/{cat}/{db}/diad/USSales/bi_dimensions.xlsx', data_only=True, read_only=True)
+for w in wb: print (w.title)
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Fact Table
+# MAGIC #M (Power Query) & DAX
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Fact Table (M)
 
 # COMMAND ----------
 
@@ -118,6 +131,10 @@ spark.catalog.setCurrentDatabase(f'{db}')
 
 # MAGIC %md
 # MAGIC ### Date (DAX)
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC ```
 # MAGIC Date = CALENDAR (DATE(2013,1,1), DATE(2021,12,31))
 # MAGIC ```
@@ -126,7 +143,15 @@ spark.catalog.setCurrentDatabase(f'{db}')
 
 # MAGIC %md
 # MAGIC ### Geography
-# MAGIC
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC #### M
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC ```
 # MAGIC let
 # MAGIC     Source = Excel.Workbook(File.Contents("C:\DIAD\Data\USSales\bi_dimensions.xlsx"), null, true),
@@ -142,7 +167,19 @@ spark.catalog.setCurrentDatabase(f'{db}')
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Manufacturer
+# MAGIC #### DAX
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ```
+# MAGIC ZipCountry = Geography[Zip]&"|"&Geography[Country]
+# MAGIC ```
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### Manufacturer (M)
 # MAGIC
 # MAGIC ```
 # MAGIC let
@@ -161,7 +198,7 @@ spark.catalog.setCurrentDatabase(f'{db}')
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Product
+# MAGIC ### Product (M)
 # MAGIC
 # MAGIC ```
 # MAGIC let
@@ -176,13 +213,6 @@ spark.catalog.setCurrentDatabase(f'{db}')
 # MAGIC in
 # MAGIC     #"Filled Down"
 # MAGIC ```
-
-# COMMAND ----------
-
-from openpyxl import load_workbook
-# Loading an Excel workbook
-wb = load_workbook(f'/Volumes/{cat}/{db}/diad/USSales/bi_dimensions.xlsx', data_only=True, read_only=True)
-for w in wb: print (w.title)
 
 # COMMAND ----------
 
@@ -207,10 +237,11 @@ spark.sql(
     SELECT
     ProductID	
     ,Date	
-    ,CAST(Zip AS STRING)	
+    ,CAST(Zip AS STRING) Zip
     ,Units	
     ,Revenue	
     ,'USA' as Country
+    , concat(Zip, '|USA') ZipCountry
     FROM
       read_files('/Volumes/{cat}/{db}/diad/USSales/Sales.csv')
     UNION ALL
@@ -221,6 +252,7 @@ spark.sql(
       ,Units	
       ,Revenue	
       ,Country
+      , concat(Zip, '|', Country) ZipCountry
 
     FROM
       read_files('/Volumes/{cat}/{db}/diad/InternationalSales')'''
@@ -259,7 +291,12 @@ spark.sql(f'''
 
 rows = [r for r in wb['geo'].values]
 columns = [[x for x in n] for n in rows[1:]]
-spark.createDataFrame(columns[3:]).toDF(*columns[2]).write.mode("overwrite").format("delta").option("delta.columnMapping.mode", "name").saveAsTable("geography")
+(
+  spark.createDataFrame(
+    columns[3:]).toDF(*columns[2])
+    .withColumn('ZipCountry', F.concat(F.col('Zip'), F.lit('|'),F.col('Country')))
+    .write.mode("overwrite").format("delta").option("delta.columnMapping.mode", "name").option("mergeSchema", "true").saveAsTable("geography")
+  )
 
 # COMMAND ----------
 
@@ -286,9 +323,6 @@ prod_df = spark.createDataFrame(columns[1:]).toDF(*columns[0]).write.mode("overw
 
 # COMMAND ----------
 
-spark.conf.set("spark.sql.ansi.enabled", False)
-import pyspark.pandas as ps
-
 prod_df = ps.DataFrame(
   spark.sql(
     f'''
@@ -304,3 +338,14 @@ prod_df = ps.DataFrame(
       ''')).ffill().to_spark().write.mode("overwrite").option("delta.columnMapping.mode", "name").option("mergeSchema", "true").saveAsTable("product")
 
 
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC update speedboat.ai_cube.geography
+# MAGIC set ZipCountry = replace(ZipCountry,'|','@')
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC
