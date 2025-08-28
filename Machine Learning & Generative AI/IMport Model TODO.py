@@ -275,8 +275,7 @@ def convert_to_record_json(json_str: str) -> str:
     else:
         # If the format is unsupported, return the original string
         return json_str
-
-@F.pandas_udf(T.StringType())
+#@F.pandas_udf(T.StringType())
 def json_consolidation_udf(json_strs: pd.Series) -> pd.Series:
     """
     A UDF to apply the JSON conversion function to every request/response.
@@ -285,6 +284,36 @@ def json_consolidation_udf(json_strs: pd.Series) -> pd.Series:
     :return: A Pandas Series with the converted JSON strings.
     """
     return json_strs.apply(convert_to_record_json)
+
+# COMMAND ----------
+
+@udf("string")
+def foo(str):
+    return foo+"l"
+
+
+# COMMAND ----------
+
+import pyspark.sql.types
+spark.udf.register("foo_udf", foo, pyspark.sql.types.StringType())
+
+# COMMAND ----------
+
+df = spark.sql("select * from samples.tpch.orders limit 100")
+
+# COMMAND ----------
+
+df = df.withColumn('result', foo_udf(F.col("o_orderpriority")))
+display(df)
+
+
+# COMMAND ----------
+
+spark.registerFunction("json_consolidation", json_consolidation_udf)
+
+# COMMAND ----------
+
+
 
 # COMMAND ----------
 
