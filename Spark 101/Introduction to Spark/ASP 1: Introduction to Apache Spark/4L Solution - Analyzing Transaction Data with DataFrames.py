@@ -14,6 +14,7 @@
 # MAGIC %md
 # MAGIC # 4L - Analyzing Transaction Data with DataFrames
 # MAGIC
+# MAGIC
 # MAGIC In this lab, you'll analyze transactions from the Bakehouse dataset using Spark DataFrames. You'll apply the concepts from the lecture to solve real business problems and gain insights from the data.
 # MAGIC
 # MAGIC ### Objectives
