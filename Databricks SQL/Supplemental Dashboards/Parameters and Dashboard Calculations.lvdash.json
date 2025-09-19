@@ -1,190 +1,263 @@
 {
-  "datasets" : [ {
-    "name" : "31d2c50f",
-    "displayName" : "Untitled dataset",
-    "query" : "USE CATALOG `labuser8664401_1745330262`;\nUSE SCHEMA `dawd_v2`;\n\n SELECT * FROM customers;"
-  }, {
-    "name" : "58f3a8ef",
-    "displayName" : "NYC Taxi Data",
-    "query" : "SELECT \ndate_add(YEAR, 9, tpep_pickup_datetime) AS `Pickup Time`,\ndate_add(YEAR, 9, tpep_dropoff_datetime) AS `Dropoff Time`,\ntrip_distance,\nfare_amount,\npickup_zip,\ndropoff_zip,\ndate_format(date_add(YEAR, 9, tpep_pickup_datetime), 'EEEE') AS `Day of week`\nFROM samples.nyctaxi.trips \nWHERE trip_distance > 0\nAND array_contains(:DayOfWeek, date_format(date_add(YEAR, 9, tpep_pickup_datetime), 'EEEE'))",
-    "parameters" : [ {
-      "displayName" : "DayOfWeek",
-      "keyword" : "DayOfWeek",
-      "dataType" : "STRING",
-      "complexType" : "MULTI",
-      "defaultSelection" : {
-        "values" : {
-          "dataType" : "STRING",
-          "values" : [ {
-            "value" : "Wednesday"
-          }, {
-            "value" : "Tuesday"
-          } ]
-        }
-      }
-    } ],
-    "columns" : [ {
-      "displayName" : "Route Direction",
-      "description" : "",
-      "expression" : "CASE \nWHEN pickup_zip = dropoff_zip THEN 'Same ZIP'\nWHEN pickup_zip > Dropoff_zip THEN 'Leaving NY'\nELSE 'Entering NY'\nEND\n"
-    }, {
-      "displayName" : "Cost per Mile",
-      "description" : "",
-      "expression" : "try_divide(SUM(fare_amount), SUM(trip_distance))"
-    } ]
-  }, {
-    "name" : "00192782",
-    "displayName" : "Days",
-    "query" : "With \nbase AS \n(SELECT DISTINCT \n  date_format(date_add(YEAR, 9, tpep_pickup_datetime), 'EEEE') AS `Day of week`\n,  dayofweek(date_add(YEAR, 9, tpep_pickup_datetime)) AS daynumber\nFROM samples.nyctaxi.trips \nORDER by 2)\nSELECT * EXCEPT(daynumber)  from BASE "
-  } ],
-  "pages" : [ {
-    "name" : "56041d3a",
-    "displayName" : "Untitled Page",
-    "layout" : [ {
-      "widget" : {
-        "name" : "497277c3",
-        "queries" : [ {
-          "name" : "main_query",
-          "query" : {
-            "datasetName" : "58f3a8ef",
-            "fields" : [ {
-              "name" : "Route Direction",
-              "expression" : "`Route Direction`"
-            }, {
-              "name" : "daily(Dropoff Time)",
-              "expression" : "DATE_TRUNC(\"DAY\", `Dropoff Time`)"
-            }, {
-              "name" : "measure(Cost per Mile)",
-              "expression" : "MEASURE(`Cost per Mile`)"
-            } ],
-            "disaggregated" : false
-          }
-        } ],
-        "spec" : {
-          "version" : 3,
-          "widgetType" : "bar",
-          "encodings" : {
-            "x" : {
-              "fieldName" : "daily(Dropoff Time)",
-              "scale" : {
-                "type" : "temporal"
-              },
-              "displayName" : "Dropoff Time"
-            },
-            "y" : {
-              "fieldName" : "measure(Cost per Mile)",
-              "scale" : {
-                "type" : "quantitative"
-              },
-              "displayName" : "Cost per Mile"
-            },
-            "color" : {
-              "fieldName" : "Route Direction",
-              "scale" : {
-                "type" : "categorical"
-              },
-              "displayName" : "Route Direction"
+  "datasets": [
+    {
+      "name": "58f3a8ef",
+      "displayName": "NYC Taxi Data",
+      "queryLines": [
+        "SELECT \n",
+        "date_add(YEAR, 9, tpep_pickup_datetime) AS `Pickup Time`,\n",
+        "date_add(YEAR, 9, tpep_dropoff_datetime) AS `Dropoff Time`,\n",
+        "trip_distance,\n",
+        "fare_amount,\n",
+        "pickup_zip,\n",
+        "dropoff_zip,\n",
+        "date_format(date_add(YEAR, 9, tpep_pickup_datetime), 'EEEE') AS `Day of week`\n",
+        "FROM samples.nyctaxi.trips \n",
+        "WHERE trip_distance > 0\n",
+        "AND array_contains( :DayOfWeek , date_format(date_add(YEAR, 9, tpep_pickup_datetime), 'EEEE'))"
+      ],
+      "parameters": [
+        {
+          "displayName": "DayOfWeek",
+          "keyword": "DayOfWeek",
+          "dataType": "STRING",
+          "complexType": "MULTI",
+          "defaultSelection": {
+            "values": {
+              "dataType": "STRING",
+              "values": [
+                {
+                  "value": "Wednesday"
+                },
+                {
+                  "value": "Sunday"
+                }
+              ]
             }
           }
         }
-      },
-      "position" : {
-        "x" : 0,
-        "y" : 1,
-        "width" : 6,
-        "height" : 6
-      }
-    }, {
-      "widget" : {
-        "name" : "0e5678e5",
-        "queries" : [ {
-          "name" : "dashboards/01f01f95869e1b67b746889df811a493/datasets/01f01fa103b919bea31f6752f9a5c9a2_Dropoff Time",
-          "query" : {
-            "datasetName" : "58f3a8ef",
-            "fields" : [ {
-              "name" : "Dropoff Time",
-              "expression" : "`Dropoff Time`"
-            }, {
-              "name" : "Dropoff Time_associativity",
-              "expression" : "COUNT_IF(`associative_filter_predicate_group`)"
-            } ],
-            "disaggregated" : false
-          }
-        } ],
-        "spec" : {
-          "version" : 2,
-          "widgetType" : "filter-date-range-picker",
-          "encodings" : {
-            "fields" : [ {
-              "fieldName" : "Dropoff Time",
-              "displayName" : "Dropoff Time",
-              "queryName" : "dashboards/01f01f95869e1b67b746889df811a493/datasets/01f01fa103b919bea31f6752f9a5c9a2_Dropoff Time"
-            } ]
+      ],
+      "columns": [
+        {
+          "displayName": "Route Direction",
+          "description": "",
+          "expression": "CASE \nWHEN pickup_zip = dropoff_zip THEN 'Same ZIP'\nWHEN pickup_zip > Dropoff_zip THEN 'Leaving NY'\nELSE 'Entering NY'\nEND\n"
+        },
+        {
+          "displayName": "Cost per Mile",
+          "description": "",
+          "expression": "try_divide(SUM(fare_amount), SUM(trip_distance))"
+        }
+      ]
+    },
+    {
+      "name": "00192782",
+      "displayName": "Days",
+      "queryLines": [
+        "With \n",
+        "base AS \n",
+        "(SELECT DISTINCT \n",
+        "  date_format(date_add(YEAR, 9, tpep_pickup_datetime), 'EEEE') AS `Day of week`\n",
+        ",  dayofweek(date_add(YEAR, 9, tpep_pickup_datetime)) AS daynumber\n",
+        "FROM samples.nyctaxi.trips \n",
+        "ORDER by 2)\n",
+        "SELECT * EXCEPT(daynumber)  from BASE "
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "56041d3a",
+      "displayName": "Dashboarding 200",
+      "layout": [
+        {
+          "widget": {
+            "name": "497277c3",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "58f3a8ef",
+                  "fields": [
+                    {
+                      "name": "Route Direction",
+                      "expression": "`Route Direction`"
+                    },
+                    {
+                      "name": "daily(Dropoff Time)",
+                      "expression": "DATE_TRUNC(\"DAY\", `Dropoff Time`)"
+                    },
+                    {
+                      "name": "measure(Cost per Mile)",
+                      "expression": "MEASURE(`Cost per Mile`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "daily(Dropoff Time)",
+                  "scale": {
+                    "type": "temporal"
+                  },
+                  "displayName": "Dropoff Time"
+                },
+                "y": {
+                  "fieldName": "measure(Cost per Mile)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "USD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "displayName": "Cost per Mile"
+                },
+                "color": {
+                  "fieldName": "Route Direction",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Route Direction"
+                }
+              }
+            }
           },
-          "frame" : {
-            "showTitle" : true,
-            "title" : ""
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "0e5678e5",
+            "queries": [
+              {
+                "name": "dashboards/01f01f95869e1b67b746889df811a493/datasets/01f01fa103b919bea31f6752f9a5c9a2_Dropoff Time",
+                "query": {
+                  "datasetName": "58f3a8ef",
+                  "fields": [
+                    {
+                      "name": "Dropoff Time",
+                      "expression": "`Dropoff Time`"
+                    },
+                    {
+                      "name": "Dropoff Time_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-date-range-picker",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "Dropoff Time",
+                    "displayName": "Dropoff Time",
+                    "queryName": "dashboards/01f01f95869e1b67b746889df811a493/datasets/01f01fa103b919bea31f6752f9a5c9a2_Dropoff Time"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": ""
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "f6117408",
+            "queries": [
+              {
+                "name": "dashboards/01f01f95869e1b67b746889df811a493/datasets/01f0205e937718c995053d82079b2297_Day of week",
+                "query": {
+                  "datasetName": "00192782",
+                  "fields": [
+                    {
+                      "name": "Day of week",
+                      "expression": "`Day of week`"
+                    },
+                    {
+                      "name": "Day of week_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "parameter_dashboards/01f01f95869e1b67b746889df811a493/datasets/01f01fa103b919bea31f6752f9a5c9a2_DayOfWeek",
+                "query": {
+                  "datasetName": "58f3a8ef",
+                  "parameters": [
+                    {
+                      "name": "DayOfWeek",
+                      "keyword": "DayOfWeek"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "parameterName": "DayOfWeek",
+                    "queryName": "parameter_dashboards/01f01f95869e1b67b746889df811a493/datasets/01f01fa103b919bea31f6752f9a5c9a2_DayOfWeek"
+                  },
+                  {
+                    "fieldName": "Day of week",
+                    "displayName": "Day of week",
+                    "queryName": "dashboards/01f01f95869e1b67b746889df811a493/datasets/01f0205e937718c995053d82079b2297_Day of week"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": ""
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 0,
+            "width": 2,
+            "height": 1
           }
         }
-      },
-      "position" : {
-        "x" : 0,
-        "y" : 0,
-        "width" : 2,
-        "height" : 1
-      }
-    }, {
-      "widget" : {
-        "name" : "f6117408",
-        "queries" : [ {
-          "name" : "dashboards/01f01f95869e1b67b746889df811a493/datasets/01f0205e937718c995053d82079b2297_Day of week",
-          "query" : {
-            "datasetName" : "00192782",
-            "fields" : [ {
-              "name" : "Day of week",
-              "expression" : "`Day of week`"
-            }, {
-              "name" : "Day of week_associativity",
-              "expression" : "COUNT_IF(`associative_filter_predicate_group`)"
-            } ],
-            "disaggregated" : false
-          }
-        }, {
-          "name" : "parameter_dashboards/01f01f95869e1b67b746889df811a493/datasets/01f01fa103b919bea31f6752f9a5c9a2_DayOfWeek",
-          "query" : {
-            "datasetName" : "58f3a8ef",
-            "parameters" : [ {
-              "name" : "DayOfWeek",
-              "keyword" : "DayOfWeek"
-            } ],
-            "disaggregated" : false
-          }
-        } ],
-        "spec" : {
-          "version" : 2,
-          "widgetType" : "filter-multi-select",
-          "encodings" : {
-            "fields" : [ {
-              "parameterName" : "DayOfWeek",
-              "queryName" : "parameter_dashboards/01f01f95869e1b67b746889df811a493/datasets/01f01fa103b919bea31f6752f9a5c9a2_DayOfWeek"
-            }, {
-              "fieldName" : "Day of week",
-              "displayName" : "Day of week",
-              "queryName" : "dashboards/01f01f95869e1b67b746889df811a493/datasets/01f0205e937718c995053d82079b2297_Day of week"
-            } ]
-          },
-          "frame" : {
-            "showTitle" : true,
-            "title" : ""
-          }
-        }
-      },
-      "position" : {
-        "x" : 2,
-        "y" : 0,
-        "width" : 2,
-        "height" : 1
-      }
-    } ]
-  } ]
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    }
+  }
 }
