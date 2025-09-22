@@ -8,6 +8,11 @@
 
 # COMMAND ----------
 
+spark.catalog.setCurrentCatalog("dbacademy")
+spark.catalog.setCurrentDatabase("labuser11725301_1758564850")
+
+# COMMAND ----------
+
 countries = [("USA", 10000, 20000), ("India", 1000, 1500), ("UK", 7000, 10000), ("Canada", 500, 700) ]
 columns = ["Country","NumVaccinated","AvailableDoses"]
 spark.createDataFrame(data=countries, schema = columns).write.format("delta").mode("overwrite").saveAsTable("silverTable")
@@ -78,9 +83,19 @@ spark.createDataFrame(data=new_countries, schema = columns).write.format("delta"
 
 # COMMAND ----------
 
-# MAGIC %sql 
+# MAGIC %sql
+# MAGIC DESCRIBE HISTORY silverTable
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC DESCRIBE DETAIL silverTable
+
+# COMMAND ----------
+
+# MAGIC %sql%sql 
 # MAGIC -- view the changes
-# MAGIC SELECT * FROM table_changes('silverTable', 2, 5) order by _commit_timestamp
+# MAGIC SELECT * FROM table_changes('silverTable', 2) order by _commit_timestamp
 
 # COMMAND ----------
 
