@@ -9,7 +9,7 @@
 # COMMAND ----------
 
 spark.catalog.setCurrentCatalog("dbacademy")
-spark.catalog.setCurrentDatabase("labuser11725301_1758564850")
+spark.catalog.setCurrentDatabase("labuser11725301_1758653991")
 
 # COMMAND ----------
 
@@ -93,7 +93,7 @@ spark.createDataFrame(data=new_countries, schema = columns).write.format("delta"
 
 # COMMAND ----------
 
-# MAGIC %sql%sql 
+# MAGIC %sql
 # MAGIC -- view the changes
 # MAGIC SELECT * FROM table_changes('silverTable', 2) order by _commit_timestamp
 
@@ -142,3 +142,7 @@ display(changes_df)
 # MAGIC %sql
 # MAGIC DROP TABLE silverTable;
 # MAGIC DROP TABLE goldTable;
+
+# COMMAND ----------
+
+
