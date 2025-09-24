@@ -81,6 +81,11 @@
 
 -- COMMAND ----------
 
+USE CATALOG dbacademy;
+use schema labuser11726860_1758721223;
+
+-- COMMAND ----------
+
 CREATE FUNCTION us_filter(region STRING)
 RETURN IF(IS_ACCOUNT_GROUP_MEMBER('admin'), true, region='US');
 
@@ -97,6 +102,10 @@ RETURN IF(IS_ACCOUNT_GROUP_MEMBER('admin'), true, region='US');
 CREATE TABLE sales (region STRING, id INT);
 ALTER TABLE sales SET ROW FILTER us_filter ON (region);
 
+
+-- COMMAND ----------
+
+SHOW GRANTS ON SCHEMA labuser11726860_1758721223
 
 -- COMMAND ----------
 

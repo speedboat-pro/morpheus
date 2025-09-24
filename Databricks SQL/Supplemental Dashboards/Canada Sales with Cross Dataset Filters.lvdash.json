@@ -22,7 +22,7 @@
         "  AND orderdate <= '2022-12-31';"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser11552657_1758296407"
+      "schema": "labuser11726860_1758721223"
     },
     {
       "name": "d994f116",
@@ -31,7 +31,7 @@
         "SELECT * FROM ca_products;"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser11552657_1758296407"
+      "schema": "labuser11726860_1758721223"
     },
     {
       "name": "b6fda01a",
@@ -45,7 +45,7 @@
         "      orderdate >= '2024-01-01' AND orderdate <= '2024-12-31' ;"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser11552657_1758296407"
+      "schema": "labuser11726860_1758721223"
     }
   ],
   "pages": [
