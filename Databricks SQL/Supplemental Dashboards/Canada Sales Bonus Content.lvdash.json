@@ -22,7 +22,7 @@
         "  AND orderdate <= '2022-12-31';"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser11726860_1758721223"
+      "schema": "labuser11726860_1760460893"
     },
     {
       "name": "d994f116",
@@ -31,7 +31,7 @@
         "SELECT * FROM ca_products;"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser11726860_1758721223"
+      "schema": "labuser11726860_1760460893"
     },
     {
       "name": "b6fda01a",
@@ -45,7 +45,247 @@
         "      orderdate >= '2024-01-01' AND orderdate <= '2024-12-31' ;"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser11726860_1758721223"
+      "schema": "labuser11726860_1760460893"
+    },
+    {
+      "name": "1ea7dfb9",
+      "displayName": "Orders Forecast",
+      "queryLines": [
+        "SELECT\n",
+        "  c.customername,\n",
+        "  c.province,\n",
+        "  o.orderdate,\n",
+        "  o.orderamt,\n",
+        "  o.salesrep,\n",
+        "  p.productname\n",
+        "FROM\n",
+        "  ca_orders as o\n",
+        "    JOIN ca_customers as c\n",
+        "      ON o.customerid = c.customerid\n",
+        "   JOIN ca_products AS p\n",
+        "  ON o.productid = p.productid\n"
+      ],
+      "catalog": "dbacademy",
+      "schema": "labuser11726860_1760460893"
+    },
+    {
+      "name": "6f105919",
+      "displayName": "Orders Forecast (Weekly Forecasted)",
+      "queryLines": [
+        "WITH original_table AS (\n",
+        "    SELECT \n",
+        "  DATE_TRUNC(\"WEEK\", `orderdate`) AS orderdate,\n",
+        "  SUM(`orderamt`) AS orderamt\n",
+        "FROM (\n",
+        "    SELECT\n",
+        "  c.customername,\n",
+        "  c.province,\n",
+        "  o.orderdate,\n",
+        "  o.orderamt,\n",
+        "  o.salesrep,\n",
+        "  p.productname\n",
+        "FROM\n",
+        "  ca_orders as o\n",
+        "    JOIN ca_customers as c\n",
+        "      ON o.customerid = c.customerid\n",
+        "   JOIN ca_products AS p\n",
+        "  ON o.productid = p.productid\n",
+        ") GROUP BY 1\n",
+        "  ),\n",
+        "  dates AS (\n",
+        "    SELECT \n",
+        "      MAX(orderdate) AS max_date_column,\n",
+        "      MIN(orderdate) AS min_date_column,\n",
+        "      MAX_BY(orderamt, orderdate) AS orderamt\n",
+        "    FROM original_table\n",
+        "  ),\n",
+        "  forecast_table AS (\n",
+        "    SELECT \n",
+        "      orderdate,\n",
+        "      orderamt_forecast,\n",
+        "      orderamt_upper,\n",
+        "      orderamt_lower,\n",
+        "      NULL AS orderamt\n",
+        "    FROM AI_FORECAST(\n",
+        "      TABLE(original_table),\n",
+        "      horizon => (\n",
+        "        SELECT\n",
+        "          max_date_column + MAKE_DT_INTERVAL(CAST(FLOOR(DATEDIFF(max_date_column, min_date_column) * 0.5) AS INT), 0, 0, 0)\n",
+        "        FROM dates\n",
+        "      ),\n",
+        "      time_col => 'orderdate',\n",
+        "      value_col => 'orderamt'\n",
+        "    )\n",
+        "  )\n",
+        "\n",
+        "  SELECT * FROM forecast_table\n",
+        "  UNION ALL\n",
+        "  SELECT\n",
+        "    orderdate,\n",
+        "    NULL AS orderamt_forecast,\n",
+        "    NULL AS orderamt_upper,\n",
+        "    NULL AS orderamt_lower,\n",
+        "    orderamt\n",
+        "  FROM original_table\n",
+        "    WHERE orderdate < (SELECT max_date_column FROM dates)\n",
+        "  UNION ALL\n",
+        "  SELECT\n",
+        "    max_date_column AS orderdate,\n",
+        "    orderamt AS orderamt_forecast,\n",
+        "    orderamt AS orderamt_upper,\n",
+        "    orderamt AS orderamt_lower,\n",
+        "    orderamt\n",
+        "  FROM\n",
+        "    dates"
+      ],
+      "catalog": "dbacademy",
+      "schema": "labuser11726860_1760460893"
+    },
+    {
+      "name": "15c82a09",
+      "displayName": "Orders Forecast (Daily Forecasted)",
+      "queryLines": [
+        "WITH original_table AS (\n",
+        "    SELECT \n",
+        "  DATE_TRUNC(\"DAY\", `orderdate`) AS orderdate,\n",
+        "  SUM(`orderamt`) AS orderamt\n",
+        "FROM (\n",
+        "    SELECT\n",
+        "  c.customername,\n",
+        "  c.province,\n",
+        "  o.orderdate,\n",
+        "  o.orderamt,\n",
+        "  o.salesrep,\n",
+        "  p.productname\n",
+        "FROM\n",
+        "  ca_orders as o\n",
+        "    JOIN ca_customers as c\n",
+        "      ON o.customerid = c.customerid\n",
+        "   JOIN ca_products AS p\n",
+        "  ON o.productid = p.productid\n",
+        ") GROUP BY 1\n",
+        "  ),\n",
+        "  dates AS (\n",
+        "    SELECT \n",
+        "      MAX(orderdate) AS max_date_column,\n",
+        "      MIN(orderdate) AS min_date_column,\n",
+        "      MAX_BY(orderamt, orderdate) AS orderamt\n",
+        "    FROM original_table\n",
+        "  ),\n",
+        "  forecast_table AS (\n",
+        "    SELECT \n",
+        "      orderdate,\n",
+        "      orderamt_forecast,\n",
+        "      orderamt_upper,\n",
+        "      orderamt_lower,\n",
+        "      NULL AS orderamt\n",
+        "    FROM AI_FORECAST(\n",
+        "      TABLE(original_table),\n",
+        "      horizon => (\n",
+        "        SELECT\n",
+        "          max_date_column + MAKE_DT_INTERVAL(CAST(FLOOR(DATEDIFF(max_date_column, min_date_column) * 0.5) AS INT), 0, 0, 0)\n",
+        "        FROM dates\n",
+        "      ),\n",
+        "      time_col => 'orderdate',\n",
+        "      value_col => 'orderamt'\n",
+        "    )\n",
+        "  )\n",
+        "\n",
+        "  SELECT * FROM forecast_table\n",
+        "  UNION ALL\n",
+        "  SELECT\n",
+        "    orderdate,\n",
+        "    NULL AS orderamt_forecast,\n",
+        "    NULL AS orderamt_upper,\n",
+        "    NULL AS orderamt_lower,\n",
+        "    orderamt\n",
+        "  FROM original_table\n",
+        "    WHERE orderdate < (SELECT max_date_column FROM dates)\n",
+        "  UNION ALL\n",
+        "  SELECT\n",
+        "    max_date_column AS orderdate,\n",
+        "    orderamt AS orderamt_forecast,\n",
+        "    orderamt AS orderamt_upper,\n",
+        "    orderamt AS orderamt_lower,\n",
+        "    orderamt\n",
+        "  FROM\n",
+        "    dates"
+      ],
+      "catalog": "dbacademy",
+      "schema": "labuser11726860_1760460893"
+    },
+    {
+      "name": "d3301888",
+      "displayName": "Orders Forecast (Monthly Forecasted)",
+      "queryLines": [
+        "WITH original_table AS (\n",
+        "    SELECT \n",
+        "  DATE_TRUNC(\"MONTH\", `orderdate`) AS orderdate,\n",
+        "  SUM(`orderamt`) AS orderamt\n",
+        "FROM (\n",
+        "    SELECT\n",
+        "  c.customername,\n",
+        "  c.province,\n",
+        "  o.orderdate,\n",
+        "  o.orderamt,\n",
+        "  o.salesrep,\n",
+        "  p.productname\n",
+        "FROM\n",
+        "  ca_orders as o\n",
+        "    JOIN ca_customers as c\n",
+        "      ON o.customerid = c.customerid\n",
+        "   JOIN ca_products AS p\n",
+        "  ON o.productid = p.productid\n",
+        ") GROUP BY 1\n",
+        "  ),\n",
+        "  dates AS (\n",
+        "    SELECT \n",
+        "      MAX(orderdate) AS max_date_column,\n",
+        "      MIN(orderdate) AS min_date_column,\n",
+        "      MAX_BY(orderamt, orderdate) AS orderamt\n",
+        "    FROM original_table\n",
+        "  ),\n",
+        "  forecast_table AS (\n",
+        "    SELECT \n",
+        "      orderdate,\n",
+        "      orderamt_forecast,\n",
+        "      orderamt_upper,\n",
+        "      orderamt_lower,\n",
+        "      NULL AS orderamt\n",
+        "    FROM AI_FORECAST(\n",
+        "      TABLE(original_table),\n",
+        "      horizon => (\n",
+        "        SELECT\n",
+        "          max_date_column + MAKE_DT_INTERVAL(CAST(FLOOR(DATEDIFF(max_date_column, min_date_column) * 0.5) AS INT), 0, 0, 0)\n",
+        "        FROM dates\n",
+        "      ),\n",
+        "      time_col => 'orderdate',\n",
+        "      value_col => 'orderamt'\n",
+        "    )\n",
+        "  )\n",
+        "\n",
+        "  SELECT * FROM forecast_table\n",
+        "  UNION ALL\n",
+        "  SELECT\n",
+        "    orderdate,\n",
+        "    NULL AS orderamt_forecast,\n",
+        "    NULL AS orderamt_upper,\n",
+        "    NULL AS orderamt_lower,\n",
+        "    orderamt\n",
+        "  FROM original_table\n",
+        "    WHERE orderdate < (SELECT max_date_column FROM dates)\n",
+        "  UNION ALL\n",
+        "  SELECT\n",
+        "    max_date_column AS orderdate,\n",
+        "    orderamt AS orderamt_forecast,\n",
+        "    orderamt AS orderamt_upper,\n",
+        "    orderamt AS orderamt_lower,\n",
+        "    orderamt\n",
+        "  FROM\n",
+        "    dates"
+      ],
+      "catalog": "dbacademy",
+      "schema": "labuser11726860_1760460893"
     }
   ],
   "pages": [
@@ -456,24 +696,175 @@
       "pageType": "PAGE_TYPE_CANVAS"
     },
     {
-      "name": "20b33143",
-      "displayName": "Global Filters",
+      "name": "18e1f6bf",
+      "displayName": "Cross Dataset Filter",
       "layout": [
         {
           "widget": {
-            "name": "193cc6fa",
+            "name": "d1af56de",
             "queries": [
               {
-                "name": "dashboards/01f095765b4a1e95b4dcdbf95b0c6fab/datasets/01f09576681714c4aabafa3021329a01_customername",
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d994f116",
+                  "fields": [
+                    {
+                      "name": "productname",
+                      "expression": "`productname`"
+                    },
+                    {
+                      "name": "sum(listprice)",
+                      "expression": "SUM(`listprice`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "productname",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "productname"
+                },
+                "y": {
+                  "fieldName": "sum(listprice)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Sum of listprice"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "b2c5d9a2",
+            "queries": [
+              {
+                "name": "main_query",
                 "query": {
                   "datasetName": "e26fe183",
                   "fields": [
                     {
-                      "name": "customername",
-                      "expression": "`customername`"
+                      "name": "salesrep",
+                      "expression": "`salesrep`"
                     },
                     {
-                      "name": "customername_associativity",
+                      "name": "min(orderamt)",
+                      "expression": "MIN(`orderamt`)"
+                    },
+                    {
+                      "name": "q1(orderamt)",
+                      "expression": "PERCENTILE(`orderamt`, 0.25)"
+                    },
+                    {
+                      "name": "median(orderamt)",
+                      "expression": "MEDIAN(`orderamt`)"
+                    },
+                    {
+                      "name": "q3(orderamt)",
+                      "expression": "PERCENTILE(`orderamt`, 0.75)"
+                    },
+                    {
+                      "name": "max(orderamt)",
+                      "expression": "MAX(`orderamt`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "box",
+              "encodings": {
+                "x": {
+                  "fieldName": "salesrep",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "salesrep"
+                },
+                "y": {
+                  "whiskerStart": {
+                    "fieldName": "min(orderamt)",
+                    "displayName": "Minimum orderamt"
+                  },
+                  "boxStart": {
+                    "fieldName": "q1(orderamt)",
+                    "displayName": "First Quartile of orderamt"
+                  },
+                  "boxMid": {
+                    "fieldName": "median(orderamt)",
+                    "displayName": "Median of orderamt"
+                  },
+                  "boxEnd": {
+                    "fieldName": "q3(orderamt)",
+                    "displayName": "Third Quartile of orderamt"
+                  },
+                  "whiskerEnd": {
+                    "fieldName": "max(orderamt)",
+                    "displayName": "Maximum orderamt"
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 1,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "ff2853bf",
+            "queries": [
+              {
+                "name": "dashboards/01f095765b4a1e95b4dcdbf95b0c6fab/datasets/01f09576681714c4aabafa3021329a01_productname",
+                "query": {
+                  "datasetName": "e26fe183",
+                  "fields": [
+                    {
+                      "name": "productname",
+                      "expression": "`productname`"
+                    },
+                    {
+                      "name": "productname_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f095765b4a1e95b4dcdbf95b0c6fab/datasets/01f09577059411a4b001d8f56df1ad30_productname",
+                "query": {
+                  "datasetName": "d994f116",
+                  "fields": [
+                    {
+                      "name": "productname",
+                      "expression": "`productname`"
+                    },
+                    {
+                      "name": "productname_associativity",
                       "expression": "COUNT_IF(`associative_filter_predicate_group`)"
                     }
                   ],
@@ -487,26 +878,32 @@
               "encodings": {
                 "fields": [
                   {
-                    "fieldName": "customername",
-                    "displayName": "customername",
-                    "queryName": "dashboards/01f095765b4a1e95b4dcdbf95b0c6fab/datasets/01f09576681714c4aabafa3021329a01_customername"
+                    "fieldName": "productname",
+                    "displayName": "productname",
+                    "queryName": "dashboards/01f095765b4a1e95b4dcdbf95b0c6fab/datasets/01f09576681714c4aabafa3021329a01_productname"
+                  },
+                  {
+                    "fieldName": "productname",
+                    "displayName": "productname",
+                    "queryName": "dashboards/01f095765b4a1e95b4dcdbf95b0c6fab/datasets/01f09577059411a4b001d8f56df1ad30_productname"
                   }
                 ]
               },
               "frame": {
-                "showTitle": true
+                "showTitle": true,
+                "title": "Product Name"
               }
             }
           },
           "position": {
             "x": 0,
             "y": 0,
-            "width": 1,
-            "height": 2
+            "width": 2,
+            "height": 1
           }
         }
       ],
-      "pageType": "PAGE_TYPE_GLOBAL_FILTERS"
+      "pageType": "PAGE_TYPE_CANVAS"
     },
     {
       "name": "604db7d1",
@@ -836,175 +1233,24 @@
       "pageType": "PAGE_TYPE_CANVAS"
     },
     {
-      "name": "18e1f6bf",
-      "displayName": "Cross Dataset Filter",
+      "name": "20b33143",
+      "displayName": "Global Filters",
       "layout": [
         {
           "widget": {
-            "name": "d1af56de",
+            "name": "193cc6fa",
             "queries": [
               {
-                "name": "main_query",
-                "query": {
-                  "datasetName": "d994f116",
-                  "fields": [
-                    {
-                      "name": "productname",
-                      "expression": "`productname`"
-                    },
-                    {
-                      "name": "sum(listprice)",
-                      "expression": "SUM(`listprice`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 3,
-              "widgetType": "bar",
-              "encodings": {
-                "x": {
-                  "fieldName": "productname",
-                  "scale": {
-                    "type": "categorical"
-                  },
-                  "displayName": "productname"
-                },
-                "y": {
-                  "fieldName": "sum(listprice)",
-                  "scale": {
-                    "type": "quantitative"
-                  },
-                  "displayName": "Sum of listprice"
-                }
-              }
-            }
-          },
-          "position": {
-            "x": 0,
-            "y": 1,
-            "width": 3,
-            "height": 6
-          }
-        },
-        {
-          "widget": {
-            "name": "b2c5d9a2",
-            "queries": [
-              {
-                "name": "main_query",
+                "name": "dashboards/01f095765b4a1e95b4dcdbf95b0c6fab/datasets/01f09576681714c4aabafa3021329a01_customername",
                 "query": {
                   "datasetName": "e26fe183",
                   "fields": [
                     {
-                      "name": "salesrep",
-                      "expression": "`salesrep`"
+                      "name": "customername",
+                      "expression": "`customername`"
                     },
                     {
-                      "name": "min(orderamt)",
-                      "expression": "MIN(`orderamt`)"
-                    },
-                    {
-                      "name": "q1(orderamt)",
-                      "expression": "PERCENTILE(`orderamt`, 0.25)"
-                    },
-                    {
-                      "name": "median(orderamt)",
-                      "expression": "MEDIAN(`orderamt`)"
-                    },
-                    {
-                      "name": "q3(orderamt)",
-                      "expression": "PERCENTILE(`orderamt`, 0.75)"
-                    },
-                    {
-                      "name": "max(orderamt)",
-                      "expression": "MAX(`orderamt`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              }
-            ],
-            "spec": {
-              "version": 3,
-              "widgetType": "box",
-              "encodings": {
-                "x": {
-                  "fieldName": "salesrep",
-                  "scale": {
-                    "type": "categorical"
-                  },
-                  "displayName": "salesrep"
-                },
-                "y": {
-                  "whiskerStart": {
-                    "fieldName": "min(orderamt)",
-                    "displayName": "Minimum orderamt"
-                  },
-                  "boxStart": {
-                    "fieldName": "q1(orderamt)",
-                    "displayName": "First Quartile of orderamt"
-                  },
-                  "boxMid": {
-                    "fieldName": "median(orderamt)",
-                    "displayName": "Median of orderamt"
-                  },
-                  "boxEnd": {
-                    "fieldName": "q3(orderamt)",
-                    "displayName": "Third Quartile of orderamt"
-                  },
-                  "whiskerEnd": {
-                    "fieldName": "max(orderamt)",
-                    "displayName": "Maximum orderamt"
-                  },
-                  "scale": {
-                    "type": "quantitative"
-                  }
-                }
-              }
-            }
-          },
-          "position": {
-            "x": 3,
-            "y": 1,
-            "width": 3,
-            "height": 6
-          }
-        },
-        {
-          "widget": {
-            "name": "ff2853bf",
-            "queries": [
-              {
-                "name": "dashboards/01f095765b4a1e95b4dcdbf95b0c6fab/datasets/01f09576681714c4aabafa3021329a01_productname",
-                "query": {
-                  "datasetName": "e26fe183",
-                  "fields": [
-                    {
-                      "name": "productname",
-                      "expression": "`productname`"
-                    },
-                    {
-                      "name": "productname_associativity",
-                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
-                    }
-                  ],
-                  "disaggregated": false
-                }
-              },
-              {
-                "name": "dashboards/01f095765b4a1e95b4dcdbf95b0c6fab/datasets/01f09577059411a4b001d8f56df1ad30_productname",
-                "query": {
-                  "datasetName": "d994f116",
-                  "fields": [
-                    {
-                      "name": "productname",
-                      "expression": "`productname`"
-                    },
-                    {
-                      "name": "productname_associativity",
+                      "name": "customername_associativity",
                       "expression": "COUNT_IF(`associative_filter_predicate_group`)"
                     }
                   ],
@@ -1018,28 +1264,422 @@
               "encodings": {
                 "fields": [
                   {
-                    "fieldName": "productname",
-                    "displayName": "productname",
-                    "queryName": "dashboards/01f095765b4a1e95b4dcdbf95b0c6fab/datasets/01f09576681714c4aabafa3021329a01_productname"
-                  },
-                  {
-                    "fieldName": "productname",
-                    "displayName": "productname",
-                    "queryName": "dashboards/01f095765b4a1e95b4dcdbf95b0c6fab/datasets/01f09577059411a4b001d8f56df1ad30_productname"
+                    "fieldName": "customername",
+                    "displayName": "customername",
+                    "queryName": "dashboards/01f095765b4a1e95b4dcdbf95b0c6fab/datasets/01f09576681714c4aabafa3021329a01_customername"
                   }
                 ]
               },
               "frame": {
-                "showTitle": true,
-                "title": "Product Name"
+                "showTitle": true
               }
             }
           },
           "position": {
             "x": 0,
             "y": 0,
-            "width": 2,
-            "height": 1
+            "width": 1,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS"
+    },
+    {
+      "name": "93561080",
+      "displayName": "Forecast",
+      "layout": [
+        {
+          "widget": {
+            "name": "7083b5c3",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "1ea7dfb9",
+                  "fields": [
+                    {
+                      "name": "weekly(orderdate)",
+                      "expression": "DATE_TRUNC(\"WEEK\", `orderdate`)"
+                    },
+                    {
+                      "name": "sum(orderamt)",
+                      "expression": "SUM(`orderamt`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "weekly(orderdate)",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(orderamt)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Weekly Raw"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 12,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "30931c29",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "6f105919",
+                  "fields": [
+                    {
+                      "name": "orderdate",
+                      "expression": "`orderdate`"
+                    },
+                    {
+                      "name": "orderamt",
+                      "expression": "`orderamt`"
+                    },
+                    {
+                      "name": "orderamt_forecast",
+                      "expression": "`orderamt_forecast`"
+                    },
+                    {
+                      "name": "orderamt_upper",
+                      "expression": "`orderamt_upper`"
+                    },
+                    {
+                      "name": "orderamt_lower",
+                      "expression": "`orderamt_lower`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "widgetType": "forecast-line",
+              "encodings": {
+                "x": {
+                  "fieldName": "orderdate",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "original": {
+                    "fieldName": "orderamt",
+                    "displayName": "Sum of orderamt"
+                  },
+                  "prediction": {
+                    "fieldName": "orderamt_forecast",
+                    "displayName": "Sum of orderamt_forecast"
+                  },
+                  "predictionUpper": {
+                    "fieldName": "orderamt_upper",
+                    "displayName": "Sum of orderamt_upper"
+                  },
+                  "predictionLower": {
+                    "fieldName": "orderamt_lower",
+                    "displayName": "Sum of orderamt_lower"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Weekly With Forecast"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 18,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "5a9f6388",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "1ea7dfb9",
+                  "fields": [
+                    {
+                      "name": "daily(orderdate)",
+                      "expression": "DATE_TRUNC(\"DAY\", `orderdate`)"
+                    },
+                    {
+                      "name": "sum(orderamt)",
+                      "expression": "SUM(`orderamt`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "daily(orderdate)",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(orderamt)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Daily Raw"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 24,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "a8f7d9bf",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "15c82a09",
+                  "fields": [
+                    {
+                      "name": "orderdate",
+                      "expression": "`orderdate`"
+                    },
+                    {
+                      "name": "orderamt",
+                      "expression": "`orderamt`"
+                    },
+                    {
+                      "name": "orderamt_forecast",
+                      "expression": "`orderamt_forecast`"
+                    },
+                    {
+                      "name": "orderamt_upper",
+                      "expression": "`orderamt_upper`"
+                    },
+                    {
+                      "name": "orderamt_lower",
+                      "expression": "`orderamt_lower`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "widgetType": "forecast-line",
+              "encodings": {
+                "x": {
+                  "fieldName": "orderdate",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "original": {
+                    "fieldName": "orderamt",
+                    "displayName": "Sum of orderamt"
+                  },
+                  "prediction": {
+                    "fieldName": "orderamt_forecast",
+                    "displayName": "Sum of orderamt_forecast"
+                  },
+                  "predictionUpper": {
+                    "fieldName": "orderamt_upper",
+                    "displayName": "Sum of orderamt_upper"
+                  },
+                  "predictionLower": {
+                    "fieldName": "orderamt_lower",
+                    "displayName": "Sum of orderamt_lower"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Daily Raw With Forecast"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 30,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "8398e10b",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "1ea7dfb9",
+                  "fields": [
+                    {
+                      "name": "monthly(orderdate)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `orderdate`)"
+                    },
+                    {
+                      "name": "sum(orderamt)",
+                      "expression": "SUM(`orderamt`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(orderdate)",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(orderamt)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Monthly Raw"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "cfe58bdf",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d3301888",
+                  "fields": [
+                    {
+                      "name": "orderdate",
+                      "expression": "`orderdate`"
+                    },
+                    {
+                      "name": "orderamt",
+                      "expression": "`orderamt`"
+                    },
+                    {
+                      "name": "orderamt_forecast",
+                      "expression": "`orderamt_forecast`"
+                    },
+                    {
+                      "name": "orderamt_upper",
+                      "expression": "`orderamt_upper`"
+                    },
+                    {
+                      "name": "orderamt_lower",
+                      "expression": "`orderamt_lower`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "widgetType": "forecast-line",
+              "encodings": {
+                "x": {
+                  "fieldName": "orderdate",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "original": {
+                    "fieldName": "orderamt",
+                    "displayName": "Sum of orderamt"
+                  },
+                  "prediction": {
+                    "fieldName": "orderamt_forecast",
+                    "displayName": "Sum of orderamt_forecast"
+                  },
+                  "predictionUpper": {
+                    "fieldName": "orderamt_upper",
+                    "displayName": "Sum of orderamt_upper"
+                  },
+                  "predictionLower": {
+                    "fieldName": "orderamt_lower",
+                    "displayName": "Sum of orderamt_lower"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Monthly With Forecast"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 6,
+            "height": 6
           }
         }
       ],

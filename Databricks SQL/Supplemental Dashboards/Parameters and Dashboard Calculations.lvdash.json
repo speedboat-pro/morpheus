@@ -1,6 +1,20 @@
 {
   "datasets": [
     {
+      "name": "00192782",
+      "displayName": "Days",
+      "queryLines": [
+        "With \n",
+        "base AS \n",
+        "(SELECT DISTINCT \n",
+        "  date_format(date_add(YEAR, 9, tpep_pickup_datetime), 'EEEE') AS `Day of week`\n",
+        ",  dayofweek(date_add(YEAR, 9, tpep_pickup_datetime)) AS daynumber\n",
+        "FROM samples.nyctaxi.trips \n",
+        "ORDER by 2)\n",
+        "SELECT * EXCEPT(daynumber)  from BASE "
+      ]
+    },
+    {
       "name": "58f3a8ef",
       "displayName": "NYC Taxi Data",
       "queryLines": [
@@ -51,17 +65,42 @@
       ]
     },
     {
-      "name": "00192782",
-      "displayName": "Days",
+      "name": "99ece230",
+      "displayName": "FieldChoice",
       "queryLines": [
-        "With \n",
-        "base AS \n",
-        "(SELECT DISTINCT \n",
-        "  date_format(date_add(YEAR, 9, tpep_pickup_datetime), 'EEEE') AS `Day of week`\n",
-        ",  dayofweek(date_add(YEAR, 9, tpep_pickup_datetime)) AS daynumber\n",
+        "Select 'Fare' as label\n",
+        "union\n",
+        "select 'Miles' as label"
+      ]
+    },
+    {
+      "name": "ecd7f82b",
+      "displayName": "Monthly Pickup Data from NYC Taxi Trips",
+      "queryLines": [
+        "SELECT \n",
+        "date_format(tpep_pickup_datetime, 'MMMM')  AS `Pickup Time`\n",
+        ", CASE WHEN :label = 'Miles' THEN trip_distance\n",
+        "ELSE fare_amount END as metric_value \n",
+        ", :label as `metric`\n",
         "FROM samples.nyctaxi.trips \n",
-        "ORDER by 2)\n",
-        "SELECT * EXCEPT(daynumber)  from BASE "
+        "WHERE trip_distance > 0\n"
+      ],
+      "parameters": [
+        {
+          "displayName": "label",
+          "keyword": "label",
+          "dataType": "STRING",
+          "defaultSelection": {
+            "values": {
+              "dataType": "STRING",
+              "values": [
+                {
+                  "value": "Fare"
+                }
+              ]
+            }
+          }
+        }
       ]
     }
   ],
@@ -249,6 +288,134 @@
             "y": 0,
             "width": 2,
             "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    },
+    {
+      "name": "72987eba",
+      "displayName": "Parameterized Data",
+      "layout": [
+        {
+          "widget": {
+            "name": "f6acafd2",
+            "queries": [
+              {
+                "name": "dashboards/01f0a93655e5148aac4257b7ef40c7e4/datasets/01f0a93662d7191489754d2e73be1f3c_label",
+                "query": {
+                  "datasetName": "99ece230",
+                  "fields": [
+                    {
+                      "name": "label",
+                      "expression": "`label`"
+                    },
+                    {
+                      "name": "label_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "parameter_dashboards/01f0a93655e5148aac4257b7ef40c7e4/datasets/01f0a9368ad21a818b73f3baec86b826_label",
+                "query": {
+                  "datasetName": "ecd7f82b",
+                  "parameters": [
+                    {
+                      "name": "label",
+                      "keyword": "label"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "label",
+                    "queryName": "dashboards/01f0a93655e5148aac4257b7ef40c7e4/datasets/01f0a93662d7191489754d2e73be1f3c_label"
+                  },
+                  {
+                    "parameterName": "label",
+                    "queryName": "parameter_dashboards/01f0a93655e5148aac4257b7ef40c7e4/datasets/01f0a9368ad21a818b73f3baec86b826_label"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Metric"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "90485964",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ecd7f82b",
+                  "fields": [
+                    {
+                      "name": "metric",
+                      "expression": "`metric`"
+                    },
+                    {
+                      "name": "Pickup Time",
+                      "expression": "`Pickup Time`"
+                    },
+                    {
+                      "name": "avg(metric_value)",
+                      "expression": "AVG(`metric_value`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "Pickup Time",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "avg(metric_value)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "metric",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 3,
+            "height": 6
           }
         }
       ],
