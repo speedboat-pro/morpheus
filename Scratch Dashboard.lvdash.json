@@ -1,0 +1,80 @@
+{
+  "datasets": [
+    {
+      "name": "734ed57c",
+      "displayName": "ca_orders",
+      "queryLines": [
+        "SELECT * FROM dbacademy.labuser11726860_1760460893.ca_orders"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "94089a05",
+      "displayName": "Untitled page",
+      "layout": [
+        {
+          "widget": {
+            "name": "b2cb7940",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "734ed57c",
+                  "fields": [
+                    {
+                      "name": "sum(orderamt)",
+                      "expression": "SUM(`orderamt`)"
+                    },
+                    {
+                      "name": "productid",
+                      "expression": "`productid`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "sum(orderamt)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "productid",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Revenue Share by Product"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "genieSpace": {
+      "isEnabled": false
+    }
+  }
+}

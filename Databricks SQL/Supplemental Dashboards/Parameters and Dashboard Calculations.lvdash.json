@@ -75,7 +75,7 @@
     },
     {
       "name": "ecd7f82b",
-      "displayName": "Monthly Pickup Data from NYC Taxi Trips",
+      "displayName": "Paramterized Column",
       "queryLines": [
         "SELECT \n",
         "date_format(tpep_pickup_datetime, 'MMMM')  AS `Pickup Time`\n",
