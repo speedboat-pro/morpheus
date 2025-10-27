@@ -1,0 +1,18 @@
+resources:
+  jobs:
+    Table_Trigger_Test:
+      name: Table Trigger Test
+      trigger:
+        pause_status: UNPAUSED
+        table_update:
+          table_names:
+            - dbacademy.????????????.table_trigger
+      tasks:
+        - task_key: test
+          notebook_task:
+            notebook_path: /Workspace/Users/????????????@vocareum.com/deploy-workloads-with-lakeflow-jobs-en_us-3.1.1/Deploy
+              Workloads with Lakeflow Jobs/0 - AGENDA
+            source: WORKSPACE
+      queue:
+        enabled: true
+      performance_target: PERFORMANCE_OPTIMIZED
