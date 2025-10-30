@@ -9,6 +9,10 @@ resources:
         periodic:
           interval: 1
           unit: DAYS
+      job_clusters:
+        - job_cluster_key: my_cluster_complex
+          new_cluster: ${var.cluster_complex}
+          
 
       #email_notifications:
       #  on_failure:
@@ -18,7 +22,10 @@ resources:
         - task_key: notebook_task
           notebook_task:
             notebook_path: ${var.my_notebook_path}/notebook.ipynb
-          variables:
+          #job_cluster_key: my_cluster_complex
+          #existing_cluster_id: {var.cluster_lkp}
+          
+
 
 
         - task_key: refresh_pipeline
