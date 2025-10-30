@@ -1,7 +1,7 @@
 # This is a Databricks asset bundle definition for zsdemo.
 # See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
 bundle:
-  name: zsdemo
+  name: dab_demo
   uuid: 9ecc980b-675e-40f7-bb01-c49839db5832
 
 include:
@@ -17,18 +17,35 @@ targets:
     mode: development
     default: true
     workspace:
-      host: https://dbc-28a28146-e9b6.cloud.databricks.com
+      host: https://dbc-9f911041-777e.cloud.databricks.com
 
   prod:
     mode: production
     workspace:
-      host: https://dbc-28a28146-e9b6.cloud.databricks.com
+      host: https://dbc-9f911041-777e.cloud.databricks.com
       # We explicitly deploy to /Workspace/Users/labuser12023982_1760008487@vocareum.com to make sure we only have a single copy.
       root_path: /Workspace/Users/labuser12023982_1760008487@vocareum.com/.bundle/${bundle.name}/${bundle.target}
     permissions:
       - user_name: labuser12023982_1760008487@vocareum.com
         level: CAN_MANAGE
 variables:
-  notebook_path: 
-    description: sample of noetbook path root
+  my_notebook_path: 
+    description: sample of notebook path root
     default: ../src
+  cluster_lkp:
+    description: cluster name via lookup
+    #alert, cluster_policy, cluster, dashboard, instance_pool, job, metastore, notification_destination, pipeline, query, service_principal, and warehouse
+    lookup:
+      cluster: labuser12398445_1761846841
+  cluster_complex:
+    description: cluster via complex type variable
+    type: complex
+    default:
+      spark_version: '13.2.x-scala2.11'
+      node_type_id: 'Standard_DS3_v2'
+      num_workers: 2
+      spark_conf:
+        spark.speculation: true
+        spark.databricks.delta.retentionDurationCheck.enabled: false
+
+    

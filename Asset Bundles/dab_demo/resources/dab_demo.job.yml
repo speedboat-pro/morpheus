@@ -1,8 +1,8 @@
 # The main job for zsdemo.
 resources:
   jobs:
-    zsdemo_job:
-      name: zsdemo_job
+    dab_demo_job:
+      name: dab_demo_job
 
       trigger:
         # Run this job every day, exactly one day from the last run; see https://docs.databricks.com/api/workspace/jobs/create#trigger
@@ -18,9 +18,11 @@ resources:
         - task_key: notebook_task
           notebook_task:
             notebook_path: ${var.my_notebook_path}/notebook.ipynb
+          variables:
+
 
         - task_key: refresh_pipeline
           depends_on:
             - task_key: notebook_task
           pipeline_task:
-            pipeline_id: ${resources.pipelines.zsdemo_pipeline.id}
+            pipeline_id: ${resources.pipelines.dab_demo_pipeline.id}

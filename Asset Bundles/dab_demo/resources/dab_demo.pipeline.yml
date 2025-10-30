@@ -1,8 +1,8 @@
 # The main pipeline for zsdemo
 resources:
   pipelines:
-    zsdemo_pipeline:
-      name: zsdemo_pipeline
+    dab_demo_pipeline:
+      name: dab_demo_pipeline
       catalog: dbacademy
       schema: ${workspace.current_user.short_name}
       serverless: true
