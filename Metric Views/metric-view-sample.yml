@@ -98,6 +98,13 @@ measures:
   - name: Change in Amount
     expr: MEASURE(`Total Amount for Current Month`) - MEASURE(`Total Amount for Previous Month`)    
 
+  - name: AmountChangeStatus
+    expr: >
+      CASE
+        WHEN MEASURE(`Change in Amount`) < 0 THEN 'Negative'
+        ELSE 'Positive'
+        END
+
 joins:
  - name: customer
    source: samples.tpch.customer
