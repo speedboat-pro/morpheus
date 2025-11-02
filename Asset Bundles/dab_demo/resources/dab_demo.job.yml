@@ -22,8 +22,8 @@ resources:
         - task_key: notebook_task
           notebook_task:
             notebook_path: ${var.my_notebook_path}/notebook.ipynb
-          #job_cluster_key: my_cluster_complex
-          #existing_cluster_id: ${var.cluster_lkp}
+          #  Uncomment Option One (for complex) : job_cluster_key: my_cluster_complex
+          #  Or Uncomment Option Two (for lookup): existing_cluster_id: ${var.cluster_lkp}
           
 
 
