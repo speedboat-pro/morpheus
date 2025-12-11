@@ -26,6 +26,19 @@ FROM range(5)
 
 -- COMMAND ----------
 
+-- MAGIC %python
+-- MAGIC from pyspark.sql.functions import col, transform
+-- MAGIC
+-- MAGIC result_df = spark.table('nested_data').select(
+-- MAGIC     col("key"),
+-- MAGIC     col("values"),
+-- MAGIC     transform(col("values"), lambda x: x + 1).alias("values_plus_one")
+-- MAGIC )
+-- MAGIC
+-- MAGIC display(result_df)
+
+-- COMMAND ----------
+
 SELECT  key,
         values,
         TRANSFORM(values, value -> value + 1) AS values_plus_one
