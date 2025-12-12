@@ -75,10 +75,10 @@ course_config = CourseConfig(course_code = "adewd",
                              install_min_time = "2 min",
                              install_max_time = "10 min",
                              remote_files = remote_files,
-                            #  supported_dbrs = ["11.3.x-scala2.12", "11.3.x-photon-scala2.12", "11.3.x-cpu-ml-scala2.12"],
-                            #  supported_dbrs = ["12.2.x-scala2.12", "12.2.x-photon-scala2.12", "12.2.x-cpu-ml-scala2.12"],
-                             supported_dbrs = ["14.3.x-scala2.12", "14.3.x-photon-scala2.12", "14.3.x-cpu-ml-scala2.12"],
-                             expected_dbrs = "14.3.x-scala2.12, 14.3.x-photon-scala2.12, 14.3.x-cpu-ml-scala2.12")
+                            #  supported_dbrs = ["11.3.x-scala2.13", "11.3.x-photon-scala2.13", "11.3.x-cpu-ml-scala2.13"],
+                            #  supported_dbrs = ["12.2.x-scala2.13", "12.2.x-photon-scala2.13", "12.2.x-cpu-ml-scala2.13"],
+                             supported_dbrs = ["17.3.x-scala2.13", "17.3.x-photon-scala2.13", "17.3.x-cpu-ml-scala2.13"],
+                             expected_dbrs = "17.3.x-scala2.13, 17.3.x-photon-scala2.13, 17.3.x-cpu-ml-scala2.13")
 
 # Defined here for the majority of lessons, 
 # and later modified on a per-lesson basis.
