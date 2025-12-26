@@ -21,8 +21,8 @@
         "  orderdate >= '2022-01-01'\n",
         "  AND orderdate <= '2022-12-31';"
       ],
-      "catalog": "dbacademy",
-      "schema": "labuser11726860_1760460893"
+      "catalog": "ctlg_db_training_12052025",
+      "schema": "sch_db_training_12052025"
     },
     {
       "name": "d994f116",
@@ -30,8 +30,8 @@
       "queryLines": [
         "SELECT * FROM ca_products;"
       ],
-      "catalog": "dbacademy",
-      "schema": "labuser11726860_1760460893"
+      "catalog": "ctlg_db_training_12052025",
+      "schema": "sch_db_training_12052025"
     },
     {
       "name": "b6fda01a",
@@ -1689,6 +1689,7 @@
   "uiSettings": {
     "theme": {
       "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
-    }
+    },
+    "applyModeEnabled": false
   }
 }

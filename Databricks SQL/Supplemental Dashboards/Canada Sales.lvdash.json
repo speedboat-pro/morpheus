@@ -1325,14 +1325,5 @@
       ],
       "pageType": "PAGE_TYPE_CANVAS"
     }
-  ],
-  "uiSettings": {
-    "theme": {
-      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
-    },
-    "genieSpace": {
-      "isEnabled": true,
-      "overrideId": "01f0b595639915eab53cf45f79ee2716"
-    }
-  }
+  ]
 }
