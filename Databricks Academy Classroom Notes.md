@@ -200,7 +200,17 @@
 [Blog and Technical Articles](#blog-and-technical-articles)
 
 # Resources {#resources}
+[Use ForEachBatch to write to arbitrary data sinks in pipelines](https://docs.databricks.com/aws/en/ldp/for-each-batch)
+[NEW: Install libraries from package repository](https://docs.databricks.com/aws/en/libraries/package-repositories)
+[NEW: Install libraries from workspace files](https://docs.databricks.com/aws/en/libraries/workspace-files-libraries)
+[Install libraries from a volume](https://docs.databricks.com/aws/en/libraries/volume-libraries)
+[NEW: Install libraries from object storage](https://docs.databricks.com/aws/en/libraries/object-storage-libraries)
+[NEW: Notebook-scoped Python libraries](https://docs.databricks.com/aws/en/libraries/notebooks-python-libraries)
+[Restart the Python process on Databricks]https://docs.databricks.com/aws/en/libraries/restart-python-process()
+[Notebook-scoped R libraries](https://docs.databricks.com/aws/en/libraries/notebooks-r-libraries)
+[Bundle configuration examples](https://docs.databricks.com/aws/en/dev-tools/bundles/examples)
 
+[Build a Python wheel file using Databricks Asset Bundles]()
 ## General Usage  {#general-usage}
 
 [Tutorials | Databricks](https://www.databricks.com/resources/demos/tutorials)   
@@ -227,7 +237,7 @@ Cluster configuration details
 [Serverless compute limitations](https://docs.databricks.com/aws/en/compute/serverless/limitations)   
 [Serverless Security](https://www.databricks.com/trust/security-features/serverless-security)  
 [Attribute serverless costs to departments and users with budget policies](https://www.databricks.com/blog/attribute-serverless-costs-departments-and-users-budget-policies)
-
+[Configure the serverless environment](https://docs.databricks.com/aws/en/compute/serverless/dependencies)
 ### Regions, Accounts and Workspaces {#regions,-accounts-and-workspaces}
 
 [Get started: Account and workspace setup](https://docs.databricks.com/user-guide/getting-started.html)   
@@ -294,7 +304,7 @@ Seeing custom UDF: [SQL UDF \- USER](https://docs.databricks.com/en/sql/language
 Python UDF Decorator: [https://spark.apache.org/docs/3.1.3/api/python/reference/api/pyspark.sql.functions.udf.html](https://spark.apache.org/docs/3.1.3/api/python/reference/api/pyspark.sql.functions.udf.html)   
 Pandas UDF Decorator: [https://spark.apache.org/docs/3.1.3/api/python/reference/api/pyspark.sql.functions.pandas\_udf.htm](https://spark.apache.org/docs/3.1.3/api/python/reference/api/pyspark.sql.functions.pandas_udf.html)  
 Vectorized UDF Blog post: [https://databricks.com/blog/2017/10/30/introducing-vectorized-udfs-for-pyspark.html](https://databricks.com/blog/2017/10/30/introducing-vectorized-udfs-for-pyspark.html)   
-Vectorized UDF Documentation: [https://spark.apache.org/docs/latest/api/python/user\_guide/sql/arrow\_pandas.html?highlight=arrow](https://spark.apache.org/docs/latest/api/python/user_guide/sql/arrow_pandas.html?highlight=arrow)  
+[pandas user-defined functions](https://docs.databricks.com/aws/en/udf/pandas)
 
 #### Structured Streaming {#structured-streaming}
 
@@ -376,7 +386,7 @@ System Tables
 
   	Python reference: [Lakeflow Declarative Pipelines Python language reference](https://docs.databricks.com/en/delta-live-tables/python-ref.html)
 
-  	SQL reference: [Lakeflow Declarative Pipelines SQL language reference](https://docs.databricks.com/en/delta-live-tables/sql-ref.html)
+  	SQL reference: [Lakeflow Declarative Pipelines SQL language reference](https://docs.databricks.com/aws/en/ldp/developer/sql-ref)
 
   Expectations: [Manage data quality with pipeline expectations](https://docs.databricks.com/en/delta-live-tables/expectations.html)
 
@@ -454,6 +464,7 @@ Structured Streaming:
 [Configure Structured Streaming batch size on Databricks](https://docs.databricks.com/en/structured-streaming/batch-size.html)    
 [Spark Streaming \- Spark 3.5.0 Documentation](https://spark.apache.org/docs/3.5.3/streaming-programming-guide.html#input-dstreams-and-receivers)   
 [File metadata column (**\_metadata.\*** in PySpark/Spark SQL)](https://docs.databricks.com/aws/en/ingestion/file-metadata-column)
+[Lakeflow Spark Declarative Pipelines Python language reference](https://docs.databricks.com/aws/en/ldp/developer/python-ref)
 
 #### Performance Optimization: {#performance-optimization:}
 
@@ -865,8 +876,12 @@ the ai\_query() SQL function [AWS](https://docs.databricks.com/en/sql/language-m
 [What is a dynamic value reference?](https://docs.databricks.com/en/workflows/jobs/parameter-value-references.html)  
 [Run jobs continuously](https://docs.databricks.com/en/jobs/continuous.html)  
 [Databricks Workflows Through Terraform](https://www.databricks.com/blog/2022/12/5/databricks-workflows-through-terraform.html)   
+[NEW: How to monitor the quality of your external model on production traffic](https://docs.databricks.com/aws/en/generative-ai/agent-evaluation/evaluating-production-traffic-fm/)
+[NEW: Extend the Assistant with agent skills](https://docs.databricks.com/aws/en/assistant/skills)
+[NEW: Alert on metric views](https://docs.databricks.com/aws/en/sql/user/alerts/index/)
+[NEW: MLflow tracking via DBSQL](https://docs.databricks.com/aws/en/mlflow3/genai/tracing/observe-with-traces/query-dbsql/)
 [Use task values to pass information between tasks](https://docs.databricks.com/en/jobs/task-values.html)  
-[https://docs.databricks.com/en/jobs/task-parameters.html](https://docs.databricks.com/en/jobs/task-parameters.html)  
+[Configure task parameters](https://docs.databricks.com/en/jobs/task-parameters.html)  
 [Schedule and orchestrate workflows](https://docs.databricks.com/en/jobs/index.html)  
 [Add email and system notifications for job events](https://docs.databricks.com/en/jobs/notifications.html)    
 [Databricks SDK for Python](https://docs.databricks.com/aws/en/dev-tools/sdk-python#create-a-job) \- Jobs   
