@@ -21,8 +21,8 @@
         "  orderdate >= '2022-01-01'\n",
         "  AND orderdate <= '2022-12-31';"
       ],
-      "catalog": "ctlg_db_training_12052025",
-      "schema": "sch_db_training_12052025"
+      "catalog": "dbacademy",
+      "schema": "labuser13851863_1772165894"
     },
     {
       "name": "d994f116",
@@ -30,8 +30,8 @@
       "queryLines": [
         "SELECT * FROM ca_products;"
       ],
-      "catalog": "ctlg_db_training_12052025",
-      "schema": "sch_db_training_12052025"
+      "catalog": "dbacademy",
+      "schema": "labuser13851863_1772165894"
     },
     {
       "name": "b6fda01a",
@@ -45,7 +45,7 @@
         "      orderdate >= '2024-01-01' AND orderdate <= '2024-12-31' ;"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser11726860_1760460893"
+      "schema": "labuser13851863_1772165894"
     },
     {
       "name": "1ea7dfb9",
@@ -66,7 +66,7 @@
         "  ON o.productid = p.productid\n"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser11726860_1760460893"
+      "schema": "labuser13851863_1772165894"
     },
     {
       "name": "6f105919",
@@ -139,7 +139,7 @@
         "    dates"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser11726860_1760460893"
+      "schema": "labuser13851863_1772165894"
     },
     {
       "name": "15c82a09",
@@ -212,7 +212,7 @@
         "    dates"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser11726860_1760460893"
+      "schema": "labuser13851863_1772165894"
     },
     {
       "name": "d3301888",
@@ -285,7 +285,7 @@
         "    dates"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser11726860_1760460893"
+      "schema": "labuser13851863_1772165894"
     }
   ],
   "pages": [

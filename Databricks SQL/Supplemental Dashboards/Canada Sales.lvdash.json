@@ -26,7 +26,7 @@
         ";"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser11726860_1761828853"
+      "schema": "labuser13851863_1772165894"
     },
     {
       "name": "dbda54bb",
@@ -40,7 +40,7 @@
         "      orderdate >= '2024-01-01' AND orderdate <= '2024-12-31' ;"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser11726860_1761828853"
+      "schema": "labuser13851863_1772165894"
     },
     {
       "name": "fd632692",
@@ -54,7 +54,7 @@
         "WHERE YEAR(orders.orderdate) = 2023"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser11726860_1761828853"
+      "schema": "labuser13851863_1772165894"
     },
     {
       "name": "b566b06d",
@@ -81,7 +81,7 @@
         }
       ],
       "catalog": "dbacademy",
-      "schema": "labuser11726860_1761828853"
+      "schema": "labuser13851863_1772165894"
     },
     {
       "name": "b1e8d5ed",
@@ -117,7 +117,7 @@
         }
       ],
       "catalog": "dbacademy",
-      "schema": "labuser11726860_1761828853"
+      "schema": "labuser13851863_1772165894"
     },
     {
       "name": "d389cee9",
@@ -126,7 +126,7 @@
         "SELECT explode(array('Year','Month','Date')) as type"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser11726860_1761828853"
+      "schema": "labuser13851863_1772165894"
     }
   ],
   "pages": [
@@ -1325,5 +1325,11 @@
       ],
       "pageType": "PAGE_TYPE_CANVAS"
     }
-  ]
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
 }
