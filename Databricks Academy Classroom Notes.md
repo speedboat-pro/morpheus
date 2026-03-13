@@ -1,6 +1,6 @@
 # ![][image1]
 
-# CLASSROOM NOTES
+# CLASSROOM NOTES 
 
 [Resources](#resources)
 
