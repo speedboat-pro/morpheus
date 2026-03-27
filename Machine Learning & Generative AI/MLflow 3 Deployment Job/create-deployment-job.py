@@ -15,27 +15,32 @@
 
 # COMMAND ----------
 
-# DBTITLE 1,Set up MLflow
+repo_name = dbutils.widgets.get("repo_name")
+model_name = dbutils.widgets.get("model_name")
+catalog_name  = dbutils.widgets.get("catalog_name")
+schema_name  = dbutils.widgets.get("schema_name")
+model_version = dbutils.widgets.get("model_version")
 
 # COMMAND ----------
 
-user = dbutils.widgets.get("user")
-repo_name = dbutils.widgets.get("repo_name")
-
+# DBTITLE 1,Set up MLflow
+current_user = spark.sql("SELECT current_user()").first()[0]
+if schema_name == "":
+  schema_name = current_user.split("@")[0].replace(".", "_").replace("-", "_")
 
 # COMMAND ----------
 
 # REQUIRED: Update these values as necessary
-model_name = f"dbacademy.{user.split('@')[0]}.custom_ml_model" # The name of the already created UC Model
+#model_name = f"dbacademy.{user.split('@')[0]}." # The name of the already created UC Model
 model_version = "1" # The version of the already created UC Model
 job_name = "example_deployment_job" # The desired name of the deployment job
 
 # REQUIRED: Create notebooks for each task and populate the notebook path here, replacing the INVALID PATHS LISTED BELOW.
 # These paths should correspond to where you put the notebooks templated from the example deployment jobs template notebook
 # in your Databricks workspace. Choose an evaluation notebook based on if the model is for GenAI or classic ML
-evaluation_notebook_path = f"/Workspace/Users/{user}/{repo_name}/Machine Learning & Generative AI/MLflow 3 Deployment Job//evaluation"
-approval_notebook_path = f"/Workspace/Users/{user}/{repo_name}/Machine Learning & Generative AI/MLflow 3 Deployment Job//approval"
-deployment_notebook_path = f"/Workspace/Users/{user}/{repo_name}/Machine Learning & Generative AI/MLflow 3 Deployment Job//deployment"
+evaluation_notebook_path = f"/Workspace/Users/{current_user}/{repo_name}/Machine Learning & Generative AI/MLflow 3 Deployment Job/evaluation_classic"
+approval_notebook_path = f"/Workspace/Users/{current_user}/{repo_name}/Machine Learning & Generative AI/MLflow 3 Deployment Job/approval"
+deployment_notebook_path = f"/Workspace/Users/{current_user}/{repo_name}/Machine Learning & Generative AI/MLflow 3 Deployment Job/deployment"
 
 # COMMAND ----------
 
@@ -83,7 +88,9 @@ print("\nDocumentation: \nAWS: https://docs.databricks.com/aws/mlflow/deployment
 
 # COMMAND ----------
 
-model_name
+full_model_name = f"{catalog_name}.{schema_name}.{model_name}"
+# Optionally, you can programmatically link the deployment job to a UC model
+full_model_name
 
 # COMMAND ----------
 
@@ -95,10 +102,11 @@ from mlflow.tracking.client import MlflowClient
 client = MlflowClient(registry_uri="databricks-uc")
 
 try:
-  if client.get_registered_model(model_name):
-    client.update_registered_model(model_name, deployment_job_id=created_job.job_id)
+  if client.get_registered_model(full_model_name):
+    client.update_registered_model(full_model_name, deployment_job_id="")
+    client.update_registered_model(full_model_name, deployment_job_id=created_job.job_id)
 except mlflow.exceptions.RestException:
-  client.create_registered_model(model_name, deployment_job_id=created_job.job_id)
+  client.create_registered_model(full_model_name, deployment_job_id=created_job.job_id)
 
 # COMMAND ----------
 
