@@ -15,6 +15,14 @@
 
 # COMMAND ----------
 
+dbutils.widgets.text("repo_name",'Speedboat Supplemental')
+dbutils.widgets.text("model_name", 'mlflow3_model')
+dbutils.widgets.text("catalog_name",'dbacademy')
+dbutils.widgets.text("schema_name",'')
+dbutils.widgets.text("model_version",'1')
+
+# COMMAND ----------
+
 repo_name = dbutils.widgets.get("repo_name")
 model_name = dbutils.widgets.get("model_name")
 catalog_name  = dbutils.widgets.get("catalog_name")
@@ -32,7 +40,7 @@ if schema_name == "":
 
 # REQUIRED: Update these values as necessary
 #model_name = f"dbacademy.{user.split('@')[0]}." # The name of the already created UC Model
-model_version = "1" # The version of the already created UC Model
+ # The version of the already created UC Model
 job_name = "example_deployment_job" # The desired name of the deployment job
 
 # REQUIRED: Create notebooks for each task and populate the notebook path here, replacing the INVALID PATHS LISTED BELOW.
