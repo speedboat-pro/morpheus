@@ -26,7 +26,7 @@
         ";"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser13851863_1772165894"
+      "schema": "labuser11552657_1775157537"
     },
     {
       "name": "dbda54bb",
@@ -40,7 +40,7 @@
         "      orderdate >= '2024-01-01' AND orderdate <= '2024-12-31' ;"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser13851863_1772165894"
+      "schema": "labuser11552657_1775157537"
     },
     {
       "name": "fd632692",
@@ -54,7 +54,7 @@
         "WHERE YEAR(orders.orderdate) = 2023"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser13851863_1772165894"
+      "schema": "labuser11552657_1775157537"
     },
     {
       "name": "b566b06d",
@@ -81,7 +81,7 @@
         }
       ],
       "catalog": "dbacademy",
-      "schema": "labuser13851863_1772165894"
+      "schema": "labuser11552657_1775157537"
     },
     {
       "name": "b1e8d5ed",
@@ -117,7 +117,7 @@
         }
       ],
       "catalog": "dbacademy",
-      "schema": "labuser13851863_1772165894"
+      "schema": "labuser11552657_1775157537"
     },
     {
       "name": "d389cee9",
@@ -126,7 +126,49 @@
         "SELECT explode(array('Year','Month','Date')) as type"
       ],
       "catalog": "dbacademy",
-      "schema": "labuser13851863_1772165894"
+      "schema": "labuser11552657_1775157537"
+    },
+    {
+      "name": "c8d2efd8",
+      "displayName": "AI Query",
+      "queryLines": [
+        "SELECT \n",
+        "  o.orderid,\n",
+        "  o.orderdate,\n",
+        "  o.quantity,\n",
+        "  o.orderamt,\n",
+        "  o.salesrep,\n",
+        "  c.customerid,\n",
+        "  c.customername,\n",
+        "  c.city,\n",
+        "  c.province\n",
+        "FROM dbacademy.labuser11552657_1775157537.ca_orders o\n",
+        "JOIN dbacademy.labuser11552657_1775157537.ca_customers c\n",
+        "  ON o.customerid = c.customerid\n",
+        "WHERE YEAR(o.orderdate) = 2023"
+      ],
+      "catalog": "dbacademy",
+      "schema": "labuser11552657_1775157537"
+    },
+    {
+      "name": "edd43fd4",
+      "displayName": "Untitled dataset",
+      "queryLines": [
+        "SELECT \n",
+        "  o.orderid,\n",
+        "  o.orderdate,\n",
+        "  o.quantity,\n",
+        "  o.orderamt,\n",
+        "  o.salesrep,\n",
+        "  c.customerid,\n",
+        "  c.customername,\n",
+        "  c.city,\n",
+        "  c.province\n",
+        "FROM dbacademy.labuser11552657_1775157537.ca_orders o\n",
+        "JOIN dbacademy.labuser11552657_1775157537.ca_customers c\n",
+        "  ON o.customerid = c.customerid\n",
+        "WHERE YEAR(o.orderdate) = 2023"
+      ]
     }
   ],
   "pages": [
@@ -528,7 +570,8 @@
             "name": "bafb009c",
             "multilineTextboxSpec": {
               "lines": [
-                "![newlogo4_sm](files/images/ai-bi-for-data-analysts-1.1.0/newlogo4_sm.png)"
+                "[Databricks](https://databricks.com)\n",
+                "![newlogo4\\_sm](https://mms.businesswire.com/media/20210414005530/en/617986/5/Sleep\\_Number\\_logo\\_May\\_2017.jpg)"
               ]
             }
           },
@@ -621,6 +664,49 @@
           "position": {
             "x": 0,
             "y": 29,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "e79ef145",
+            "queries": [
+              {
+                "name": "19942d0ae2da494294726ad9fc74c80e",
+                "query": {
+                  "datasetName": "edd43fd4",
+                  "fields": [
+                    {
+                      "name": "orderdate",
+                      "expression": "`orderdate`"
+                    },
+                    {
+                      "name": "column_42dc5da687",
+                      "expression": "SUM(`orderamt`)"
+                    },
+                    {
+                      "name": "province",
+                      "expression": "`province`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 0,
+              "viz_spec": {
+                "display_name": "Notebook Viz",
+                "viz_type": "CHART",
+                "serialized_options": "{\"isAggregationOn\":true,\"series\":{\"error_y\":{\"type\":\"data\",\"visible\":true},\"stacking\":null},\"coefficient\":1,\"yAxis\":[{\"type\":\"-\"},{\"opposite\":true,\"type\":\"-\"}],\"columnConfigurationMap\":{\"series\":{\"column\":\"province\",\"id\":\"column_42dc5da685\"},\"x\":{\"column\":\"orderdate\",\"id\":\"column_42dc5da683\"},\"y\":[{\"column\":\"orderamt\",\"id\":\"column_42dc5da687\",\"transform\":\"SUM\"}]},\"alignYAxesAtZero\":true,\"direction\":{\"type\":\"counterclockwise\"},\"swappedAxes\":false,\"percentFormat\":\"0[.]00%\",\"textFormat\":\"\",\"legend\":{\"traceorder\":\"normal\"},\"globalSeriesType\":\"line\",\"version\":2,\"sizemode\":\"diameter\",\"seriesOptions\":{\"column_42dc5da687\":{\"type\":\"line\",\"yAxis\":0}},\"error_y\":{\"type\":\"data\",\"visible\":true},\"sortX\":true,\"showDataLabels\":false,\"missingValuesAsZero\":true,\"useAggregationsUi\":true,\"numberFormat\":\"0,0.[00000]\",\"dateTimeFormat\":\"DD/MM/YYYY HH:mm\",\"sortY\":true,\"valuesOptions\":{},\"xAxis\":{\"labels\":{\"enabled\":true},\"type\":\"-\"}}",
+                "query_name": "19942d0ae2da494294726ad9fc74c80e"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 35,
             "width": 3,
             "height": 6
           }
@@ -1064,7 +1150,7 @@
           "position": {
             "x": 0,
             "y": 1,
-            "width": 3,
+            "width": 6,
             "height": 6
           }
         },
@@ -1127,9 +1213,9 @@
             }
           },
           "position": {
-            "x": 3,
+            "x": 6,
             "y": 1,
-            "width": 3,
+            "width": 6,
             "height": 6
           }
         },
@@ -1197,12 +1283,83 @@
           "position": {
             "x": 0,
             "y": 0,
-            "width": 2,
+            "width": 4,
             "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "dee6e342",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "c8d2efd8",
+                  "fields": [
+                    {
+                      "name": "salesrep",
+                      "expression": "`salesrep`"
+                    },
+                    {
+                      "name": "monthly(orderdate)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `orderdate`)"
+                    },
+                    {
+                      "name": "sum(orderamt)",
+                      "expression": "SUM(`orderamt`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Total Sales by Order Month",
+                "showTitle": true
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(orderdate)",
+                  "displayName": "Order Month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(orderamt)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "CAD",
+                    "abbreviation": "compact"
+                  },
+                  "displayName": "Total Sales",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "salesrep",
+                  "displayName": "Sales Rep",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 7,
+            "width": 6,
+            "height": 6
           }
         }
       ],
-      "pageType": "PAGE_TYPE_CANVAS"
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
     },
     {
       "name": "c1d26fda",
@@ -1324,6 +1481,59 @@
         }
       ],
       "pageType": "PAGE_TYPE_CANVAS"
+    },
+    {
+      "name": "ea740f35",
+      "displayName": "Global Filters",
+      "layout": [
+        {
+          "widget": {
+            "name": "8bca2f1b",
+            "queries": [
+              {
+                "name": "dashboards/01f12ed4e2ca1a63868f3bc22ea706db/datasets/01f12ed4e2ca1bc4ac6633800c5ca66c_province",
+                "query": {
+                  "datasetName": "f9be8cee",
+                  "fields": [
+                    {
+                      "name": "province",
+                      "expression": "`province`"
+                    },
+                    {
+                      "name": "province_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "province",
+                    "queryName": "dashboards/01f12ed4e2ca1a63868f3bc22ea706db/datasets/01f12ed4e2ca1bc4ac6633800c5ca66c_province"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS",
+      "layoutVersion": "GRID_V1"
     }
   ],
   "uiSettings": {

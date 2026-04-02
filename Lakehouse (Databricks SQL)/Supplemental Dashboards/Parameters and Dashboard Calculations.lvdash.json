@@ -141,16 +141,13 @@
               "encodings": {
                 "x": {
                   "fieldName": "daily(Dropoff Time)",
+                  "displayName": "Dropoff Time",
                   "scale": {
                     "type": "temporal"
-                  },
-                  "displayName": "Dropoff Time"
+                  }
                 },
                 "y": {
                   "fieldName": "measure(Cost per Mile)",
-                  "scale": {
-                    "type": "quantitative"
-                  },
                   "format": {
                     "type": "number-currency",
                     "currencyCode": "USD",
@@ -160,14 +157,17 @@
                       "places": 2
                     }
                   },
-                  "displayName": "Cost per Mile"
+                  "displayName": "Cost per Mile",
+                  "scale": {
+                    "type": "quantitative"
+                  }
                 },
                 "color": {
                   "fieldName": "Route Direction",
+                  "displayName": "Route Direction",
                   "scale": {
                     "type": "categorical"
-                  },
-                  "displayName": "Route Direction"
+                  }
                 }
               }
             }
