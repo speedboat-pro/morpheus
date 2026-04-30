@@ -1,0 +1,43 @@
+version: 1.1
+#TODO: convert to using samples.tpch.orders
+#https://docs.databricks.com/aws/en/business-semantics/metric-views/materialization
+source: prod.operations.orders_enriched_view
+
+filter: revenue > 0
+
+dimensions:
+  - name: category
+    expr: substring(category, 5)
+
+  - name: color
+    expr: color
+
+measures:
+  - name: total_revenue
+    expr: SUM(revenue)
+
+  - name: number_of_suppliers
+    expr: COUNT(DISTINCT supplier_id)
+
+materialization:
+  schedule: every 6 hours
+  mode: relaxed
+
+  materialized_views:
+    - name: baseline
+      type: unaggregated
+
+    - name: revenue_breakdown
+      type: aggregated
+      dimensions:
+        - category
+        - color
+      measures:
+        - total_revenue
+
+    - name: suppliers_by_category
+      type: aggregated
+      dimensions:
+        - category
+      measures:
+        - number_of_suppliers
