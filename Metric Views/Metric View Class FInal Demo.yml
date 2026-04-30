@@ -14,8 +14,6 @@ joins:
 filter: YEAR(orders.o_orderdate) > 1994
 
 dimensions:
-  - name: order_year
-    expr: "DATE(DATE_TRUNC('year',orders.o_orderdate))"
   - name: order_year_quarter
     expr: "CONCAT(YEAR(orders.o_orderdate), '-Q', QUARTER(orders.o_orderdate))"
   - name: l_orderkey
@@ -71,7 +69,7 @@ dimensions:
     display_name: Order ID
     synonyms:
       - order identifier
-      - receipt number
+      - receipt number      
   - name: order_date
     expr: orders.o_orderdate
     display_name: Order Date
@@ -113,6 +111,8 @@ dimensions:
         WHEN orders.o_orderstatus = 'F' THEN 'Final'
         ELSE 'Error'
       END
+  - name: order_year
+    expr: "DATE(DATE_TRUNC('year',order_date))"
 
 measures:
   - name: total_revenue
