@@ -1,0 +1,179 @@
+version: 1.1
+
+source: samples.tpch.lineitem
+
+joins:
+  - name: orders
+    source: samples.tpch.orders
+    "on": orders.o_orderkey = source.l_orderkey
+    joins:
+      - name: customers
+        source: samples.tpch.customer
+        "on": orders.o_custkey = customers.c_custkey
+
+filter: YEAR(orders.o_orderdate) > 1994
+
+dimensions:
+  - name: order_year
+    expr: "DATE(DATE_TRUNC('year',orders.o_orderdate))"
+  - name: order_year_quarter
+    expr: "CONCAT(YEAR(orders.o_orderdate), '-Q', QUARTER(orders.o_orderdate))"
+  - name: l_orderkey
+    expr: source.l_orderkey
+    display_name: L Orderkey
+  - name: l_partkey
+    expr: source.l_partkey
+    display_name: L Partkey
+  - name: l_suppkey
+    expr: source.l_suppkey
+    display_name: L Suppkey
+  - name: l_linenumber
+    expr: source.l_linenumber
+    display_name: L Linenumber
+  - name: l_quantity
+    expr: source.l_quantity
+    display_name: L Quantity
+  - name: l_extendedprice
+    expr: source.l_extendedprice
+    display_name: L Extendedprice
+  - name: l_discount
+    expr: source.l_discount
+    display_name: L Discount
+  - name: l_tax
+    expr: source.l_tax
+    display_name: L Tax
+  - name: l_returnflag
+    expr: source.l_returnflag
+    display_name: L Returnflag
+  - name: l_linestatus
+    expr: source.l_linestatus
+    display_name: L Linestatus
+  - name: l_shipdate
+    expr: source.l_shipdate
+    display_name: L Shipdate
+  - name: l_commitdate
+    expr: source.l_commitdate
+    display_name: L Commitdate
+  - name: l_receiptdate
+    expr: source.l_receiptdate
+    display_name: L Receiptdate
+  - name: l_shipinstruct
+    expr: source.l_shipinstruct
+    display_name: L Shipinstruct
+  - name: l_shipmode
+    expr: source.l_shipmode
+    display_name: L Shipmode
+  - name: l_comment
+    expr: source.l_comment
+    display_name: L Comment
+  - name: order_ID
+    expr: orders.o_orderkey
+    display_name: Order ID
+    synonyms:
+      - order identifier
+      - receipt number
+  - name: order_date
+    expr: orders.o_orderdate
+    display_name: Order Date
+  - name: shipping_mode
+    expr: source.l_shipmode
+    display_name: Shipping Mode
+  - name: ship_date
+    expr: source.l_shipdate
+    display_name: Ship Date
+    format:
+      type: date
+      date_format: locale_short_month
+      leading_zeros: false
+  - name: order_delay
+    expr: "DATEDIFF(source.l_shipdate,orders.o_orderdate)"
+    display_name: Order Delay in Days
+  - name: order_delay_status
+    expr: |-
+      CASE
+          WHEN order_delay < 0 THEN 'Item Shipped Before Order!'
+          WHEN order_delay BETWEEN 0 AND 2 THEN '0-2 days'
+          WHEN order_delay BETWEEN 2 AND 4 THEN '2-4 days'
+          ELSE '5+ days'
+      END
+    display_name: Order Delay Status
+  - name: order_delay_bucket
+    expr: |-
+      CASE
+         WHEN order_delay BETWEEN 0 AND 2 THEN '0-2 days'
+         WHEN order_delay BETWEEN 2 AND 4 THEN '2-4 days'
+         ELSE '5+ days'
+      END
+    comment: References the order_delay dimension for composability
+  - name: Order Status
+    expr: |-
+      CASE
+        WHEN orders.o_orderstatus = 'O' THEN 'Open'
+        WHEN orders.o_orderstatus = 'P' THEN 'Processing'
+        WHEN orders.o_orderstatus = 'F' THEN 'Final'
+        ELSE 'Error'
+      END
+
+measures:
+  - name: total_revenue
+    expr: SUM(source.l_extendedprice)
+  - name: current_year_sales
+    expr: MEASURE(total_revenue)
+    window:
+      - order: order_year
+        semiadditive: last
+        range: current
+    display_name: Current Year Sales
+  - name: count
+    expr: COUNT(*)
+    comment: Represents the total number of rows in the dataset. Use this measure
+      to count all
+    display_name: Count
+  - name: total_item_count
+    expr: COUNT(source.l_orderkey)
+    display_name: Total Item Count
+  - name: total_distinct_orders
+    expr: COUNT(DISTINCT source.l_orderkey)
+    display_name: Total Distinct Orders
+  - name: revenue_less_discounts
+    expr: SUM(source.l_extendedprice * (1 - source.l_discount))
+    display_name: Total Revenue Less Discounts ($)
+  - name: average_discount_pct
+    expr: AVG(source.l_discount)
+    display_name: Average Discount (%)
+    format:
+      type: percentage
+      decimal_places:
+        type: exact
+        places: 2
+  - name: item_return_rate_pct
+    expr: |-
+      SUM(CASE WHEN source.l_returnflag = 'R'
+               THEN 1
+               ELSE 0
+          END)
+      / COUNT(*)
+    display_name: Item Return Rate (%)
+    format:
+      type: percentage
+      decimal_places:
+        type: exact
+        places: 2
+  - name: last_year_sales
+    expr: MEASURE(total_revenue)
+    window:
+      - order: order_year
+        semiadditive: last
+        range: trailing 1 year
+    display_name: Last Year Sales
+  - name: yoy_growth_pct
+    expr: |-
+      ( MEASURE(current_year_sales) - MEASURE(last_year_sales) )
+      /
+      MEASURE(last_year_sales)
+    display_name: YoY Growth (%)
+    format:
+      type: percentage
+      decimal_places:
+        type: exact
+        places: 2
