@@ -21,3 +21,4 @@ dbdemos.install('uc-04-system-tables',use_current_cluster=True)
 # COMMAND ----------
 
 
+
