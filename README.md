@@ -7,7 +7,7 @@
 A compendium of custom notebooks written in doing tailored training and architectural engagements
 
 ## Topics Covered
-- Asset Bundles
+- Automation Bundles
 - Data Engineering
 - Databricks SQL
 - LakeFlow Jobs
