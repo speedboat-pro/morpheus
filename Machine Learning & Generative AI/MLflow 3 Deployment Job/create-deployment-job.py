@@ -18,7 +18,7 @@
 dbutils.widgets.text("repo_name",'Speedboat Supplemental')
 dbutils.widgets.text("model_name", 'mlflow3_model')
 dbutils.widgets.text("catalog_name",'dbacademy')
-dbutils.widgets.text("schema_name",'')
+dbutils.widgets.text("schema_name",'labuser14305304_1784835776')
 dbutils.widgets.text("model_version",'1')
 
 # COMMAND ----------
