@@ -597,6 +597,29 @@ display(spark.sql(f"""
 
 # COMMAND ----------
 
+import os
+from openai import OpenAI
+import mlflow
+from databricks.sdk import WorkspaceClient
+
+w = WorkspaceClient()
+mlflow.openai.autolog()
+
+# The workspace client provides the token and host automatically
+token = dbutils.notebook.entry_point.getDbutils().notebook().getContext().apiToken().get()
+host = w.config.host
+
+client = OpenAI(
+    api_key=token,
+    base_url=f"{host}/serving-endpoints",
+)
+
+# COMMAND ----------
+
+endpoint_name = dbutils.widgets.get("endpoint_name")
+
+# COMMAND ----------
+
 # DBTITLE 1,Exercise 6b - Knowledge Assistant Query
 # Step 2: Ask the Knowledge Assistant the same type of question
 # Compare the richness of the natural language response with the structured data
