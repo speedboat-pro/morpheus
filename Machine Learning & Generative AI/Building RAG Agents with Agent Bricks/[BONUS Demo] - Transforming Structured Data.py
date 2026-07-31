@@ -146,13 +146,13 @@ print(f"Structured Table: {STRUCTURED_TABLE}")
 # MAGIC ),
 # MAGIC elements AS (
 # MAGIC   SELECT
-# MAGIC     element.value:type::STRING AS element_type,
-# MAGIC     element.value:content::STRING AS content,
-# MAGIC     element.value:bbox[0]::DOUBLE AS x_min,
-# MAGIC     element.value:bbox[1]::DOUBLE AS y_min,
-# MAGIC     element.value:bbox[2]::DOUBLE AS x_max,
-# MAGIC     element.value:bbox[3]::DOUBLE AS y_max,
-# MAGIC     element.value:page::INT AS page_num
+# MAGIC try_variant_get(element.value, '$.type') AS element_type,
+# MAGIC try_variant_get(element.value, '$.content') AS content,
+# MAGIC     try_variant_get(element.value, '$.bbox[0].coord[0]') AS x_min,
+# MAGIC     try_variant_get(element.value, '$.bbox[0].coord[1]') AS y_min,
+# MAGIC     try_variant_get(element.value, '$.bbox[0].coord[2]') AS x_max,
+# MAGIC     try_variant_get(element.value, '$.bbox[0].coord[3]') AS y_max,
+# MAGIC try_variant_get(element.value, '$.page') AS page_num
 # MAGIC   FROM parsed,
 # MAGIC     LATERAL variant_explode(parsed.parsed:document:elements) AS element
 # MAGIC   WHERE element.value:content IS NOT NULL
@@ -160,13 +160,13 @@ print(f"Structured Table: {STRUCTURED_TABLE}")
 # MAGIC SELECT
 # MAGIC   element_type,
 # MAGIC   SUBSTRING(content, 1, 60) AS content_preview,
-# MAGIC   page_num,
-# MAGIC   ROUND(x_min, 2) AS x_min,
-# MAGIC   ROUND(y_min, 2) AS y_min,
-# MAGIC   ROUND(x_max - x_min, 2) AS width,
-# MAGIC   ROUND(y_max - y_min, 2) AS height
+# MAGIC   CAST(page_num AS INT) AS page_num,
+# MAGIC   ROUND(CAST(x_min AS DOUBLE), 2) AS x_min,
+# MAGIC   ROUND(CAST(y_min AS DOUBLE), 2) AS y_min,
+# MAGIC   ROUND(CAST(x_max AS DOUBLE) - CAST(x_min AS DOUBLE), 2) AS width,
+# MAGIC   ROUND(CAST(y_max AS DOUBLE) - CAST(y_min AS DOUBLE), 2) AS height
 # MAGIC FROM elements
-# MAGIC ORDER BY page_num, y_min
+# MAGIC ORDER BY CAST(page_num AS INTEGER), y_min
 # MAGIC LIMIT 20
 
 # COMMAND ----------
@@ -325,10 +325,10 @@ print(f"Structured Table: {STRUCTURED_TABLE}")
 # MAGIC     element.value:content::STRING AS content,
 # MAGIC     element.value:page::INT AS page_number,
 # MAGIC     -- Extract bbox as individual columns for spatial queries
-# MAGIC     element.value:bbox[0]::DOUBLE AS bbox_left,
-# MAGIC     element.value:bbox[1]::DOUBLE AS bbox_top,
-# MAGIC     element.value:bbox[2]::DOUBLE AS bbox_right,
-# MAGIC     element.value:bbox[3]::DOUBLE AS bbox_bottom,
+# MAGIC     element.value:bbox[0]:coord[0]::DOUBLE AS bbox_left,
+# MAGIC     element.value:bbox[0]:coord[1]::DOUBLE AS bbox_top,
+# MAGIC     element.value:bbox[0]:coord[2]::DOUBLE AS bbox_right,
+# MAGIC     element.value:bbox[0]:coord[3]::DOUBLE AS bbox_bottom,
 # MAGIC     -- Compute derived fields
 # MAGIC     LENGTH(element.value:content::STRING) AS content_length,
 # MAGIC     -- Use LAG/LEAD for document flow analysis
