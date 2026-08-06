@@ -1,0 +1,8 @@
+resources:
+  dashboards:
+    canadian_sales_dashboard:
+      display_name: "Minkin - DrDrew - Canadian Sales"
+      file_path: ../src/canadian_sales_dashboard.lvdash.json
+      warehouse_id: ${var.warehouse_id}
+      dataset_catalog: ${var.catalog}
+      dataset_schema: ${var.schema}

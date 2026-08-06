@@ -1,0 +1,39 @@
+# Declarative Automation Bundle configuration, more info here: https://docs.databricks.com/en/dev-tools/bundles/settings.html
+bundle:
+  name: "data_analysis"
+
+variables:
+  warehouse_id:
+    description: "SQL warehouse ID for dashboard queries"
+    lookup:
+      warehouse: "shared_warehouse"
+  catalog:
+    description: "Unity Catalog catalog for dashboard datasets"
+    default: ${workspace.current_user.short_name}
+  schema:
+    description: "Schema for dashboard datasets"
+    default: "aibi_dashboards"
+
+include:
+  - resources/*.yml
+  - resources/*/*.yml
+
+targets:
+  # The 'dev' target, for development purposes. This target is the default.
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://dbc-3af3eabe-0303.cloud.databricks.com
+
+  # The 'prod' target, used for production deployment.
+  prod:
+    mode: production
+    workspace:
+      host: https://dbc-3af3eabe-0303.cloud.databricks.com
+      # We always use /Users/labuser13851863_1786024384@vocareum.com for all resources to make sure we only have a single copy.
+      root_path: /Users/labuser13851863_1786024384@vocareum.com/.bundle/${bundle.name}/${bundle.target}
+    run_as:
+      # This runs as labuser13851863_1786024384@vocareum.com in production. We could also use a service principal here,
+      # see https://docs.databricks.com/dev-tools/bundles/permissions.html.
+      user_name: labuser13851863_1786024384@vocareum.com

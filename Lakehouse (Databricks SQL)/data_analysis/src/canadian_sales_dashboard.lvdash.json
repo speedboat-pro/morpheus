@@ -1,0 +1,1673 @@
+{
+  "datasets": [
+    {
+      "name": "1f3a5e8e",
+      "displayName": "Opportunities",
+      "queryLines": [
+        "SELECT\n",
+        "  *\n",
+        "FROM\n",
+        "  ca_opportunities"
+      ],
+      "columns": [
+        {
+          "displayName": "deal_size",
+          "description": "Buckets the deal opportunity into Small, Medium, and Large",
+          "expression": "    CASE\n       WHEN amount < 500  THEN 'Small'\n       WHEN amount < 5000 THEN 'Medium'\n       ELSE 'Large'\n     END"
+        }
+      ],
+      "catalog": "labuser13851863_1786024384",
+      "schema": "aibi_dashboards"
+    },
+    {
+      "name": "58a49715",
+      "displayName": "FullOrdersData",
+      "queryLines": [
+        "SELECT\n",
+        "  c.customername,\n",
+        "  c.province,\n",
+        "  o.orderdate,\n",
+        "  YEAR(o.orderdate) AS year,\n",
+        "  p.productname,\n",
+        "  o.orderamt,\n",
+        "  o.quantity,\n",
+        "  o.salesrep\n",
+        "FROM\n",
+        "  ca_orders AS o\n",
+        "    INNER JOIN ca_customers AS c\n",
+        "      ON o.customerid = c.customerid\n",
+        "    INNER JOIN ca_products AS p\n",
+        "      ON o.productid = p.productid;"
+      ],
+      "catalog": "labuser13851863_1786024384",
+      "schema": "aibi_dashboards"
+    },
+    {
+      "name": "55792d45",
+      "displayName": "SalesTargets",
+      "queryLines": [
+        "SELECT\n",
+        "  t.target_set_date,\n",
+        "  t.target_year,\n",
+        "  t.sales_target,\n",
+        "  ROUND(SUM(o.orderamt), 2) AS actual_sales,\n",
+        "  ROUND(SUM(o.orderamt) - t.sales_target, 2) AS variance,\n",
+        "  ROUND((SUM(o.orderamt) - t.sales_target) / t.sales_target * 100, 2) AS variance_pct,\n",
+        "  CASE\n",
+        "    WHEN SUM(o.orderamt) >= t.sales_target THEN 'HIT'\n",
+        "    ELSE 'MISS'\n",
+        "  END AS status,\n",
+        "  t.notes\n",
+        "FROM\n",
+        "  ca_sales_targets AS t\n",
+        "    INNER JOIN ca_orders AS o\n",
+        "      ON YEAR(o.orderdate) = t.target_year\n",
+        "GROUP BY\n",
+        "  t.target_set_date,\n",
+        "  t.target_year,\n",
+        "  t.sales_target,\n",
+        "  t.notes\n",
+        "ORDER BY\n",
+        "  t.target_year DESC;"
+      ],
+      "catalog": "labuser13851863_1786024384",
+      "schema": "aibi_dashboards"
+    }
+  ],
+  "pages": [
+    {
+      "name": "eaf40f31",
+      "displayName": "Canadian Sales Overview",
+      "layout": [
+        {
+          "widget": {
+            "name": "ab61c782",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# Canada Sales\n",
+                "This dashboard helps you support and evaluate our Canada sales operation."
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 9,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "e28f216c",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "55792d45",
+                  "fields": [
+                    {
+                      "name": "sales_target",
+                      "expression": "`sales_target`"
+                    },
+                    {
+                      "name": "actual_sales",
+                      "expression": "`actual_sales`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Current Total Sales by Sales Target",
+                "showDescription": true,
+                "description": "Defaults to the latest year. Updates when a year filter is applied."
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "actual_sales",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "CAD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "rowNumber": -1,
+                  "style": {
+                    "rules": [
+                      {
+                        "condition": {
+                          "operator": ">="
+                        },
+                        "color": "#00A972"
+                      },
+                      {
+                        "condition": {
+                          "operator": "<"
+                        },
+                        "fontColor": {
+                          "themeColorType": "visualizationColors",
+                          "position": 4
+                        }
+                      }
+                    ]
+                  }
+                },
+                "target": {
+                  "fieldName": "sales_target",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "CAD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "rowNumber": -1,
+                  "change": {
+                    "type": "numeric"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "a8992a1b",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "58a49715",
+                  "fields": [
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Total Orders",
+                "showDescription": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "count(*)",
+                  "style": {
+                    "rules": [
+                      {
+                        "condition": {
+                          "operator": ">="
+                        },
+                        "color": "#00A972"
+                      },
+                      {
+                        "condition": {
+                          "operator": "<"
+                        },
+                        "fontColor": {
+                          "themeColorType": "visualizationColors",
+                          "position": 4
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 3,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "2fe0b1b4",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "58a49715",
+                  "fields": [
+                    {
+                      "name": "sum(quantity)",
+                      "expression": "SUM(`quantity`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Total Units Sold",
+                "showDescription": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(quantity)",
+                  "style": {
+                    "rules": [
+                      {
+                        "condition": {
+                          "operator": ">="
+                        },
+                        "color": "#00A972"
+                      },
+                      {
+                        "condition": {
+                          "operator": "<"
+                        },
+                        "fontColor": {
+                          "themeColorType": "visualizationColors",
+                          "position": 4
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 3,
+            "width": 4,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "99f40b21",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "58a49715",
+                  "fields": [
+                    {
+                      "name": "productname",
+                      "expression": "`productname`"
+                    },
+                    {
+                      "name": "monthly(orderdate)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `orderdate`)"
+                    },
+                    {
+                      "name": "sum(orderamt)",
+                      "expression": "SUM(`orderamt`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Total Sales by Month"
+              },
+              "mark": {
+                "layout": "stack"
+              },
+              "widgetType": "area",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(orderdate)",
+                  "axis": {
+                    "title": "Month"
+                  },
+                  "displayName": "Month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(orderamt)",
+                  "axis": {
+                    "title": "Total Sales"
+                  },
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "CAD",
+                    "abbreviation": "compact"
+                  },
+                  "displayName": "Total Sales",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "productname",
+                  "displayName": "Product Name",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 6,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "1bc976d6",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "55792d45",
+                  "fields": [
+                    {
+                      "name": "target_year",
+                      "expression": "`target_year`"
+                    },
+                    {
+                      "name": "actual_sales",
+                      "expression": "`actual_sales`"
+                    },
+                    {
+                      "name": "sales_target",
+                      "expression": "`sales_target`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "frame": {
+                "showTitle": true,
+                "title": "Order Sales by Year and Sales Target"
+              },
+              "widgetType": "combo",
+              "encodings": {
+                "x": {
+                  "fieldName": "target_year",
+                  "displayName": "Year",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "primary": {
+                    "fields": [
+                      {
+                        "fieldName": "actual_sales",
+                        "displayName": "Actual Sales"
+                      }
+                    ]
+                  },
+                  "secondary": {
+                    "fields": [
+                      {
+                        "fieldName": "sales_target",
+                        "displayName": "Sales Target"
+                      }
+                    ]
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "78f5b99b",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "58a49715",
+                  "fields": [
+                    {
+                      "name": "province",
+                      "expression": "`province`"
+                    },
+                    {
+                      "name": "productname",
+                      "expression": "`productname`"
+                    },
+                    {
+                      "name": "sum(orderamt)",
+                      "expression": "SUM(`orderamt`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "frame": {
+                "showTitle": true,
+                "title": "Sales Flow: Province to Product"
+              },
+              "widgetType": "sankey",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(orderamt)",
+                  "displayName": "Order Amount"
+                },
+                "stages": [
+                  {
+                    "fieldName": "province",
+                    "displayName": "Province"
+                  },
+                  {
+                    "fieldName": "productname",
+                    "displayName": "Product"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 12,
+            "width": 6,
+            "height": 9
+          }
+        },
+        {
+          "widget": {
+            "name": "83d17db3",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "58a49715",
+                  "fields": [
+                    {
+                      "name": "province",
+                      "expression": "`province`"
+                    },
+                    {
+                      "name": "sum(orderamt)",
+                      "expression": "SUM(`orderamt`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Total Order Amount by Province"
+              },
+              "version": 3,
+              "mark": {
+                "layout": "stack"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(orderamt)",
+                  "axis": {
+                    "hideLabels": true,
+                    "hideGrid": true
+                  },
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "USD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "province",
+                  "legend": {
+                    "position": "top"
+                  },
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 12,
+            "width": 6,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "584fa5dd",
+            "multilineTextboxSpec": {
+              "lines": [
+                "<span style=\"text-align:center;display:block;\">![](https://dbc-3af3eabe-0303.cloud.databricks.com//ajax-api/2.0/fs/files//Volumes/labuser13851863_1786024384/aibi_dashboards/business_icon/canadan_company_icon.png)</span>"
+              ]
+            }
+          },
+          "position": {
+            "x": 9,
+            "y": 1,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "27ee1c3a",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "58a49715",
+                  "fields": [
+                    {
+                      "name": "productname",
+                      "expression": "`productname`"
+                    },
+                    {
+                      "name": "province",
+                      "expression": "`province`"
+                    },
+                    {
+                      "name": "sum(orderamt)",
+                      "expression": "SUM(`orderamt`)"
+                    }
+                  ],
+                  "cubeGroupingSets": {
+                    "sets": [
+                      {
+                        "fieldNames": [
+                          "productname"
+                        ]
+                      },
+                      {
+                        "fieldNames": [
+                          "province"
+                        ]
+                      }
+                    ]
+                  },
+                  "disaggregated": false,
+                  "orders": [
+                    {
+                      "direction": "ASC",
+                      "expression": "`productname`"
+                    },
+                    {
+                      "direction": "ASC",
+                      "expression": "`province`"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Sales by Product and Province"
+              },
+              "version": 4,
+              "widgetType": "pivot",
+              "encodings": {
+                "rows": {
+                  "fields": [
+                    {
+                      "fieldName": "productname",
+                      "displayName": "Product",
+                      "scale": {
+                        "type": "categorical"
+                      }
+                    }
+                  ]
+                },
+                "columns": {
+                  "fields": [
+                    {
+                      "fieldName": "province",
+                      "displayName": "Province",
+                      "scale": {
+                        "type": "categorical"
+                      }
+                    }
+                  ]
+                },
+                "cells": {
+                  "fields": [
+                    {
+                      "fieldName": "sum(orderamt)",
+                      "format": {
+                        "type": "number-currency",
+                        "currencyCode": "CAD",
+                        "abbreviation": "compact",
+                        "decimalPlaces": {
+                          "type": "max",
+                          "places": 2
+                        },
+                        "hideGroupSeparator": true
+                      },
+                      "displayName": "Total Sales",
+                      "cellType": "text",
+                      "style": {
+                        "type": "color-scale",
+                        "backgroundColor": {
+                          "scale": {
+                            "type": "quantitative",
+                            "colorRamp": {
+                              "mode": "scheme",
+                              "scheme": "blues"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "displayAs": "rows"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 15,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "province",
+            "queries": [
+              {
+                "name": "dashboards/01f191bb384513d48d7581a2ec874e84/datasets/01f191bbaa9c1e7f9b26e42145c50674_province",
+                "query": {
+                  "datasetName": "58a49715",
+                  "fields": [
+                    {
+                      "name": "province",
+                      "expression": "`province`"
+                    },
+                    {
+                      "name": "province_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Province"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "province",
+                    "queryName": "dashboards/01f191bb384513d48d7581a2ec874e84/datasets/01f191bbaa9c1e7f9b26e42145c50674_province"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 4,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "f34c6e5b",
+      "displayName": "Opportunities Pipeline",
+      "layout": [
+        {
+          "widget": {
+            "name": "kpi_won",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "1f3a5e8e",
+                  "fields": [
+                    {
+                      "name": "phase",
+                      "expression": "`phase`"
+                    },
+                    {
+                      "name": "sum(amount)",
+                      "expression": "SUM(`amount`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`phase` IN ('2-Closed Won')"
+                    }
+                  ],
+                  "disaggregated": false,
+                  "orders": [
+                    {
+                      "direction": "DESC",
+                      "expression": "`phase`"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Closed Won",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(amount)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "CAD",
+                    "abbreviation": "compact"
+                  }
+                },
+                "period": {
+                  "fieldName": "phase"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 3,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_active",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "1f3a5e8e",
+                  "fields": [
+                    {
+                      "name": "phase",
+                      "expression": "`phase`"
+                    },
+                    {
+                      "name": "sum(amount)",
+                      "expression": "SUM(`amount`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`phase` IN ('1-Active')"
+                    }
+                  ],
+                  "disaggregated": false,
+                  "orders": [
+                    {
+                      "direction": "DESC",
+                      "expression": "`phase`"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Active",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(amount)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "CAD",
+                    "abbreviation": "compact"
+                  }
+                },
+                "period": {
+                  "fieldName": "phase"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 3,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_lost",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "1f3a5e8e",
+                  "fields": [
+                    {
+                      "name": "phase",
+                      "expression": "`phase`"
+                    },
+                    {
+                      "name": "sum(amount)",
+                      "expression": "SUM(`amount`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`phase` IN ('3-Closed Lost')"
+                    }
+                  ],
+                  "disaggregated": false,
+                  "orders": [
+                    {
+                      "direction": "DESC",
+                      "expression": "`phase`"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Closed Lost",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(amount)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "CAD",
+                    "abbreviation": "compact"
+                  }
+                },
+                "period": {
+                  "fieldName": "phase"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 10,
+            "y": 3,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "hdr",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# Opportunities Pipeline\n",
+                "Sales pipeline health by phase, deal size, and sales rep."
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 12,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "funnel_phase",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "1f3a5e8e",
+                  "fields": [
+                    {
+                      "name": "sum(amount)",
+                      "expression": "SUM(`amount`)"
+                    },
+                    {
+                      "name": "phase",
+                      "expression": "`phase`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Pipeline Funnel by Phase",
+                "showTitle": true
+              },
+              "widgetType": "funnel",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(amount)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "CAD",
+                    "abbreviation": "compact"
+                  },
+                  "displayName": "Pipeline Value"
+                },
+                "y": {
+                  "fieldName": "phase",
+                  "displayName": "Phase",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 6,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_total_val",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "1f3a5e8e",
+                  "fields": [
+                    {
+                      "name": "sum(amount)",
+                      "expression": "SUM(`amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Total Pipeline Value",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(amount)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "CAD",
+                    "abbreviation": "compact"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 3,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_total_opps",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "1f3a5e8e",
+                  "fields": [
+                    {
+                      "name": "count(opportunityid)",
+                      "expression": "COUNT(`opportunityid`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Total Opportunities",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "count(opportunityid)",
+                  "rowNumber": 0
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 3,
+            "width": 3,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "pie_deal_size",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "1f3a5e8e",
+                  "fields": [
+                    {
+                      "name": "count(opportunityid)",
+                      "expression": "COUNT(`opportunityid`)"
+                    },
+                    {
+                      "name": "deal_size",
+                      "expression": "`deal_size`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Opportunities by Deal Size",
+                "showTitle": true
+              },
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "count(opportunityid)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "opportunityid"
+                },
+                "color": {
+                  "fieldName": "deal_size",
+                  "displayName": "deal_size",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 6,
+            "width": 6,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "line_monthly",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "1f3a5e8e",
+                  "fields": [
+                    {
+                      "name": "phase",
+                      "expression": "`phase`"
+                    },
+                    {
+                      "name": "monthly(date)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `date`)"
+                    },
+                    {
+                      "name": "sum(amount)",
+                      "expression": "SUM(`amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Monthly Pipeline Value by Phase",
+                "showTitle": true
+              },
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(date)",
+                  "displayName": "Month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(amount)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "CAD",
+                    "abbreviation": "compact"
+                  },
+                  "displayName": "Pipeline Value",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "phase",
+                  "displayName": "Phase",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 13,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_rep_phase",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "1f3a5e8e",
+                  "fields": [
+                    {
+                      "name": "phase",
+                      "expression": "`phase`"
+                    },
+                    {
+                      "name": "salesrep",
+                      "expression": "`salesrep`"
+                    },
+                    {
+                      "name": "sum(amount)",
+                      "expression": "SUM(`amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Pipeline by Sales Rep (Phase)",
+                "showTitle": true
+              },
+              "mark": {
+                "layout": "stack"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "salesrep",
+                  "displayName": "Sales Rep",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(amount)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "CAD",
+                    "abbreviation": "compact"
+                  },
+                  "displayName": "Pipeline Value",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "phase",
+                  "displayName": "Phase",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 19,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "bar_rep_deal",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "1f3a5e8e",
+                  "fields": [
+                    {
+                      "name": "deal_size",
+                      "expression": "`deal_size`"
+                    },
+                    {
+                      "name": "salesrep",
+                      "expression": "`salesrep`"
+                    },
+                    {
+                      "name": "sum(amount)",
+                      "expression": "SUM(`amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Pipeline by Sales Rep (Deal Size)",
+                "showTitle": true
+              },
+              "mark": {
+                "layout": "stack"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "salesrep",
+                  "displayName": "Sales Rep",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(amount)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "CAD",
+                    "abbreviation": "compact"
+                  },
+                  "displayName": "Pipeline Value",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "deal_size",
+                  "displayName": "Deal Size",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 19,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "detail_tbl",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "1f3a5e8e",
+                  "fields": [
+                    {
+                      "name": "opportunityid",
+                      "expression": "`opportunityid`"
+                    },
+                    {
+                      "name": "salesrep",
+                      "expression": "`salesrep`"
+                    },
+                    {
+                      "name": "province",
+                      "expression": "`province`"
+                    },
+                    {
+                      "name": "phase",
+                      "expression": "`phase`"
+                    },
+                    {
+                      "name": "deal_size",
+                      "expression": "`deal_size`"
+                    },
+                    {
+                      "name": "amount",
+                      "expression": "`amount`"
+                    },
+                    {
+                      "name": "date",
+                      "expression": "`date`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Opportunity Details",
+                "showTitle": true
+              },
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "opportunityid"
+                  },
+                  {
+                    "fieldName": "salesrep"
+                  },
+                  {
+                    "fieldName": "province"
+                  },
+                  {
+                    "fieldName": "phase"
+                  },
+                  {
+                    "fieldName": "deal_size"
+                  },
+                  {
+                    "fieldName": "amount"
+                  },
+                  {
+                    "fieldName": "date"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 25,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "phase1",
+            "queries": [
+              {
+                "name": "dashboards/01f191bb384513d48d7581a2ec874e84/datasets/01f191bb9f73102b9539e12cfa68dba0_phase",
+                "query": {
+                  "datasetName": "1f3a5e8e",
+                  "fields": [
+                    {
+                      "name": "phase",
+                      "expression": "`phase`"
+                    },
+                    {
+                      "name": "phase_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Phase"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "phase",
+                    "queryName": "dashboards/01f191bb384513d48d7581a2ec874e84/datasets/01f191bb9f73102b9539e12cfa68dba0_phase"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 4,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "890ee0cb",
+      "displayName": "Global Filters",
+      "layout": [
+        {
+          "widget": {
+            "name": "province",
+            "queries": [
+              {
+                "name": "dashboards/01f191bb384513d48d7581a2ec874e84/datasets/01f191bbaa9c1e7f9b26e42145c50674_year",
+                "query": {
+                  "datasetName": "58a49715",
+                  "fields": [
+                    {
+                      "name": "year",
+                      "expression": "`year`"
+                    },
+                    {
+                      "name": "year_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f191bb384513d48d7581a2ec874e84/datasets/01f191bbcf1115c2a03e76ee884c225b_target_year",
+                "query": {
+                  "datasetName": "55792d45",
+                  "fields": [
+                    {
+                      "name": "target_year",
+                      "expression": "`target_year`"
+                    },
+                    {
+                      "name": "target_year_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Year"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "year",
+                    "queryName": "dashboards/01f191bb384513d48d7581a2ec874e84/datasets/01f191bbaa9c1e7f9b26e42145c50674_year"
+                  },
+                  {
+                    "fieldName": "target_year",
+                    "queryName": "dashboards/01f191bb384513d48d7581a2ec874e84/datasets/01f191bbcf1115c2a03e76ee884c225b_target_year"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
