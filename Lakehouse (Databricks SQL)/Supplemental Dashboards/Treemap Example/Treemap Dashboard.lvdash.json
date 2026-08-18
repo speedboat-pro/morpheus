@@ -1,0 +1,172 @@
+{
+  "datasets": [
+    {
+      "name": "7579ee30",
+      "displayName": "sales_data",
+      "asset_name": "encore_dev.subramanian.sales_data"
+    },
+    {
+      "name": "7ebd371b",
+      "displayName": "databricks_query",
+      "queryLines": [
+        "SELECT date, temperature AS temp_max\n",
+        "FROM samples.accuweather.historical_hourly_imperial\n",
+        "WHERE city_name = 'singapore'\n",
+        "ORDER BY date"
+      ]
+    },
+    {
+      "name": "a24037a1",
+      "displayName": "sales_data_treemap",
+      "config": {
+        "version": "1.1",
+        "source": "select * from encore_dev.subramanian.sales_data_treemap",
+        "dimensions": [
+          {
+            "name": "x",
+            "expr": "source.x",
+            "displayName": "X"
+          },
+          {
+            "name": "y",
+            "expr": "source.y",
+            "displayName": "Y"
+          },
+          {
+            "name": "dx",
+            "expr": "source.dx",
+            "displayName": "Dx"
+          },
+          {
+            "name": "dy",
+            "expr": "source.dy",
+            "displayName": "Dy"
+          },
+          {
+            "name": "name",
+            "expr": "source.name",
+            "displayName": "Name"
+          },
+          {
+            "name": "size",
+            "expr": "source.size",
+            "displayName": "Size"
+          },
+          {
+            "name": "x2",
+            "expr": "source.x2",
+            "displayName": "X 2"
+          },
+          {
+            "name": "y2",
+            "expr": "source.y2",
+            "displayName": "Y 2"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "7ea62d81",
+      "displayName": "Treemap Sample",
+      "layout": [
+        {
+          "widget": {
+            "name": "9a1aa067",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "a24037a1",
+                  "fields": [
+                    {
+                      "name": "size",
+                      "expression": "`size`"
+                    },
+                    {
+                      "name": "x",
+                      "expression": "`x`"
+                    },
+                    {
+                      "name": "y",
+                      "expression": "`y`"
+                    },
+                    {
+                      "name": "name",
+                      "expression": "`name`"
+                    },
+                    {
+                      "name": "y2",
+                      "expression": "`y2`"
+                    },
+                    {
+                      "name": "x2",
+                      "expression": "`x2`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "jsonSpec": {
+                "type": "vega-lite",
+                "spec": "{\n  \"$schema\": \"https://vega.github.io/schema/vega-lite/v5.json\",\n  \"width\": 600, \"height\": 400,\n  \"data\": {\"name\": \"databricks_query\"},\n  \"layer\": [\n    {\n      \"mark\": {\"type\": \"rect\", \"stroke\": \"white\", \"strokeWidth\": 2},\n      \"encoding\": {\n        \"x\": {\"field\": \"x\", \"type\": \"quantitative\", \"axis\": null},\n        \"y\": {\"field\": \"y\", \"type\": \"quantitative\", \"axis\": null},\n        \"x2\": {\"field\": \"x2\"},\n        \"y2\": {\"field\": \"y2\"},\n        \"color\": {\"field\": \"name\", \"legend\": null},\n        \"tooltip\": [{\"field\": \"name\"}, {\"field\": \"size\"}]\n      }\n    },\n    {\n      \"mark\": {\"type\": \"text\", \"fill\": \"white\"},\n      \"encoding\": {\n        \"x\": {\"field\": \"x\", \"type\": \"quantitative\"},\n        \"y\": {\"field\": \"y\", \"type\": \"quantitative\"},\n        \"x2\": {\"field\": \"x2\"}, \"y2\": {\"field\": \"y2\"},\n        \"text\": {\"field\": \"name\"}\n      }\n    }\n  ]\n}"
+              },
+              "widgetType": "custom-vega-viz",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "size"
+                  },
+                  {
+                    "fieldName": "x"
+                  },
+                  {
+                    "fieldName": "y"
+                  },
+                  {
+                    "fieldName": "name"
+                  },
+                  {
+                    "fieldName": "y2"
+                  },
+                  {
+                    "fieldName": "x2"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 8
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
