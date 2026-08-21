@@ -10,7 +10,7 @@ def foreachbatch_target_sink(df, batch_id):
     deduped = df.withColumn("_rank", row_number().over(window)).filter("_rank = 1").drop("_rank")
     deduped.createOrReplaceTempView("batch_data")
     df.sparkSession.sql("""
-        MERGE INTO labuser12596051_1785415382.sdp_2_silver.foreachbatch_target AS target
+        MERGE INTO labuser12596051_1787331522.sdp_2_silver.foreachbatch_target AS target
         USING batch_data AS source
         ON target.customer_id = source.customer_id
         WHEN MATCHED THEN UPDATE SET *
@@ -21,7 +21,7 @@ def foreachbatch_target_sink(df, batch_id):
 @dp.append_flow(target="foreachbatch_target_sink")
 def foreachbatch_target_flow():
     return (
-        spark.readStream.table("labuser12596051_1785415382.sdp_1_bronze.customers_bronze_clean_demo12")
+        spark.readStream.table("labuser12596051_1787331522.sdp_1_bronze.customers_bronze_clean_demo12")
         .select(
             "address",
             "city",
