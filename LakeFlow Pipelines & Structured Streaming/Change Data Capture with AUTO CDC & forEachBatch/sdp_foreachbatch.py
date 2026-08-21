@@ -3,14 +3,16 @@ from pyspark.sql.functions import col
 from pyspark.sql.window import Window
 from pyspark.sql.functions import row_number
 
+current_user_email = spark.sql("SELECT current_user()").collect()[0][0]
+current_user_username = current_user_email.split("@")[0]
 
 @dp.foreach_batch_sink(name="foreachbatch_target_sink")
 def foreachbatch_target_sink(df, batch_id):
     window = Window.partitionBy("customer_id").orderBy(col("timestamp_datetime").desc())
     deduped = df.withColumn("_rank", row_number().over(window)).filter("_rank = 1").drop("_rank")
     deduped.createOrReplaceTempView("batch_data")
-    df.sparkSession.sql("""
-        MERGE INTO labuser12596051_1787331522.sdp_2_silver.foreachbatch_target AS target
+    df.sparkSession.sql(f"""
+        MERGE INTO {current_user_username}.sdp_2_silver.foreachbatch_target AS target
         USING batch_data AS source
         ON target.customer_id = source.customer_id
         WHEN MATCHED THEN UPDATE SET *
@@ -21,7 +23,7 @@ def foreachbatch_target_sink(df, batch_id):
 @dp.append_flow(target="foreachbatch_target_sink")
 def foreachbatch_target_flow():
     return (
-        spark.readStream.table("labuser12596051_1787331522.sdp_1_bronze.customers_bronze_clean_demo12")
+        spark.readStream.table(f"{current_user_username}.sdp_1_bronze.customers_bronze_clean_demo12")
         .select(
             "address",
             "city",
