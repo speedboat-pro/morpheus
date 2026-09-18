@@ -1,0 +1,1419 @@
+{
+  "datasets": [
+    {
+      "name": "f0dd27d1",
+      "displayName": "store_returns",
+      "config": {
+        "version": "1.1",
+        "source": "samples.tpcds_sf1000.store_returns",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "406c7328",
+      "displayName": "web_returns",
+      "config": {
+        "version": "1.1",
+        "source": "samples.tpcds_sf1000.web_returns",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "return_count",
+            "expr": "COUNT(*)",
+            "displayName": "Return Count"
+          },
+          {
+            "name": "total_return_amt",
+            "expr": "SUM(wr_return_amt)",
+            "displayName": "Total Return Amount",
+            "format": {
+              "type": "currency",
+              "currencyCode": "USD",
+              "decimalPlaces": {
+                "type": "exact",
+                "places": 2.0
+              }
+            }
+          },
+          {
+            "name": "total_return_tax",
+            "expr": "SUM(wr_return_tax)",
+            "displayName": "Total Return Tax",
+            "format": {
+              "type": "currency",
+              "currencyCode": "USD",
+              "decimalPlaces": {
+                "type": "exact",
+                "places": 2.0
+              }
+            }
+          },
+          {
+            "name": "total_net_loss",
+            "expr": "SUM(wr_net_loss)",
+            "displayName": "Total Net Loss",
+            "format": {
+              "type": "currency",
+              "currencyCode": "USD",
+              "decimalPlaces": {
+                "type": "exact",
+                "places": 2.0
+              }
+            }
+          },
+          {
+            "name": "total_refunded_cash",
+            "expr": "SUM(wr_refunded_cash)",
+            "displayName": "Total Refunded Cash",
+            "format": {
+              "type": "currency",
+              "currencyCode": "USD",
+              "decimalPlaces": {
+                "type": "exact",
+                "places": 2.0
+              }
+            }
+          },
+          {
+            "name": "total_return_ship_cost",
+            "expr": "SUM(wr_return_ship_cost)",
+            "displayName": "Total Return Ship Cost",
+            "format": {
+              "type": "currency",
+              "currencyCode": "USD",
+              "decimalPlaces": {
+                "type": "exact",
+                "places": 2.0
+              }
+            }
+          },
+          {
+            "name": "avg_return_amt",
+            "expr": "AVG(wr_return_amt)",
+            "displayName": "Avg Return Amount",
+            "format": {
+              "type": "currency",
+              "currencyCode": "USD",
+              "decimalPlaces": {
+                "type": "exact",
+                "places": 2.0
+              }
+            }
+          },
+          {
+            "name": "total_return_quantity",
+            "expr": "SUM(wr_return_quantity)",
+            "displayName": "Total Return Quantity"
+          }
+        ]
+      }
+    },
+    {
+      "name": "time_dim",
+      "displayName": "time_dim",
+      "config": {
+        "version": "1.1",
+        "source": "samples.tpcds_sf1000.time_dim",
+        "dimensions": [
+          {
+            "name": "t_time_sk",
+            "expr": "t_time_sk"
+          },
+          {
+            "name": "t_hour",
+            "expr": "t_hour",
+            "displayName": "Hour"
+          },
+          {
+            "name": "t_am_pm",
+            "expr": "t_am_pm",
+            "displayName": "AM/PM"
+          },
+          {
+            "name": "t_shift",
+            "expr": "t_shift",
+            "displayName": "Shift"
+          },
+          {
+            "name": "t_sub_shift",
+            "expr": "t_sub_shift",
+            "displayName": "Sub Shift"
+          },
+          {
+            "name": "t_meal_time",
+            "expr": "t_meal_time",
+            "displayName": "Meal Time"
+          }
+        ]
+      }
+    },
+    {
+      "name": "returning_customer",
+      "displayName": "returning_customer",
+      "config": {
+        "version": "1.1",
+        "source": "samples.tpcds_sf1000.customer",
+        "dimensions": [
+          {
+            "name": "c_customer_sk",
+            "expr": "c_customer_sk"
+          },
+          {
+            "name": "c_customer_id",
+            "expr": "c_customer_id",
+            "displayName": "Customer ID"
+          },
+          {
+            "name": "c_first_name",
+            "expr": "c_first_name",
+            "displayName": "First Name"
+          },
+          {
+            "name": "c_last_name",
+            "expr": "c_last_name",
+            "displayName": "Last Name"
+          },
+          {
+            "name": "c_preferred_cust_flag",
+            "expr": "c_preferred_cust_flag",
+            "displayName": "Preferred Customer"
+          },
+          {
+            "name": "c_birth_country",
+            "expr": "c_birth_country",
+            "displayName": "Birth Country"
+          },
+          {
+            "name": "c_birth_year",
+            "expr": "c_birth_year",
+            "displayName": "Birth Year"
+          }
+        ]
+      }
+    },
+    {
+      "name": "reason",
+      "displayName": "reason",
+      "config": {
+        "version": "1.1",
+        "source": "samples.tpcds_sf1000.reason",
+        "dimensions": [
+          {
+            "name": "r_reason_sk",
+            "expr": "r_reason_sk"
+          },
+          {
+            "name": "r_reason_id",
+            "expr": "r_reason_id",
+            "displayName": "Reason ID"
+          },
+          {
+            "name": "r_reason_desc",
+            "expr": "r_reason_desc",
+            "displayName": "Reason Description"
+          }
+        ]
+      }
+    },
+    {
+      "name": "refunded_customer",
+      "displayName": "refunded_customer",
+      "config": {
+        "version": "1.1",
+        "source": "samples.tpcds_sf1000.customer",
+        "dimensions": [
+          {
+            "name": "c_customer_sk",
+            "expr": "c_customer_sk"
+          },
+          {
+            "name": "c_customer_id",
+            "expr": "c_customer_id",
+            "displayName": "Customer ID"
+          },
+          {
+            "name": "c_first_name",
+            "expr": "c_first_name",
+            "displayName": "First Name"
+          },
+          {
+            "name": "c_last_name",
+            "expr": "c_last_name",
+            "displayName": "Last Name"
+          },
+          {
+            "name": "c_preferred_cust_flag",
+            "expr": "c_preferred_cust_flag",
+            "displayName": "Preferred Customer"
+          },
+          {
+            "name": "c_birth_country",
+            "expr": "c_birth_country",
+            "displayName": "Birth Country"
+          },
+          {
+            "name": "c_birth_year",
+            "expr": "c_birth_year",
+            "displayName": "Birth Year"
+          }
+        ]
+      }
+    },
+    {
+      "name": "date_dim",
+      "displayName": "date_dim",
+      "config": {
+        "version": "1.1",
+        "source": "samples.tpcds_sf1000.date_dim",
+        "dimensions": [
+          {
+            "name": "d_date_sk",
+            "expr": "d_date_sk"
+          },
+          {
+            "name": "d_date",
+            "expr": "d_date",
+            "displayName": "Date"
+          },
+          {
+            "name": "d_year",
+            "expr": "d_year",
+            "displayName": "Year"
+          },
+          {
+            "name": "d_moy",
+            "expr": "d_moy",
+            "displayName": "Month of Year"
+          },
+          {
+            "name": "d_qoy",
+            "expr": "d_qoy",
+            "displayName": "Quarter of Year"
+          },
+          {
+            "name": "d_day_name",
+            "expr": "d_day_name",
+            "displayName": "Day Name"
+          },
+          {
+            "name": "d_quarter_name",
+            "expr": "d_quarter_name",
+            "displayName": "Quarter Name"
+          },
+          {
+            "name": "d_holiday",
+            "expr": "d_holiday",
+            "displayName": "Holiday"
+          },
+          {
+            "name": "d_weekend",
+            "expr": "d_weekend",
+            "displayName": "Weekend"
+          }
+        ]
+      }
+    },
+    {
+      "name": "item",
+      "displayName": "item",
+      "config": {
+        "version": "1.1",
+        "source": "samples.tpcds_sf1000.item",
+        "dimensions": [
+          {
+            "name": "i_item_sk",
+            "expr": "i_item_sk"
+          },
+          {
+            "name": "i_item_id",
+            "expr": "i_item_id",
+            "displayName": "Item ID"
+          },
+          {
+            "name": "i_item_desc",
+            "expr": "i_item_desc",
+            "displayName": "Item Description"
+          },
+          {
+            "name": "i_current_price",
+            "expr": "i_current_price",
+            "displayName": "Current Price"
+          },
+          {
+            "name": "i_brand",
+            "expr": "i_brand",
+            "displayName": "Brand"
+          },
+          {
+            "name": "i_class",
+            "expr": "i_class",
+            "displayName": "Class"
+          },
+          {
+            "name": "i_category",
+            "expr": "i_category",
+            "displayName": "Category"
+          },
+          {
+            "name": "i_manufact",
+            "expr": "i_manufact",
+            "displayName": "Manufacturer"
+          },
+          {
+            "name": "i_size",
+            "expr": "i_size",
+            "displayName": "Size"
+          },
+          {
+            "name": "i_color",
+            "expr": "i_color",
+            "displayName": "Color"
+          },
+          {
+            "name": "i_product_name",
+            "expr": "i_product_name",
+            "displayName": "Product Name"
+          }
+        ]
+      }
+    },
+    {
+      "name": "returning_hdemo",
+      "displayName": "returning_hdemo",
+      "config": {
+        "version": "1.1",
+        "source": "samples.tpcds_sf1000.household_demographics",
+        "dimensions": [
+          {
+            "name": "hd_demo_sk",
+            "expr": "hd_demo_sk"
+          },
+          {
+            "name": "hd_buy_potential",
+            "expr": "hd_buy_potential",
+            "displayName": "Buy Potential"
+          },
+          {
+            "name": "hd_dep_count",
+            "expr": "hd_dep_count",
+            "displayName": "Dependent Count"
+          },
+          {
+            "name": "hd_vehicle_count",
+            "expr": "hd_vehicle_count",
+            "displayName": "Vehicle Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "refunded_hdemo",
+      "displayName": "refunded_hdemo",
+      "config": {
+        "version": "1.1",
+        "source": "samples.tpcds_sf1000.household_demographics",
+        "dimensions": [
+          {
+            "name": "hd_demo_sk",
+            "expr": "hd_demo_sk"
+          },
+          {
+            "name": "hd_buy_potential",
+            "expr": "hd_buy_potential",
+            "displayName": "Buy Potential"
+          },
+          {
+            "name": "hd_dep_count",
+            "expr": "hd_dep_count",
+            "displayName": "Dependent Count"
+          },
+          {
+            "name": "hd_vehicle_count",
+            "expr": "hd_vehicle_count",
+            "displayName": "Vehicle Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "web_page",
+      "displayName": "web_page",
+      "config": {
+        "version": "1.1",
+        "source": "samples.tpcds_sf1000.web_page",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ]
+      }
+    },
+    {
+      "name": "refunded_address",
+      "displayName": "refunded_address",
+      "config": {
+        "version": "1.1",
+        "source": "samples.tpcds_sf1000.customer_address",
+        "dimensions": [
+          {
+            "name": "ca_address_sk",
+            "expr": "ca_address_sk"
+          },
+          {
+            "name": "ca_city",
+            "expr": "ca_city",
+            "displayName": "City"
+          },
+          {
+            "name": "ca_county",
+            "expr": "ca_county",
+            "displayName": "County"
+          },
+          {
+            "name": "ca_state",
+            "expr": "ca_state",
+            "displayName": "State"
+          },
+          {
+            "name": "ca_zip",
+            "expr": "ca_zip",
+            "displayName": "Zip Code"
+          },
+          {
+            "name": "ca_country",
+            "expr": "ca_country",
+            "displayName": "Country"
+          }
+        ]
+      }
+    },
+    {
+      "name": "refunded_cdemo",
+      "displayName": "refunded_cdemo",
+      "config": {
+        "version": "1.1",
+        "source": "samples.tpcds_sf1000.customer_demographics",
+        "dimensions": [
+          {
+            "name": "cd_demo_sk",
+            "expr": "cd_demo_sk"
+          },
+          {
+            "name": "cd_gender",
+            "expr": "cd_gender",
+            "displayName": "Gender"
+          },
+          {
+            "name": "cd_marital_status",
+            "expr": "cd_marital_status",
+            "displayName": "Marital Status"
+          },
+          {
+            "name": "cd_education_status",
+            "expr": "cd_education_status",
+            "displayName": "Education Status"
+          },
+          {
+            "name": "cd_credit_rating",
+            "expr": "cd_credit_rating",
+            "displayName": "Credit Rating"
+          }
+        ]
+      }
+    },
+    {
+      "name": "returning_address",
+      "displayName": "returning_address",
+      "config": {
+        "version": "1.1",
+        "source": "samples.tpcds_sf1000.customer_address",
+        "dimensions": [
+          {
+            "name": "ca_address_sk",
+            "expr": "ca_address_sk"
+          },
+          {
+            "name": "ca_city",
+            "expr": "ca_city",
+            "displayName": "City"
+          },
+          {
+            "name": "ca_county",
+            "expr": "ca_county",
+            "displayName": "County"
+          },
+          {
+            "name": "ca_state",
+            "expr": "ca_state",
+            "displayName": "State"
+          },
+          {
+            "name": "ca_zip",
+            "expr": "ca_zip",
+            "displayName": "Zip Code"
+          },
+          {
+            "name": "ca_country",
+            "expr": "ca_country",
+            "displayName": "Country"
+          }
+        ]
+      }
+    },
+    {
+      "name": "returning_cdemo",
+      "displayName": "returning_cdemo",
+      "config": {
+        "version": "1.1",
+        "source": "samples.tpcds_sf1000.customer_demographics",
+        "dimensions": [
+          {
+            "name": "cd_demo_sk",
+            "expr": "cd_demo_sk"
+          },
+          {
+            "name": "cd_gender",
+            "expr": "cd_gender",
+            "displayName": "Gender"
+          },
+          {
+            "name": "cd_marital_status",
+            "expr": "cd_marital_status",
+            "displayName": "Marital Status"
+          },
+          {
+            "name": "cd_education_status",
+            "expr": "cd_education_status",
+            "displayName": "Education Status"
+          },
+          {
+            "name": "cd_credit_rating",
+            "expr": "cd_credit_rating",
+            "displayName": "Credit Rating"
+          }
+        ]
+      }
+    }
+  ],
+  "relationshipGraphs": [
+    {
+      "sources": [
+        {
+          "name": "store_returns",
+          "datasetName": "f0dd27d1"
+        },
+        {
+          "name": "web_returns",
+          "datasetName": "406c7328"
+        },
+        {
+          "name": "time_dim",
+          "datasetName": "time_dim"
+        },
+        {
+          "name": "returning_customer",
+          "datasetName": "returning_customer"
+        },
+        {
+          "name": "reason",
+          "datasetName": "reason"
+        },
+        {
+          "name": "refunded_customer",
+          "datasetName": "refunded_customer"
+        },
+        {
+          "name": "date_dim",
+          "datasetName": "date_dim"
+        },
+        {
+          "name": "item",
+          "datasetName": "item"
+        },
+        {
+          "name": "returning_hdemo",
+          "datasetName": "returning_hdemo"
+        },
+        {
+          "name": "refunded_hdemo",
+          "datasetName": "refunded_hdemo"
+        },
+        {
+          "name": "web_page",
+          "datasetName": "web_page"
+        },
+        {
+          "name": "refunded_address",
+          "datasetName": "refunded_address"
+        },
+        {
+          "name": "refunded_cdemo",
+          "datasetName": "refunded_cdemo"
+        },
+        {
+          "name": "returning_address",
+          "datasetName": "returning_address"
+        },
+        {
+          "name": "returning_cdemo",
+          "datasetName": "returning_cdemo"
+        }
+      ],
+      "relationships": [
+        {
+          "name": "relationship_0",
+          "from": "web_returns",
+          "to": "date_dim",
+          "on": "`web_returns`.`wr_returned_date_sk` = `date_dim`.`d_date_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "relationship_1",
+          "from": "web_returns",
+          "to": "time_dim",
+          "on": "`web_returns`.`wr_returned_time_sk` = `time_dim`.`t_time_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "relationship_2",
+          "from": "web_returns",
+          "to": "item",
+          "on": "`web_returns`.`wr_item_sk` = `item`.`i_item_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "relationship_3",
+          "from": "web_returns",
+          "to": "reason",
+          "on": "`web_returns`.`wr_reason_sk` = `reason`.`r_reason_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "relationship_4",
+          "from": "web_returns",
+          "to": "web_page",
+          "on": "`web_returns`.`wr_web_page_sk` = `web_page`.`wp_web_page_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "relationship_5",
+          "from": "web_returns",
+          "to": "refunded_customer",
+          "on": "`web_returns`.`wr_refunded_customer_sk` = `refunded_customer`.`c_customer_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "relationship_6",
+          "from": "web_returns",
+          "to": "returning_customer",
+          "on": "`web_returns`.`wr_returning_customer_sk` = `returning_customer`.`c_customer_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "relationship_7",
+          "from": "web_returns",
+          "to": "refunded_address",
+          "on": "`web_returns`.`wr_refunded_addr_sk` = `refunded_address`.`ca_address_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "relationship_8",
+          "from": "web_returns",
+          "to": "returning_address",
+          "on": "`web_returns`.`wr_returning_addr_sk` = `returning_address`.`ca_address_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "relationship_9",
+          "from": "web_returns",
+          "to": "refunded_cdemo",
+          "on": "`web_returns`.`wr_refunded_cdemo_sk` = `refunded_cdemo`.`cd_demo_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "relationship_10",
+          "from": "web_returns",
+          "to": "returning_cdemo",
+          "on": "`web_returns`.`wr_returning_cdemo_sk` = `returning_cdemo`.`cd_demo_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "relationship_11",
+          "from": "web_returns",
+          "to": "refunded_hdemo",
+          "on": "`web_returns`.`wr_refunded_hdemo_sk` = `refunded_hdemo`.`hd_demo_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        },
+        {
+          "name": "relationship_12",
+          "from": "web_returns",
+          "to": "returning_hdemo",
+          "on": "`web_returns`.`wr_returning_hdemo_sk` = `returning_hdemo`.`hd_demo_sk`",
+          "cardinality": "CARDINALITY_MANY_TO_ONE"
+        }
+      ],
+      "measureExpressions": [
+        {
+          "name": "avg_loss_per_return",
+          "expression": "MEASURE(`web_returns`.`total_net_loss`) / MEASURE(`web_returns`.`return_count`)"
+        },
+        {
+          "name": "refund_rate",
+          "expression": "MEASURE(`web_returns`.`total_refunded_cash`) / MEASURE(`web_returns`.`total_return_amt`)"
+        },
+        {
+          "name": "avg_ship_cost_per_return",
+          "expression": "MEASURE(`web_returns`.`total_return_ship_cost`) / MEASURE(`web_returns`.`return_count`)"
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "c5c8f174",
+      "displayName": "Overview",
+      "layout": [
+        {
+          "widget": {
+            "name": "kpi_return_count",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "measure(web_returns__return_count)",
+                      "expression": "MEASURE(`web_returns`.`return_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Total Returns"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(web_returns__return_count)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_total_amt",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "measure(web_returns__total_return_amt)",
+                      "expression": "MEASURE(`web_returns`.`total_return_amt`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Total Return Amount"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(web_returns__total_return_amt)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_net_loss",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "measure(web_returns__total_net_loss)",
+                      "expression": "MEASURE(`web_returns`.`total_net_loss`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Total Net Loss"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(web_returns__total_net_loss)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_avg_return",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "measure(web_returns__avg_return_amt)",
+                      "expression": "MEASURE(`web_returns`.`avg_return_amt`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Avg Return Amount"
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(web_returns__avg_return_amt)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 9,
+            "y": 0,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "returns_by_year",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "date_dim__d_year",
+                      "expression": "`date_dim`.`d_year`"
+                    },
+                    {
+                      "name": "measure(web_returns__total_return_amt)",
+                      "expression": "MEASURE(`web_returns`.`total_return_amt`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Returns by Year"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "date_dim__d_year",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(web_returns__total_return_amt)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "returns_by_category",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "item__i_category",
+                      "expression": "`item`.`i_category`"
+                    },
+                    {
+                      "name": "measure(web_returns__return_count)",
+                      "expression": "MEASURE(`web_returns`.`return_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Returns by Item Category"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "item__i_category",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(web_returns__return_count)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 2,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "returns_by_reason",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "measure(web_returns__return_count)",
+                      "expression": "MEASURE(`web_returns`.`return_count`)"
+                    },
+                    {
+                      "name": "reason__r_reason_desc",
+                      "expression": "`reason`.`r_reason_desc`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Returns by Reason"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "measure(web_returns__return_count)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "reason__r_reason_desc",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "returns_by_state",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "refunded_address__ca_state",
+                      "expression": "`refunded_address`.`ca_state`"
+                    },
+                    {
+                      "name": "measure(web_returns__total_net_loss)",
+                      "expression": "MEASURE(`web_returns`.`total_net_loss`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Returns by Refunded Customer State"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "refunded_address__ca_state",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(web_returns__total_net_loss)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "returns_by_shift",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "time_dim__t_am_pm",
+                      "expression": "`time_dim`.`t_am_pm`"
+                    },
+                    {
+                      "name": "time_dim__t_shift",
+                      "expression": "`time_dim`.`t_shift`"
+                    },
+                    {
+                      "name": "measure(web_returns__return_count)",
+                      "expression": "MEASURE(`web_returns`.`return_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Returns by Time of Day"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "time_dim__t_shift",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(web_returns__return_count)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "time_dim__t_am_pm",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 10,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "returns_by_buy_potential",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "refunded_hdemo__hd_buy_potential",
+                      "expression": "`refunded_hdemo`.`hd_buy_potential`"
+                    },
+                    {
+                      "name": "measure(web_returns__total_net_loss)",
+                      "expression": "MEASURE(`web_returns`.`total_net_loss`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Net Loss by Refunded HH Buy Potential"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "refunded_hdemo__hd_buy_potential",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(web_returns__total_net_loss)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 14,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "cross_measure_table",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "date_dim__d_year",
+                      "expression": "`date_dim`.`d_year`"
+                    },
+                    {
+                      "name": "measure(avg_loss_per_return)",
+                      "expression": "MEASURE(`avg_loss_per_return`)"
+                    },
+                    {
+                      "name": "measure(refund_rate)",
+                      "expression": "MEASURE(`refund_rate`)"
+                    },
+                    {
+                      "name": "measure(avg_ship_cost_per_return)",
+                      "expression": "MEASURE(`avg_ship_cost_per_return`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Cross-Entity Measures by Year"
+              },
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "date_dim__d_year"
+                  },
+                  {
+                    "fieldName": "measure(avg_loss_per_return)"
+                  },
+                  {
+                    "fieldName": "measure(refund_rate)"
+                  },
+                  {
+                    "fieldName": "measure(avg_ship_cost_per_return)"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 14,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "returns_by_gender",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "fields": [
+                    {
+                      "name": "measure(web_returns__return_count)",
+                      "expression": "MEASURE(`web_returns`.`return_count`)"
+                    },
+                    {
+                      "name": "refunded_cdemo__cd_gender",
+                      "expression": "`refunded_cdemo`.`cd_gender`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Returns by Refunded Customer Gender"
+              },
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "measure(web_returns__return_count)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "refunded_cdemo__cd_gender",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 6,
+            "width": 6,
+            "height": 4
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}

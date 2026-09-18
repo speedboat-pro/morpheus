@@ -21,8 +21,8 @@
         "  orderdate >= '2022-01-01'\n",
         "  AND orderdate <= '2022-12-31';"
       ],
-      "catalog": "dbacademy",
-      "schema": "labuser13851863_1772165894"
+      "catalog": "labuser13851863_1789752898",
+      "schema": "aibi_dashboards"
     },
     {
       "name": "d994f116",
@@ -30,8 +30,8 @@
       "queryLines": [
         "SELECT * FROM ca_products;"
       ],
-      "catalog": "dbacademy",
-      "schema": "labuser13851863_1772165894"
+      "catalog": "labuser13851863_1789752898",
+      "schema": "aibi_dashboards"
     },
     {
       "name": "b6fda01a",
@@ -44,8 +44,8 @@
         "  WHERE \n",
         "      orderdate >= '2024-01-01' AND orderdate <= '2024-12-31' ;"
       ],
-      "catalog": "dbacademy",
-      "schema": "labuser13851863_1772165894"
+      "catalog": "labuser13851863_1789752898",
+      "schema": "aibi_dashboards"
     },
     {
       "name": "1ea7dfb9",
@@ -838,7 +838,7 @@
             "name": "ff2853bf",
             "queries": [
               {
-                "name": "dashboards/01f095765b4a1e95b4dcdbf95b0c6fab/datasets/01f09576681714c4aabafa3021329a01_productname",
+                "name": "dashboards/01f1b396d9d2144185c31503fcb103a5/datasets/01f1b396d9d21cc2918ad2cb2ecb36c8_productname",
                 "query": {
                   "datasetName": "e26fe183",
                   "fields": [
@@ -855,7 +855,7 @@
                 }
               },
               {
-                "name": "dashboards/01f095765b4a1e95b4dcdbf95b0c6fab/datasets/01f09577059411a4b001d8f56df1ad30_productname",
+                "name": "dashboards/01f1b396d9d2144185c31503fcb103a5/datasets/01f1b396d9d21cc8bcc09e60c3b6f5e4_productname",
                 "query": {
                   "datasetName": "d994f116",
                   "fields": [
@@ -874,24 +874,25 @@
             ],
             "spec": {
               "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Product Name",
+                  "fields": []
+                }
+              },
               "widgetType": "filter-multi-select",
               "encodings": {
                 "fields": [
                   {
                     "fieldName": "productname",
-                    "displayName": "productname",
-                    "queryName": "dashboards/01f095765b4a1e95b4dcdbf95b0c6fab/datasets/01f09576681714c4aabafa3021329a01_productname"
+                    "queryName": "dashboards/01f1b396d9d2144185c31503fcb103a5/datasets/01f1b396d9d21cc2918ad2cb2ecb36c8_productname"
                   },
                   {
                     "fieldName": "productname",
-                    "displayName": "productname",
-                    "queryName": "dashboards/01f095765b4a1e95b4dcdbf95b0c6fab/datasets/01f09577059411a4b001d8f56df1ad30_productname"
+                    "queryName": "dashboards/01f1b396d9d2144185c31503fcb103a5/datasets/01f1b396d9d21cc8bcc09e60c3b6f5e4_productname"
                   }
                 ]
-              },
-              "frame": {
-                "showTitle": true,
-                "title": "Product Name"
               }
             }
           },
