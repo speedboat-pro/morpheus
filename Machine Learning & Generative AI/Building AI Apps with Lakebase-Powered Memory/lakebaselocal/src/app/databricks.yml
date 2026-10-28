@@ -29,8 +29,8 @@ targets:
   default:
     default: true
     workspace:
-      host: https://dbc-9a6b0716-6726.cloud.databricks.com/
+      host: https://dbc-f57bff54-6d2e.cloud.databricks.com
 
     variables:
-      postgres_branch: projects/app-test/branches/production
-      postgres_database: projects/app-test/branches/production/databases/db-wubq-cnxysmrcbe
+      postgres_branch: projects/demo-lakebase/branches/production
+      postgres_database: projects/demo-lakebase/branches/production/databases/br-snowy-mode-d1ll8xbg
