@@ -21,7 +21,7 @@
         "  orderdate >= '2022-01-01'\n",
         "  AND orderdate <= '2022-12-31';"
       ],
-      "catalog": "labuser13851863_1789752898",
+      "catalog": "labuser11552657_1794335031",
       "schema": "aibi_dashboards"
     },
     {
@@ -30,7 +30,7 @@
       "queryLines": [
         "SELECT * FROM ca_products;"
       ],
-      "catalog": "labuser13851863_1789752898",
+      "catalog": "labuser11552657_1794335031",
       "schema": "aibi_dashboards"
     },
     {
@@ -44,7 +44,7 @@
         "  WHERE \n",
         "      orderdate >= '2024-01-01' AND orderdate <= '2024-12-31' ;"
       ],
-      "catalog": "labuser13851863_1789752898",
+      "catalog": "labuser11552657_1794335031",
       "schema": "aibi_dashboards"
     },
     {
@@ -65,8 +65,8 @@
         "   JOIN ca_products AS p\n",
         "  ON o.productid = p.productid\n"
       ],
-      "catalog": "dbacademy",
-      "schema": "labuser13851863_1772165894"
+      "catalog": "labuser11552657_1794335031",
+      "schema": "aibi_dashboards"
     },
     {
       "name": "6f105919",
@@ -138,8 +138,8 @@
         "  FROM\n",
         "    dates"
       ],
-      "catalog": "dbacademy",
-      "schema": "labuser13851863_1772165894"
+      "catalog": "labuser11552657_1794335031",
+      "schema": "aibi_dashboards"
     },
     {
       "name": "15c82a09",
@@ -211,8 +211,8 @@
         "  FROM\n",
         "    dates"
       ],
-      "catalog": "dbacademy",
-      "schema": "labuser13851863_1772165894"
+      "catalog": "labuser11552657_1794335031",
+      "schema": "aibi_dashboards"
     },
     {
       "name": "d3301888",
@@ -284,8 +284,8 @@
         "  FROM\n",
         "    dates"
       ],
-      "catalog": "dbacademy",
-      "schema": "labuser13851863_1772165894"
+      "catalog": "labuser11552657_1794335031",
+      "schema": "aibi_dashboards"
     }
   ],
   "pages": [
@@ -838,7 +838,7 @@
             "name": "ff2853bf",
             "queries": [
               {
-                "name": "dashboards/01f1b396d9d2144185c31503fcb103a5/datasets/01f1b396d9d21cc2918ad2cb2ecb36c8_productname",
+                "name": "dashboards/01f1dd489be01a82930ce6b6e7b06215/datasets/01f1dd489be01ba48a95ac1e2744eac6_productname",
                 "query": {
                   "datasetName": "e26fe183",
                   "fields": [
@@ -855,7 +855,7 @@
                 }
               },
               {
-                "name": "dashboards/01f1b396d9d2144185c31503fcb103a5/datasets/01f1b396d9d21cc8bcc09e60c3b6f5e4_productname",
+                "name": "dashboards/01f1dd489be01a82930ce6b6e7b06215/datasets/01f1dd489be01ba9a00988350f5c96df_productname",
                 "query": {
                   "datasetName": "d994f116",
                   "fields": [
@@ -886,11 +886,11 @@
                 "fields": [
                   {
                     "fieldName": "productname",
-                    "queryName": "dashboards/01f1b396d9d2144185c31503fcb103a5/datasets/01f1b396d9d21cc2918ad2cb2ecb36c8_productname"
+                    "queryName": "dashboards/01f1dd489be01a82930ce6b6e7b06215/datasets/01f1dd489be01ba48a95ac1e2744eac6_productname"
                   },
                   {
                     "fieldName": "productname",
-                    "queryName": "dashboards/01f1b396d9d2144185c31503fcb103a5/datasets/01f1b396d9d21cc8bcc09e60c3b6f5e4_productname"
+                    "queryName": "dashboards/01f1dd489be01a82930ce6b6e7b06215/datasets/01f1dd489be01ba9a00988350f5c96df_productname"
                   }
                 ]
               }
@@ -1685,6 +1685,88 @@
         }
       ],
       "pageType": "PAGE_TYPE_CANVAS"
+    },
+    {
+      "name": "2e1e4a96",
+      "displayName": "Vega Lite",
+      "layout": [
+        {
+          "widget": {
+            "name": "6db4b21b",
+            "spec": {
+              "widgetType": "text",
+              "version": 1,
+              "encodings": {
+                "text": {
+                  "lines": [
+                    "# Custom Visualization using [Vega Lite](https://vega.github.io/vega-lite/examples/circle_github_punchcard.html)"
+                  ],
+                  "fields": []
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "bfb0533e",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "e26fe183",
+                  "fields": [
+                    {
+                      "name": "province",
+                      "expression": "`province`"
+                    },
+                    {
+                      "name": "orderamt",
+                      "expression": "`orderamt`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "jsonSpec": {
+                "type": "vega-lite",
+                "spec": "{\n  \"$schema\": \"https://vega.github.io/schema/vega-lite/v6.json\",\n  \"mark\": \"bar\",\n  \"data\": {\n    \"name\": \"databricks_query\"\n  },\n  \"encoding\": {\n    \"x\": {\n      \"field\": \"province\",\n      \"type\": \"nominal\"\n    },\n    \"y\": {\n      \"field\": \"orderamt\",\n      \"type\": \"quantitative\"\n    }\n  }\n}"
+              },
+              "widgetType": "custom-vega-viz",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "province"
+                  },
+                  {
+                    "fieldName": "orderamt"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 2,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
     }
   ],
   "uiSettings": {

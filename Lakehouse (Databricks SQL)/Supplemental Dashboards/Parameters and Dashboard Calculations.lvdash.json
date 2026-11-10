@@ -23,7 +23,7 @@
         "date_add(YEAR, 9, tpep_dropoff_datetime) AS `Dropoff Time`,\n",
         "trip_distance,\n",
         "fare_amount,\n",
-        "pickup_zip,\n",
+        "pickup_zip, --['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']\n",
         "dropoff_zip,\n",
         "date_format(date_add(YEAR, 9, tpep_pickup_datetime), 'EEEE') AS `Day of week`\n",
         "FROM samples.nyctaxi.trips \n",
@@ -102,6 +102,11 @@
           }
         }
       ]
+    },
+    {
+      "name": "9d38c0d6",
+      "displayName": "trips_metric_view",
+      "asset_name": "labuser11552657_1794335031.aibi_dashboards.trips_metric_view"
     }
   ],
   "pages": [
@@ -356,7 +361,7 @@
           "position": {
             "x": 0,
             "y": 0,
-            "width": 2,
+            "width": 4,
             "height": 1
           }
         },
@@ -414,12 +419,64 @@
           "position": {
             "x": 0,
             "y": 1,
-            "width": 3,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "26f90246",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "9d38c0d6",
+                  "fields": [
+                    {
+                      "name": "weekly(tpep_dropoff_datetime)",
+                      "expression": "DATE_TRUNC(\"WEEK\", `tpep_dropoff_datetime`)"
+                    },
+                    {
+                      "name": "measure(Cost Per Mile)",
+                      "expression": "MEASURE(`Cost Per Mile`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "weekly(tpep_dropoff_datetime)",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(Cost Per Mile)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
             "height": 6
           }
         }
       ],
-      "pageType": "PAGE_TYPE_CANVAS"
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
     }
   ],
   "uiSettings": {
