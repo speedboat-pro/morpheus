@@ -1,8 +1,10 @@
-version: 1.1
+version: '1.1'
 source: samples.tpch.orders
-
 filter: o_orderdate > DATE'1997-01-01'
-
+joins:
+  - name: customer
+    source: samples.tpch.customer
+    'on': source.o_custkey = customer.c_custkey
 dimensions:
   - name: date
     expr: o_orderdate
@@ -17,95 +19,140 @@ dimensions:
   - name: Market Segment
     expr: customer.c_mktsegment
   - name: Order Status Readable
-    expr: >
-      case 
-        when o_orderstatus = 'O' then 'Open' 
-        when o_orderstatus = 'P' then 'Processing' 
-        when o_orderstatus = 'F' then 'Fulfilled' 
+    expr: |-
+      case
+        when o_orderstatus = 'O' then 'Open'
+        when o_orderstatus = 'P' then 'Processing'
+        when o_orderstatus = 'F' then 'Fulfilled'
       end
-
 measures:
   - name: YTD Sales
     expr: SUM(o_totalprice)
+    format:
+      type: currency
+      currency_code: USD
+      decimal_places:
+        type: exact
+        places: 2
     window:
       - order: date
+        semiadditive: last
         range: cumulative
-        semiadditive: last
       - order: year
-        range: current
         semiadditive: last
-
+        range: current
   - name: Running Total Sales
     expr: SUM(o_totalprice)
+    format:
+      type: currency
+      currency_code: USD
+      decimal_places:
+        type: exact
+        places: 2
     window:
       - order: date
+        semiadditive: last
         range: cumulative
-        semiadditive: last        
-
   - name: Previous Day Sales
     expr: SUM(o_totalprice)
+    format:
+      type: currency
+      currency_code: USD
+      decimal_places:
+        type: exact
+        places: 2
     window:
       - order: date
-        range: trailing 1 day
         semiadditive: last
-
+        range: trailing 1 day
   - name: Current Day Sales
     expr: SUM(o_totalprice)
+    format:
+      type: currency
+      currency_code: USD
+      decimal_places:
+        type: exact
+        places: 2
     window:
       - order: date
-        range: current
         semiadditive: last
-
+        range: current
   - name: Day Over Day Growth
-    expr: (MEASURE(`Current Day Sales`) - MEASURE(`Previous Day Sales`)) / MEASURE(`Previous Day Sales`) * 100   
-
+    expr: (MEASURE(`Current Day Sales`) - MEASURE(`Previous Day Sales`)) / MEASURE(`Previous Day Sales`)
+    format:
+      type: percentage
+      decimal_places:
+        type: exact
+        places: 2
   - name: Number of Customers - Last 7 Days
     expr: COUNT(DISTINCT o_custkey)
     window:
       - order: date
+        semiadditive: last
         range: trailing 7 day
-        semiadditive: last         
-
   - name: Order Count
     expr: COUNT(1)
-
   - name: Total Revenue
     expr: SUM(o_totalprice)
-
+    format:
+      type: currency
+      currency_code: USD
+      decimal_places:
+        type: exact
+        places: 2
   - name: Total Revenue per Customer
     expr: SUM(o_totalprice) / COUNT(DISTINCT o_custkey)
-
+    format:
+      type: currency
+      currency_code: USD
+      decimal_places:
+        type: exact
+        places: 2
   - name: Total Revenue for Open Orders
     expr: SUM(o_totalprice) FILTER (WHERE o_orderstatus='O')
-
+    format:
+      type: currency
+      currency_code: USD
+      decimal_places:
+        type: exact
+        places: 2
   - name: Number of Fulfilled Orders
     expr: COUNT(*) FILTER (WHERE `Order Status Readable` = 'Fulfilled')
-
   - name: Total Amount for Previous Month
     expr: SUM(o_totalprice)
+    format:
+      type: currency
+      currency_code: USD
+      decimal_places:
+        type: exact
+        places: 2
     window:
-     - order: Order Month
-       range: trailing 1 month
-       semiadditive: last
-
+      - order: Order Month
+        semiadditive: last
+        range: trailing 1 month
   - name: Total Amount for Current Month
     expr: SUM(o_totalprice)
+    format:
+      type: currency
+      currency_code: USD
+      decimal_places:
+        type: exact
+        places: 2
     window:
-     - order: Order Month
-       range: current
-       semiadditive: last
-  
+      - order: Order Month
+        semiadditive: last
+        range: current
   - name: Change in Amount
-    expr: MEASURE(`Total Amount for Current Month`) - MEASURE(`Total Amount for Previous Month`)    
-
+    expr: MEASURE(`Total Amount for Current Month`) - MEASURE(`Total Amount for Previous Month`)
+    format:
+      type: currency
+      currency_code: USD
+      decimal_places:
+        type: exact
+        places: 2
   - name: AmountChangeStatus
-    expr: >
+    expr: |-
       CASE
         WHEN MEASURE(`Change in Amount`) < 0 THEN 'Negative'
         ELSE 'Positive'
         END
-
-joins:
- - name: customer
-   source: samples.tpch.customer
-   on: source.o_custkey = customer.c_custkey
