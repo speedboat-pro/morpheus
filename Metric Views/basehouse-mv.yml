@@ -1,0 +1,136 @@
+version: 1.1
+
+source: samples.bakehouse.sales_franchises
+
+joins:
+  - name: suppliers
+    source: samples.bakehouse.sales_suppliers
+    "on": source.supplierID = suppliers.supplierID
+    cardinality: many_to_one
+  - name: transactions
+    source: samples.bakehouse.sales_transactions
+    "on": source.franchiseID = transactions.franchiseID
+    joins:
+      - name: customers
+        source: samples.bakehouse.sales_customers
+        "on": transactions.customerID = customers.customerID
+        cardinality: one_to_many
+    cardinality: one_to_many
+  - name: reviews
+    source: samples.bakehouse.media_customer_reviews
+    "on": source.franchiseID = reviews.franchiseID
+    cardinality: one_to_many
+  - name: review_chunks
+    source: samples.bakehouse.media_gold_reviews_chunked
+    "on": source.franchiseID = review_chunks.franchiseID
+    cardinality: one_to_many
+
+comment: "Sample metric view covering all bakehouse tables. The franchise dimension\
+  \ (sales_franchises) joins many-to-one to suppliers and one-to-many to three fact\
+  \ tables: sales_transactions (with nested customers), media_customer_reviews, and\
+  \ media_gold_reviews_chunked. Each fact is aggregated independently, then combined\
+  \ in cross-fact measures such as revenue per review and reviews per 1K transactions."
+
+dimensions:
+  - name: Franchise
+    expr: source.name
+
+  - name: City
+    expr: source.city
+
+  - name: Country
+    expr: source.country
+
+  - name: Franchise Size
+    expr: source.size
+
+  - name: Supplier Name
+    expr: suppliers.name
+
+  - name: Supplier Ingredient
+    expr: suppliers.ingredient
+
+  - name: Supplier Continent
+    expr: suppliers.continent
+
+  - name: Supplier Approved
+    expr: suppliers.approved
+
+measures:
+  - name: Transaction Count
+    expr: COUNT(transactions.transactionID)
+
+  - name: Units Sold
+    expr: SUM(transactions.quantity)
+
+  - name: Sales Revenue
+    expr: SUM(transactions.totalPrice)
+    format:
+      type: currency
+      currency_code: USD
+      decimal_places:
+        type: exact
+        places: 2
+
+  - name: Unique Customers
+    expr: COUNT(DISTINCT transactions.customerID)
+
+  - name: Review Count
+    expr: COUNT(reviews.new_id)
+
+  - name: Review Chunk Count
+    expr: COUNT(review_chunks.chunk_id)
+
+  - name: Chunked Review Count
+    expr: COUNT(DISTINCT review_chunks.review_uri)
+
+  - name: Avg Chunks per Review
+    expr: "MEASURE(`Review Chunk Count`) / NULLIF(MEASURE(`Chunked Review Count`),\
+      \ 0)"
+    format:
+      type: number
+      decimal_places:
+        type: exact
+        places: 2
+
+  - name: Customer Countries Reached
+    expr: COUNT(DISTINCT transactions.customers.country)
+
+  - name: Customer Continents Reached
+    expr: COUNT(DISTINCT transactions.customers.continent)
+
+  - name: Avg Order Value
+    expr: MEASURE(`Sales Revenue`) / MEASURE(`Transaction Count`)
+    format:
+      type: currency
+      currency_code: USD
+      decimal_places:
+        type: exact
+        places: 2
+
+  - name: Revenue per Review
+    expr: "MEASURE(`Sales Revenue`) / NULLIF(MEASURE(`Review Count`), 0)"
+    comment: Cross-fact ratio of sales revenue (transactions) to review volume (reviews).
+    format:
+      type: currency
+      currency_code: USD
+      decimal_places:
+        type: exact
+        places: 2
+
+  - name: Reviews per 1K Transactions
+    expr: "MEASURE(`Review Count`) * 1000 / NULLIF(MEASURE(`Transaction Count`), 0)"
+    comment: Cross-fact engagement rate combining review and transaction facts.
+    format:
+      type: number
+      decimal_places:
+        type: exact
+        places: 2
+
+  - name: Review Rate per Customer
+    expr: "MEASURE(`Review Count`) / NULLIF(MEASURE(`Unique Customers`), 0)"
+    format:
+      type: percentage
+      decimal_places:
+        type: exact
+        places: 2
